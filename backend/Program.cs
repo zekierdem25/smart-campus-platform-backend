@@ -31,15 +31,7 @@ builder.Services.AddCors(options =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "Smart Campus API",
-        Version = "v1",
-        Description = "Akıllı Kampüs Ekosistem Yönetim Platformu API"
-    });
-});
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
