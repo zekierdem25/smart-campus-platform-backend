@@ -48,6 +48,4 @@ docker-compose.override.yml
 # Deployment Guides (local only)
 GCP_DEPLOYMENT_GUIDE.md
 GCP_QUICK_START.md
-DEPLOYMENT_GUIDE.md
-RAILWAY_SETUP.md
 
