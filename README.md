@@ -6,10 +6,10 @@ Bu proje, bir üniversite kampüsünün günlük operasyonlarını dijitalleşti
 
 ## 👥 Grup Üyeleri
 
-- **Zeki** - Backend Lead + Authentication + GPS Attendance
-- **Mert** - Frontend Lead + UI/UX + Academic Management
-- **Sena** - Backend + Meal Service + Event Management + Payment
-- **Şevval** - Backend + Scheduling Algorithm + Analytics + Notifications
+- Zeki Erdem DURGUN
+- Mert ABDULLAHOĞLU
+- Sena KAMİLOĞLU
+- Şevval ASİ
 
 ## 🛠️ Teknoloji Stack
 
