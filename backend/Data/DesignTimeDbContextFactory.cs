@@ -10,6 +10,8 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         
         // Design-time connection string (sadece migration oluşturmak için)
+        // appsettings.json'dan oku veya manuel girin
+        // NOT: Şifreyi buraya yazmayın, appsettings.json'dan okuyun veya environment variable kullanın
         var connectionString = "Server=localhost;Database=smartcampus_db;User=root;Password=rootpassword;";
         
         // MySQL 8.0 sürümünü manuel belirt (AutoDetect yerine)
