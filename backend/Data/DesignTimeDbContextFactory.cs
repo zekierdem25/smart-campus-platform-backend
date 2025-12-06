@@ -22,7 +22,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found in appsettings.json");
         
         // MySQL 8.0 sürümünü manuel belirt (AutoDetect yerine)
-        var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
+        var serverVersion = ServerVersion.Parse("8.0.0-mysql");
         optionsBuilder.UseMySql(connectionString, serverVersion);
 
         return new ApplicationDbContext(optionsBuilder.Options);

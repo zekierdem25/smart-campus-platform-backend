@@ -25,11 +25,14 @@ public partial class Program
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-        // Database Configuration
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(connectionString, serverVersion));
+        // Database Configuration (skip for Testing environment - handled by test project)
+        if (builder.Environment.EnvironmentName != "Testing")
+        {
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(connectionString, serverVersion));
+        }
 
         // JWT Authentication Configuration
         var jwtSecretKey = builder.Configuration["JWT:SecretKey"] 
