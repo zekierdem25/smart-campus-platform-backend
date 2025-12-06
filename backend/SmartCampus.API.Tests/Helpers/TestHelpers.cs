@@ -12,53 +12,65 @@ public static class TestHelpers
     /// Test kullanıcısı oluşturur
     /// </summary>
     public static User CreateTestUser(
-        string email = "test@example.com",
-        string password = "Test1234!",
-        string role = "Student",
-        bool isEmailVerified = true)
+    string email = "test@example.com",
+    string password = "Test1234!",
+    UserRole role = UserRole.Student,
+    bool isEmailVerified = true)
+{
+    return new User
     {
-        return new User
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-            FullName = "Test User",
-            Role = role,
-            IsEmailVerified = isEmailVerified,
-            CreatedAt = DateTime.UtcNow
-        };
+        Id = Guid.NewGuid(),
+
+        // FullName set edilemediği için FirstName / LastName dolduruyoruz
+        FirstName = "Test",
+        LastName = "User",
+
+        Email = email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+
+        // Role artık enum tipinde
+        Role = role,
+
+        IsEmailVerified = isEmailVerified,
+        CreatedAt = DateTime.UtcNow
+    };
     }
 
     /// <summary>
     /// Register request oluşturur
     /// </summary>
-    public static RegisterRequest CreateRegisterRequest(
-        string email = "newuser@example.com",
-        string password = "Test1234!",
-        string fullName = "New User",
-        string role = "Student")
+    public static RegisterRequestDto CreateRegisterRequest(
+    string email = "newuser@example.com",
+    string password = "Test1234!",
+    string fullName = "New User",
+    string role = "Student")
+{
+    return new RegisterRequestDto
     {
-        return new RegisterRequest
-        {
-            Email = email,
-            Password = password,
-            FullName = fullName,
-            Role = role
-        };
+        // FullName parametresini basitçe FirstName'e yazıyoruz
+        FirstName = fullName,
+        LastName = string.Empty,
+        Email = email,
+        Password = password,
+        ConfirmPassword = password,
+        Role = role
+    };
     }
 
     /// <summary>
     /// Login request oluşturur
     /// </summary>
-    public static LoginRequest CreateLoginRequest(
-        string email = "test@example.com",
-        string password = "Test1234!")
+    public static LoginRequestDto CreateLoginRequest(
+    string email = "test@example.com",
+    string password = "Test1234!")
+{
+    return new LoginRequestDto
     {
-        return new LoginRequest
-        {
-            Email = email,
-            Password = password
-        };
+        Email = email,
+        Password = password,
+        // İstersen RememberMe'yi de set edebilirsin
+        RememberMe = false
+    };
     }
 
     /// <summary>

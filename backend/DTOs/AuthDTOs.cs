@@ -37,6 +37,7 @@ public class RegisterRequestDto
     // Ortak
     [Required(ErrorMessage = "Bölüm seçimi zorunludur")]
     public Guid DepartmentId { get; set; }
+    public string Role { get; set; }
 }
 
 public class LoginRequestDto

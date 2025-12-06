@@ -20,4 +20,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <!-- SmartCampus.API projesi derlenirken test klasörünü hariç tut -->
+  <ItemGroup>
+    <Compile Remove="SmartCampus.API.Tests\**" />
+  </ItemGroup>
+
 </Project>
