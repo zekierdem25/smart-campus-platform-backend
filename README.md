@@ -25,7 +25,7 @@ Bu proje, bir üniversite kampüsünün günlük operasyonlarını dijitalleşti
 - **API Documentation:** Swagger/OpenAPI
 
 ### Frontend
-- **Framework:** React 19 with TypeScript
+- **Framework:** React 19
 - **Routing:** React Router v7
 - **State Management:** Context API + useReducer
 - **HTTP Client:** Axios
