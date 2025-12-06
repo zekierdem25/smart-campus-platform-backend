@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace SmartCampus.API.Data;
 
@@ -9,13 +10,18 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         
-        // Design-time connection string (sadece migration oluşturmak için)
-        // appsettings.json'dan oku veya manuel girin
-        // NOT: Şifreyi buraya yazmayın, appsettings.json'dan okuyun veya environment variable kullanın
-        var connectionString = "Server=localhost;Database=smartcampus_db;User=root;Password=rootpassword;";
+        // appsettings.json'dan connection string'i oku
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+            .Build();
+        
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found in appsettings.json");
         
         // MySQL 8.0 sürümünü manuel belirt (AutoDetect yerine)
-        var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
+        var serverVersion = new Pomelo.EntityFrameworkCore.MySql.Infrastructure.MySqlServerVersion(new Version(8, 0, 0));
         optionsBuilder.UseMySql(connectionString, serverVersion);
 
         return new ApplicationDbContext(optionsBuilder.Options);
