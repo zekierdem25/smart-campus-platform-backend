@@ -133,10 +133,64 @@ Tüm dokümantasyonlar `docs/` klasöründe bulunmaktadır:
 
 ### Backend Testleri
 
+Backend testleri xUnit framework'ü kullanılarak yazılmıştır ve iki kategoriye ayrılır:
+- **Unit Tests**: Servislerin ve business logic'in test edildiği testler
+- **Integration Tests**: API endpoint'lerinin ve controller'ların test edildiği testler
+
+#### Testleri Çalıştırma
+
+**Basit test çalıştırma:**
 ```bash
-cd backend
+cd backend.Tests
 dotnet test
 ```
+
+**Detaylı çıktı ile:**
+```bash
+cd backend.Tests
+dotnet test --verbosity normal
+```
+
+**Belirli bir test sınıfını çalıştırma:**
+```bash
+cd backend.Tests
+dotnet test --filter "FullyQualifiedName~AuthControllerTests"
+```
+
+#### Code Coverage Raporu Oluşturma
+
+**Otomatik Script ile (Önerilen):**
+```powershell
+cd backend.Tests
+.\run-tests-with-coverage.ps1
+```
+
+Bu script:
+1. Eski test sonuçlarını temizler
+2. Testleri çalıştırır ve coverage verisi toplar
+3. HTML coverage raporu oluşturur
+4. Raporu tarayıcıda otomatik açar
+
+**Manuel olarak:**
+
+1. **Coverage verisi toplama:**
+```bash
+cd backend.Tests
+dotnet test --collect:"XPlat Code Coverage" --settings:coverlet.runsettings
+```
+
+2. **HTML raporu oluşturma:**
+```bash
+# ReportGenerator'ı yükle (sadece bir kez)
+dotnet tool install -g dotnet-reportgenerator-globaltool
+
+# HTML raporu oluştur
+reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"TestResults/CoverageReport" -reporttypes:Html -classfilters:"-*DesignTimeDbContextFactory*;-*Migrations*"
+```
+
+3. **Raporu görüntüleme:**
+`backend.Tests/TestResults/CoverageReport/index.html` dosyasını tarayıcıda açın.
+
 
 ### Frontend Testleri
 

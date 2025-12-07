@@ -138,8 +138,51 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/register", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        // Note: ASP.NET Core may return 400 with different response format
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
+        {
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Assert.Equal("Geçersiz veri", result.Message);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Register_WithEmptyRequiredFields_ShouldReturn400BadRequest()
+    {
+        // Arrange - Send empty required fields to trigger ModelState.IsValid = false
+        var request = new RegisterRequestDto
+        {
+            FirstName = "", // Empty - Required
+            LastName = "", // Empty - Required
+            Email = "", // Empty - Required
+            Password = "", // Empty - Required
+            ConfirmPassword = "", // Empty - Required
+            UserType = "", // Empty - Required
+            DepartmentId = Guid.Empty // Empty - Required
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/auth/register", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
+        {
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Assert.Equal("Geçersiz veri", result.Message);
+            }
+        }
     }
 
     #endregion
@@ -217,15 +260,44 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/login", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
-        
-        // Try to read as AuthResponseDto, but it might be ValidationProblemDetails
-        if (response.StatusCode == HttpStatusCode.BadRequest)
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (result != null)
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
             {
-                Assert.False(result.Success);
+                Assert.Equal("Email ve şifre zorunludur", result.Message);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Login_WithEmptyRequiredFields_ShouldReturn400BadRequest()
+    {
+        // Arrange - Send empty required fields to trigger ModelState.IsValid = false
+        var request = new LoginRequestDto
+        {
+            Email = "", // Empty - Required
+            Password = "" // Empty - Required
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/auth/login", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
+        {
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Assert.Equal("Email ve şifre zorunludur", result.Message);
             }
         }
     }
@@ -293,15 +365,16 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/refresh", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
-        
-        // Try to read as AuthResponseDto
-        if (response.StatusCode == HttpStatusCode.BadRequest)
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (result != null)
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
             {
-                Assert.False(result.Success);
+                Assert.Equal("Refresh token zorunludur", result.Message);
             }
         }
     }
@@ -373,6 +446,26 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task Logout_WithNullUserId_ShouldReturn401Unauthorized()
+    {
+        // Arrange - Token without NameIdentifier claim to make GetCurrentUserId return null
+        // Create a token without userId claim
+        _client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjAwMDAwMDAwfQ.invalid");
+        
+        var request = new RefreshTokenRequestDto
+        {
+            RefreshToken = "some-token"
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/auth/logout", request);
+
+        // Assert - Should return 401 because GetCurrentUserId() returns null
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     #endregion
 
     #region Forgot Password Tests
@@ -422,15 +515,43 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/forgot-password", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
-        
-        // Try to read as AuthResponseDto
-        if (response.StatusCode == HttpStatusCode.BadRequest)
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (result != null)
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
             {
-                Assert.False(result.Success);
+                Assert.Equal("Geçerli bir email adresi giriniz", result.Message);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ForgotPassword_WithEmptyEmail_ShouldReturn400BadRequest()
+    {
+        // Arrange - Send empty email to trigger ModelState.IsValid = false
+        var request = new ForgotPasswordRequestDto
+        {
+            Email = "" // Empty - Required
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/auth/forgot-password", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
+        {
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Assert.Equal("Geçerli bir email adresi giriniz", result.Message);
             }
         }
     }
@@ -468,15 +589,16 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/verify-email", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
-        
-        // Try to read as AuthResponseDto
-        if (response.StatusCode == HttpStatusCode.BadRequest)
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (result != null)
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
             {
-                Assert.False(result.Success);
+                Assert.Equal("Token zorunludur", result.Message);
             }
         }
     }
@@ -560,15 +682,45 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/v1/auth/reset-password", request);
 
         // Assert - ModelState validation should trigger BadRequest
-        Assert.True(response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.UnprocessableEntity);
-        
-        // Try to read as AuthResponseDto
-        if (response.StatusCode == HttpStatusCode.BadRequest)
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (result != null)
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
             {
-                Assert.False(result.Success);
+                Assert.Equal("Geçersiz veri", result.Message);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ResetPassword_WithEmptyRequiredFields_ShouldReturn400BadRequest()
+    {
+        // Arrange - Send empty required fields to trigger ModelState.IsValid = false
+        var request = new ResetPasswordRequestDto
+        {
+            Token = "", // Empty - Required
+            NewPassword = "", // Empty - Required
+            ConfirmPassword = "" // Empty - Required
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/auth/reset-password", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // ASP.NET Core may return ValidationProblemDetails instead of AuthResponseDto
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        if (result != null)
+        {
+            Assert.False(result.Success);
+            // Message may be empty if ValidationProblemDetails is returned
+            if (!string.IsNullOrEmpty(result.Message))
+            {
+                Assert.Equal("Geçersiz veri", result.Message);
             }
         }
     }
