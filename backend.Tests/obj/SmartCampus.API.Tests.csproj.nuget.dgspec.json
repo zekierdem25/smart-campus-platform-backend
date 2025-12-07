@@ -1,33 +1,40 @@
 {
   "format": 1,
   "restore": {
-    "/Users/sevvalasi/Desktop/smart-campus-platform/backend.Tests/SmartCampus.API.Tests.csproj": {}
+    "C:\\Users\\zekierdem\\Desktop\\web_final\\backend.Tests\\SmartCampus.API.Tests.csproj": {}
   },
   "projects": {
-    "/Users/sevvalasi/Desktop/smart-campus-platform/backend.Tests/SmartCampus.API.Tests.csproj": {
+    "C:\\Users\\zekierdem\\Desktop\\web_final\\backend.Tests\\SmartCampus.API.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/sevvalasi/Desktop/smart-campus-platform/backend.Tests/SmartCampus.API.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend.Tests\\SmartCampus.API.Tests.csproj",
         "projectName": "SmartCampus.API.Tests",
-        "projectPath": "/Users/sevvalasi/Desktop/smart-campus-platform/backend.Tests/SmartCampus.API.Tests.csproj",
-        "packagesPath": "/Users/sevvalasi/.nuget/packages/",
-        "outputPath": "/Users/sevvalasi/Desktop/smart-campus-platform/backend.Tests/obj/",
+        "projectPath": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend.Tests\\SmartCampus.API.Tests.csproj",
+        "packagesPath": "C:\\Users\\zekierdem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend.Tests\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/sevvalasi/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\zekierdem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/Users/sevvalasi/Desktop/smart-campus-platform/backend/SmartCampus.API.csproj": {
-                "projectPath": "/Users/sevvalasi/Desktop/smart-campus-platform/backend/SmartCampus.API.csproj"
+              "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\SmartCampus.API.csproj": {
+                "projectPath": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\SmartCampus.API.csproj"
               }
             }
           }
@@ -42,7 +49,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -93,26 +100,33 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/sevvalasi/Desktop/smart-campus-platform/backend/SmartCampus.API.csproj": {
+    "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\SmartCampus.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/sevvalasi/Desktop/smart-campus-platform/backend/SmartCampus.API.csproj",
+        "projectUniqueName": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\SmartCampus.API.csproj",
         "projectName": "SmartCampus.API",
-        "projectPath": "/Users/sevvalasi/Desktop/smart-campus-platform/backend/SmartCampus.API.csproj",
-        "packagesPath": "/Users/sevvalasi/.nuget/packages/",
-        "outputPath": "/Users/sevvalasi/Desktop/smart-campus-platform/backend/obj/",
+        "projectPath": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\SmartCampus.API.csproj",
+        "packagesPath": "C:\\Users\\zekierdem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\zekierdem\\Desktop\\web_final\\backend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/sevvalasi/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\zekierdem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -131,7 +145,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -191,7 +205,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

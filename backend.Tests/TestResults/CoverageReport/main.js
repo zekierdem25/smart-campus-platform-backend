@@ -213,42 +213,20 @@ var assemblies = [
   {
     "name": "SmartCampus.API",
     "classes": [
-      { "name": "SmartCampus.API.Controllers.AuthController", "rp": "SmartCampus.API_AuthController.html", "cl": 57, "ucl": 44, "cal": 101, "tl": 208, "cb": 17, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Controllers.UsersController", "rp": "SmartCampus.API_UsersController.html", "cl": 44, "ucl": 33, "cal": 77, "tl": 175, "cb": 10, "tb": 26, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Data.ApplicationDbContext", "rp": "SmartCampus.API_ApplicationDbContext.html", "cl": 339, "ucl": 0, "cal": 339, "tl": 382, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Data.DesignTimeDbContextFactory", "rp": "SmartCampus.API_DesignTimeDbContextFactory.html", "cl": 0, "ucl": 13, "cal": 13, "tl": 31, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.ApiResponseDto<T>", "rp": "SmartCampus.API_ApiResponseDto_1.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.AuthResponseDto", "rp": "SmartCampus.API_AuthResponseDto.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.ChangePasswordRequestDto", "rp": "SmartCampus.API_ChangePasswordRequestDto.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.DepartmentResponseDto", "rp": "SmartCampus.API_DepartmentResponseDto.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.FacultyInfoDto", "rp": "SmartCampus.API_FacultyInfoDto.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.ForgotPasswordRequestDto", "rp": "SmartCampus.API_ForgotPasswordRequestDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.LoginRequestDto", "rp": "SmartCampus.API_LoginRequestDto.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.RefreshTokenRequestDto", "rp": "SmartCampus.API_RefreshTokenRequestDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.RegisterRequestDto", "rp": "SmartCampus.API_RegisterRequestDto.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.ResetPasswordRequestDto", "rp": "SmartCampus.API_ResetPasswordRequestDto.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.StudentInfoDto", "rp": "SmartCampus.API_StudentInfoDto.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.UpdateProfileRequestDto", "rp": "SmartCampus.API_UpdateProfileRequestDto.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.UserListRequestDto", "rp": "SmartCampus.API_UserListRequestDto.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.UserListResponseDto", "rp": "SmartCampus.API_UserListResponseDto.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.UserResponseDto", "rp": "SmartCampus.API_UserResponseDto.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.DTOs.VerifyEmailRequestDto", "rp": "SmartCampus.API_VerifyEmailRequestDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 150, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Middleware.ErrorHandlingMiddleware", "rp": "SmartCampus.API_ErrorHandlingMiddleware.html", "cl": 10, "ucl": 30, "cal": 40, "tl": 76, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.AuthController", "rp": "SmartCampus.API_AuthController.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 208, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.UsersController", "rp": "SmartCampus.API_UsersController.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 175, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Data.ApplicationDbContext", "rp": "SmartCampus.API_ApplicationDbContext.html", "cl": 332, "ucl": 0, "cal": 332, "tl": 382, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Middleware.ErrorHandlingMiddleware", "rp": "SmartCampus.API_ErrorHandlingMiddleware.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 76, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Middleware.ErrorHandlingMiddlewareExtensions", "rp": "SmartCampus.API_ErrorHandlingMiddlewareExtensions.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 76, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Migrations.ApplicationDbContextModelSnapshot", "rp": "SmartCampus.API_ApplicationDbContextModelSnapshot.html", "cl": 0, "ucl": 647, "cal": 647, "tl": 682, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Migrations.InitialCreate", "rp": "SmartCampus.API_InitialCreate.html", "cl": 0, "ucl": 976, "cal": 976, "tl": 1064, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.Department", "rp": "SmartCampus.API_Department.html", "cl": 10, "ucl": 0, "cal": 10, "tl": 34, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.EmailVerificationToken", "rp": "SmartCampus.API_EmailVerificationToken.html", "cl": 10, "ucl": 0, "cal": 10, "tl": 39, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.Faculty", "rp": "SmartCampus.API_Faculty.html", "cl": 12, "ucl": 0, "cal": 12, "tl": 53, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.PasswordResetToken", "rp": "SmartCampus.API_PasswordResetToken.html", "cl": 6, "ucl": 5, "cal": 11, "tl": 42, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.RefreshToken", "rp": "SmartCampus.API_RefreshToken.html", "cl": 12, "ucl": 2, "cal": 14, "tl": 51, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.Student", "rp": "SmartCampus.API_Student.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 46, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Models.User", "rp": "SmartCampus.API_User.html", "cl": 19, "ucl": 0, "cal": 19, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Program", "rp": "SmartCampus.API_Program.html", "cl": 68, "ucl": 14, "cal": 82, "tl": 124, "cb": 6, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.AuthService", "rp": "SmartCampus.API_AuthService.html", "cl": 324, "ucl": 33, "cal": 357, "tl": 486, "cb": 48, "tb": 64, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.EmailService", "rp": "SmartCampus.API_EmailService.html", "cl": 77, "ucl": 45, "cal": 122, "tl": 157, "cb": 7, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Models.EmailVerificationToken", "rp": "SmartCampus.API_EmailVerificationToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 39, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Models.PasswordResetToken", "rp": "SmartCampus.API_PasswordResetToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 42, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Models.RefreshToken", "rp": "SmartCampus.API_RefreshToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 51, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Models.User", "rp": "SmartCampus.API_User.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 66, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Program", "rp": "SmartCampus.API_Program.html", "cl": 101, "ucl": 14, "cal": 115, "tl": 160, "cb": 3, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.AuthService", "rp": "SmartCampus.API_AuthService.html", "cl": 55, "ucl": 0, "cal": 55, "tl": 486, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.EmailService", "rp": "SmartCampus.API_EmailService.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 157, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Services.JwtService", "rp": "SmartCampus.API_JwtService.html", "cl": 72, "ucl": 1, "cal": 73, "tl": 114, "cb": 5, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.UserService", "rp": "SmartCampus.API_UserService.html", "cl": 232, "ucl": 28, "cal": 260, "tl": 353, "cb": 42, "tb": 64, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.UserService", "rp": "SmartCampus.API_UserService.html", "cl": 53, "ucl": 0, "cal": 53, "tl": 353, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -257,35 +235,9 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
-      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
-      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Controllers.UsersController", "reportPath": "SmartCampus.API_UsersController.html", "methodName": "UpdateProfilePicture()", "methodShortName": "UpdateProfilePicture()", "fileIndex": 0, "line": 79,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Middleware.ErrorHandlingMiddleware", "reportPath": "SmartCampus.API_ErrorHandlingMiddleware.html", "methodName": "HandleExceptionAsync()", "methodShortName": "HandleExceptionAsync()", "fileIndex": 0, "line": 32,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Services.UserService", "reportPath": "SmartCampus.API_UserService.html", "methodName": "GetUsersAsync()", "methodShortName": "GetUsersAsync()", "fileIndex": 0, "line": 223,
-    "metrics": [
-      { "value": 24, "exceeded": false },
-      { "value": 22, "exceeded": true },
-    ]},
-  {
-    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Services.AuthService", "reportPath": "SmartCampus.API_AuthService.html", "methodName": "RegisterAsync()", "methodShortName": "RegisterAsync()", "fileIndex": 0, "line": 31,
-    "metrics": [
-      { "value": 16, "exceeded": false },
-      { "value": 16, "exceeded": true },
-    ]},
 ];
 
 var branchCoverageAvailable = true;
