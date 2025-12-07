@@ -4,12 +4,17 @@ import { AuthContext } from "../context/AuthContext";
 import AdminDashboard from "./AdminDashboard";
 import FacultyDashboard from "./FacultyDashboard";
 import StudentDashboard from "./StudentDashboard";
+import MainLayout from "../components/MainLayout";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
 
   if (!user) {
-    return <p>Loading dashboard...</p>;
+    return (
+      <MainLayout>
+        <p>Panel yükleniyor...</p>
+      </MainLayout>
+    );
   }
 
   const role = (user.role || "").toLowerCase();
@@ -17,15 +22,31 @@ export default function Dashboard() {
 
   switch (role) {
     case "admin":
-      return <AdminDashboard user={user} />;
+      return (
+        <MainLayout>
+          <AdminDashboard user={user} />
+        </MainLayout>
+      );
 
     case "faculty":
-      return <FacultyDashboard user={user} />;
+      return (
+        <MainLayout>
+          <FacultyDashboard user={user} />
+        </MainLayout>
+      );
 
     case "student":
-      return <StudentDashboard user={user} />;
+      return (
+        <MainLayout>
+          <StudentDashboard user={user} />
+        </MainLayout>
+      );
 
     default:
-      return <p>Unknown role: {role}</p>;
+      return (
+        <MainLayout>
+          <p>Bilinmeyen rol: {role}</p>
+        </MainLayout>
+      );
   }
 }

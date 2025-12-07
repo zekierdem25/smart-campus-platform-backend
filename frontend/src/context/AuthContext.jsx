@@ -35,34 +35,48 @@ export function AuthProvider({ children }) {
   }
 
   // --- LOGIN ---
-  async function login(email, password) {
-    try {
-      const res = await api.post("/auth/login", { email, password });
+// --- LOGIN ---
+async function login(email, password) {
+  try {
+    const res = await api.post("/auth/login", { email, password });
 
-      if (!res.data.success || !res.data.accessToken) {
-        return { ok: false, message: res.data.message || "Login failed" };
-      }
-
-      const token = res.data.accessToken;
-
-      // 1) Önce localStorage'a yaz
-      localStorage.setItem("accessToken", token);
-
-      // 2) Sonra state'i güncelle
-      setAccessToken(token);
-
-      // 3) FetchMe çağrısını state güncellendikten SONRA çalıştır
-      // setAccessToken tetiklendiğinde useEffect devreye gireceği için
-      // burada manuel fetchMe yapmaya gerek yok (hatta bu race condition yaratıyor).
-
-      return { ok: true };
-    } catch (err) {
+    // Backend genel olarak ApiResponseDto döndürüyor:
+    // { success: bool, message: string, data: ..., accessToken: "..." }
+    if (!res.data.success || !res.data.accessToken) {
       return {
         ok: false,
-        message: err.response?.data?.message || "Login error",
+        message:
+          res.data.message ||
+          "Giriş başarısız. Lütfen e-posta adresinizi ve şifrenizi kontrol edin.",
       };
     }
+
+    const token = res.data.accessToken;
+
+    // 1) Önce localStorage'a yaz
+    localStorage.setItem("accessToken", token);
+
+    // 2) Sonra state'i güncelle
+    setAccessToken(token);
+
+    // 3) fetchMe çağrısını burada manuel tetiklemiyoruz;
+    // accessToken değiştiğinde useEffect içindeki fetchMe otomatik çalışıyor.
+
+    return {
+      ok: true,
+      message: "Giriş başarılı. Yönlendiriliyorsunuz...",
+    };
+  } catch (err) {
+    console.error("✗ Login error:", err);
+    const message =
+      err?.response?.data?.message ||
+      "Giriş sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+    return {
+      ok: false,
+      message,
+    };
   }
+}
 
 
   function logout() {
@@ -72,13 +86,19 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  return (
+  // 🔹 Profil güncellemeden sonra global user bilgisini yenilemek için
+  function updateUser(updatedUser) {
+    setUser(updatedUser);
+  }
+
+    return (
     <AuthContext.Provider
       value={{
         user,
         accessToken,
         login,
         logout,
+        updateUser, // ⬅️ bunu ekledik
       }}
     >
       {children}
