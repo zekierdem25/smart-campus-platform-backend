@@ -49,3 +49,9 @@ docker-compose.override.yml
 GCP_DEPLOYMENT_GUIDE.md
 GCP_QUICK_START.md
 
+# .NET build output
+**/bin/
+**/obj/
+
+# Upload klasörleri (opsiyonel)
+backend/uploads/
