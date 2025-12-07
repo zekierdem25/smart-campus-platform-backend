@@ -93,6 +93,21 @@ public partial class Program
 
         if (app.Environment.IsDevelopment())
         {
+            // Auto-migrate database in development
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    db.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    // Log error or ignore if it's just a connection issue (will be caught later)
+                    Console.WriteLine($"Migration error: {ex.Message}");
+                }
+            }
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
