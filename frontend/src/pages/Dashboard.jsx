@@ -17,13 +17,13 @@ export default function Dashboard() {
 
   switch (role) {
     case "admin":
-      return <AdminDashboard />;
+      return <AdminDashboard user={user} />;
 
     case "faculty":
-      return <FacultyDashboard />;
+      return <FacultyDashboard user={user} />;
 
     case "student":
-      return <StudentDashboard />;
+      return <StudentDashboard user={user} />;
 
     default:
       return <p>Unknown role: {role}</p>;
