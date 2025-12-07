@@ -7,6 +7,7 @@ using SmartCampus.API.Data;
 using SmartCampus.API.Middleware;
 using SmartCampus.API.Services;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 namespace SmartCampus.API;
 
@@ -35,7 +36,7 @@ public partial class Program
         }
 
         // JWT Authentication Configuration
-        var jwtSecretKey = builder.Configuration["JWT:SecretKey"] 
+        var jwtSecretKey = builder.Configuration["JWT:SecretKey"]
             ?? throw new InvalidOperationException("JWT:SecretKey is not configured");
         var key = Encoding.UTF8.GetBytes(jwtSecretKey);
 
@@ -82,9 +83,44 @@ public partial class Program
             });
         });
 
-        // Swagger Configuration
+        // -------------------------------
+        // 🔥 Swagger Configuration + JWT UI
+        // -------------------------------
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "SmartCampus.API",
+                Version = "v1"
+            });
+
+            // JWT Authentication için Swagger Authorization
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT tokeninizi 'Bearer <token>' şeklinde giriniz."
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+        });
 
         var app = builder.Build();
 
