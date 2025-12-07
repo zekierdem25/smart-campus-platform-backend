@@ -26,7 +26,8 @@ export function AuthProvider({ children }) {
       });
 
       console.log("✓ Me response:", res.data);
-      setUser(res.data.user);
+      // Backend returns ApiResponseDto<UserResponseDto>, so the user object is in .data property
+      setUser(res.data.data || res.data.user);
     } catch (err) {
       console.error("✗ Me fetch error:", err);
       logout();
@@ -35,34 +36,33 @@ export function AuthProvider({ children }) {
 
   // --- LOGIN ---
   async function login(email, password) {
-  try {
-    const res = await api.post("/auth/login", { email, password });
+    try {
+      const res = await api.post("/auth/login", { email, password });
 
-    if (!res.data.success || !res.data.accessToken) {
-      return { ok: false, message: res.data.message || "Login failed" };
+      if (!res.data.success || !res.data.accessToken) {
+        return { ok: false, message: res.data.message || "Login failed" };
+      }
+
+      const token = res.data.accessToken;
+
+      // 1) Önce localStorage'a yaz
+      localStorage.setItem("accessToken", token);
+
+      // 2) Sonra state'i güncelle
+      setAccessToken(token);
+
+      // 3) FetchMe çağrısını state güncellendikten SONRA çalıştır
+      // setAccessToken tetiklendiğinde useEffect devreye gireceği için
+      // burada manuel fetchMe yapmaya gerek yok (hatta bu race condition yaratıyor).
+
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        message: err.response?.data?.message || "Login error",
+      };
     }
-
-    const token = res.data.accessToken;
-
-    // 1) Önce localStorage'a yaz
-    localStorage.setItem("accessToken", token);
-
-    // 2) Sonra state'i güncelle
-    setAccessToken(token);
-
-    // 3) FetchMe çağrısını state güncellendikten SONRA çalıştır
-    setTimeout(() => {
-      fetchMe();
-    }, 0);
-
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      message: err.response?.data?.message || "Login error",
-    };
   }
-}
 
 
   function logout() {
