@@ -37,21 +37,6 @@ services:
       - /app/bin
       - /app/obj
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: smartcampus_frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://localhost:5000/api/v1
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-
 volumes:
   mysql_data:
 

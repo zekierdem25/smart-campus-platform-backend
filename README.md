@@ -24,17 +24,6 @@ Bu proje, bir üniversite kampüsünün günlük operasyonlarını dijitalleşti
 - **Validation:** FluentValidation
 - **API Documentation:** Swagger/OpenAPI
 
-### Frontend
-- **Framework:** React 19
-- **Routing:** React Router v7
-- **State Management:** Context API + useReducer
-- **HTTP Client:** Axios
-- **Form Handling:** React Hook Form + Yup
-- **Styling:** Tailwind CSS
-- **Charts:** Recharts
-- **Maps:** Leaflet + React Leaflet
-- **QR Code:** qrcode.react
-
 ### DevOps
 - **Containerization:** Docker + Docker Compose
 - **Version Control:** Git + GitHub
@@ -42,7 +31,7 @@ Bu proje, bir üniversite kampüsünün günlük operasyonlarını dijitalleşti
 ## 📁 Proje Yapısı
 
 ```
-web_final/
+smart-campus-backend/
 ├── backend/              # ASP.NET Core Web API
 │   ├── Controllers/
 │   ├── Models/
@@ -50,14 +39,6 @@ web_final/
 │   ├── Data/
 │   ├── Middleware/
 │   └── Program.cs
-├── frontend/            # React Application
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/
-│   │   ├── services/
-│   │   └── utils/
-│   └── public/
 ├── docs/                # Dokümantasyonlar
 ├── docker-compose.yml
 └── README.md
@@ -67,7 +48,6 @@ web_final/
 
 ### Gereksinimler
 - .NET 9.0 SDK
-- Node.js 18+
 - Docker & Docker Compose (opsiyonel)
 - MySQL 8.0 (veya Docker ile)
 
@@ -102,22 +82,6 @@ dotnet run
 
 Backend: `http://localhost:5000`
 Swagger UI: `http://localhost:5000/swagger`
-
-#### Frontend
-
-```bash
-cd frontend
-cp .env.example .env
-# .env dosyasını düzenleyin
-
-# Bağımlılıkları yükle
-npm install
-
-# Uygulamayı çalıştır
-npm start
-```
-
-Frontend: `http://localhost:3000`
 
 ## 📚 Dokümantasyon
 
@@ -190,14 +154,6 @@ reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"Tes
 
 3. **Raporu görüntüleme:**
 `backend.Tests/TestResults/CoverageReport/index.html` dosyasını tarayıcıda açın.
-
-
-### Frontend Testleri
-
-```bash
-cd frontend
-npm test
-```
 
 ## 📅 Proje Zaman Çizelgesi
 

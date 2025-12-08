@@ -25,21 +25,6 @@ steps:
       - '${PROJECT_ID}:europe-west1:smart-campus-mysql'
       - '--set-env-vars'
       - 'ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080'
-  
-  # Frontend build
-  - name: 'node:18'
-    entrypoint: npm
-    args: ['install']
-    dir: 'frontend'
-  
-  - name: 'node:18'
-    entrypoint: npm
-    args: ['run', 'build']
-    dir: 'frontend'
-  
-  # Upload Frontend to Cloud Storage
-  - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'rsync', '-r', '-d', './frontend/build', 'gs://$PROJECT_ID-frontend/']
 
 images:
   - 'gcr.io/$PROJECT_ID/smart-campus-backend'
