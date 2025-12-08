@@ -25,7 +25,7 @@ steps:
       - '${PROJECT_ID}:europe-west1:smart-campus-mysql'
       - '--set-env-vars'
       - 'ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080'
-
+  
 images:
   - 'gcr.io/$PROJECT_ID/smart-campus-backend'
 
