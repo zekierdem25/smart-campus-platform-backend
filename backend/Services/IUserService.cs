@@ -10,5 +10,6 @@ public interface IUserService
     Task<ApiResponseDto<bool>> ChangePasswordAsync(Guid userId, ChangePasswordRequestDto request);
     Task<UserListResponseDto> GetUsersAsync(UserListRequestDto request);
     Task<ApiResponseDto<List<DepartmentResponseDto>>> GetDepartmentsAsync();
+    Task<ApiResponseDto<bool>> DeleteUserAsync(Guid userId, Guid deletedByUserId);
 }
 

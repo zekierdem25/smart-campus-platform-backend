@@ -8,8 +8,8 @@ public class EmailVerificationToken
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Required]
-    public Guid UserId { get; set; }
+    // UserId artık nullable - email doğrulanmadan kullanıcı oluşturulmayacak
+    public Guid? UserId { get; set; }
 
     [Required]
     [StringLength(500)]
@@ -21,6 +21,10 @@ public class EmailVerificationToken
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UsedAt { get; set; }
+
+    // Kayıt bilgileri (JSON formatında) - email doğrulanmadan önce kullanıcı oluşturulmayacak
+    [Column(TypeName = "TEXT")]
+    public string RegistrationData { get; set; } = string.Empty;
 
     // Computed properties
     [NotMapped]
@@ -34,6 +38,6 @@ public class EmailVerificationToken
 
     // Navigation properties
     [ForeignKey("UserId")]
-    public User User { get; set; } = null!;
+    public User? User { get; set; }
 }
 

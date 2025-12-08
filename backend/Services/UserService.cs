@@ -303,6 +303,87 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<ApiResponseDto<bool>> DeleteUserAsync(Guid userId, Guid deletedByUserId)
+    {
+        // Kendi kendini silmeyi engelle
+        if (userId == deletedByUserId)
+        {
+            return new ApiResponseDto<bool>
+            {
+                Success = false,
+                Message = "Kendi hesabınızı silemezsiniz"
+            };
+        }
+
+        var user = await _context.Users
+            .Include(u => u.Student)
+            .Include(u => u.Faculty)
+            .Include(u => u.RefreshTokens)
+            .Include(u => u.EmailVerificationTokens)
+            .Include(u => u.PasswordResetTokens)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return new ApiResponseDto<bool>
+            {
+                Success = false,
+                Message = "Kullanıcı bulunamadı"
+            };
+        }
+
+        // Admin kullanıcılarını silmeyi engelle (güvenlik)
+        if (user.Role == UserRole.Admin)
+        {
+            return new ApiResponseDto<bool>
+            {
+                Success = false,
+                Message = "Admin kullanıcıları silinemez"
+            };
+        }
+
+        // İlişkili verileri sil
+        if (user.Student != null)
+        {
+            _context.Students.Remove(user.Student);
+        }
+
+        if (user.Faculty != null)
+        {
+            _context.Faculties.Remove(user.Faculty);
+        }
+
+        // Token'ları sil
+        _context.RefreshTokens.RemoveRange(user.RefreshTokens);
+        _context.EmailVerificationTokens.RemoveRange(user.EmailVerificationTokens);
+        _context.PasswordResetTokens.RemoveRange(user.PasswordResetTokens);
+
+        // Profil fotoğrafını sil
+        if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+        {
+            var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads", "profiles");
+            var oldFileName = Path.GetFileName(user.ProfilePictureUrl);
+            var oldFilePath = Path.Combine(uploadsFolder, oldFileName);
+            if (File.Exists(oldFilePath))
+            {
+                File.Delete(oldFilePath);
+            }
+        }
+
+        // Kullanıcıyı sil
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Kullanıcı silindi: {UserId} (Silen: {DeletedByUserId})", userId, deletedByUserId);
+
+        return new ApiResponseDto<bool>
+        {
+            Success = true,
+            Message = "Kullanıcı başarıyla silindi",
+            Data = true
+        };
+    }
+
     private UserResponseDto MapUserToDto(User user)
     {
         var dto = new UserResponseDto

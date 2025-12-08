@@ -22,26 +22,84 @@ public class EmailService : IEmailService
 
         var subject = "Smart Campus - Email Doğrulama";
         var body = $@"
+            <!DOCTYPE html>
             <html>
-            <body style='font-family: Arial, sans-serif; line-height: 1.6;'>
-                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <h2 style='color: #2563eb;'>Merhaba {userName},</h2>
-                    <p>Smart Campus'a hoş geldiniz! Hesabınızı aktifleştirmek için aşağıdaki butona tıklayın:</p>
-                    <div style='text-align: center; margin: 30px 0;'>
-                        <a href='{verificationLink}' 
-                           style='background-color: #2563eb; color: white; padding: 12px 30px; 
-                                  text-decoration: none; border-radius: 5px; display: inline-block;'>
-                            Email Adresimi Doğrula
-                        </a>
-                    </div>
-                    <p>Veya bu linki tarayıcınıza kopyalayın:</p>
-                    <p style='word-break: break-all; color: #666;'>{verificationLink}</p>
-                    <p style='color: #666; font-size: 14px;'>Bu link 24 saat geçerlidir.</p>
-                    <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='color: #999; font-size: 12px;'>
-                        Bu emaili siz talep etmediyseniz, lütfen dikkate almayın.
-                    </p>
-                </div>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Gradient -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #1a73e8 0%, #1668d6 50%, #0d47a1 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            Smart Campus
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Akıllı Kampüs Yönetim Platformu
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Merhaba {userName} 👋
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            Smart Campus'a hoş geldiniz! Hesabınızı aktifleştirmek ve platformun tüm özelliklerine erişmek için email adresinizi doğrulamanız gerekmektedir.
+                                        </p>
+                                        
+                                        <!-- CTA Button -->
+                                        <table role='presentation' style='width: 100%; border-collapse: collapse; margin: 32px 0;'>
+                                            <tr>
+                                                <td align='center'>
+                                                    <a href='{verificationLink}' 
+                                                       style='display: inline-block; background: linear-gradient(135deg, #1a73e8 0%, #1668d6 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3); transition: all 0.3s ease;'>
+                                                        ✉️ Email Adresimi Doğrula
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <p style='margin: 24px 0 16px 0; color: #5f6368; font-size: 14px; text-align: center;'>
+                                            Buton çalışmıyor mu? Aşağıdaki linki tarayıcınıza kopyalayın:
+                                        </p>
+                                        <div style='background-color: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 12px; margin: 16px 0;'>
+                                            <p style='margin: 0; word-break: break-all; color: #1a73e8; font-size: 13px; font-family: monospace;'>
+                                                {verificationLink}
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- Info Box -->
+                                        <div style='background-color: #e8f0fe; border-left: 4px solid #1a73e8; padding: 16px; margin: 24px 0; border-radius: 4px;'>
+                                            <p style='margin: 0; color: #1967d2; font-size: 14px; font-weight: 500;'>
+                                                ⏰ Bu link 24 saat geçerlidir.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0 0 12px 0; color: #5f6368; font-size: 14px;'>
+                                            Bu emaili siz talep etmediyseniz, lütfen dikkate almayın.
+                                        </p>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </body>
             </html>";
 
@@ -55,26 +113,84 @@ public class EmailService : IEmailService
 
         var subject = "Smart Campus - Şifre Sıfırlama";
         var body = $@"
+            <!DOCTYPE html>
             <html>
-            <body style='font-family: Arial, sans-serif; line-height: 1.6;'>
-                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <h2 style='color: #2563eb;'>Merhaba {userName},</h2>
-                    <p>Şifre sıfırlama talebiniz alındı. Şifrenizi sıfırlamak için aşağıdaki butona tıklayın:</p>
-                    <div style='text-align: center; margin: 30px 0;'>
-                        <a href='{resetLink}' 
-                           style='background-color: #dc2626; color: white; padding: 12px 30px; 
-                                  text-decoration: none; border-radius: 5px; display: inline-block;'>
-                            Şifremi Sıfırla
-                        </a>
-                    </div>
-                    <p>Veya bu linki tarayıcınıza kopyalayın:</p>
-                    <p style='word-break: break-all; color: #666;'>{resetLink}</p>
-                    <p style='color: #666; font-size: 14px;'>Bu link 24 saat geçerlidir.</p>
-                    <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='color: #999; font-size: 12px;'>
-                        Bu emaili siz talep etmediyseniz, şifreniz güvende demektir. Lütfen dikkate almayın.
-                    </p>
-                </div>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Gradient -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            🔒 Şifre Sıfırlama
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Smart Campus
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Merhaba {userName} 👋
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            Şifre sıfırlama talebiniz alındı. Hesabınızın güvenliği için şifrenizi sıfırlamak üzere aşağıdaki butona tıklayın.
+                                        </p>
+                                        
+                                        <!-- CTA Button -->
+                                        <table role='presentation' style='width: 100%; border-collapse: collapse; margin: 32px 0;'>
+                                            <tr>
+                                                <td align='center'>
+                                                    <a href='{resetLink}' 
+                                                       style='display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); transition: all 0.3s ease;'>
+                                                        🔑 Şifremi Sıfırla
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <p style='margin: 24px 0 16px 0; color: #5f6368; font-size: 14px; text-align: center;'>
+                                            Buton çalışmıyor mu? Aşağıdaki linki tarayıcınıza kopyalayın:
+                                        </p>
+                                        <div style='background-color: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 12px; margin: 16px 0;'>
+                                            <p style='margin: 0; word-break: break-all; color: #dc2626; font-size: 13px; font-family: monospace;'>
+                                                {resetLink}
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- Warning Box -->
+                                        <div style='background-color: #fef2f2; border-left: 4px solid #dc2626; padding: 16px; margin: 24px 0; border-radius: 4px;'>
+                                            <p style='margin: 0; color: #991b1b; font-size: 14px; font-weight: 500;'>
+                                                ⏰ Bu link 24 saat geçerlidir.
+                                            </p>
+                                            <p style='margin: 8px 0 0 0; color: #991b1b; font-size: 13px;'>
+                                                Bu emaili siz talep etmediyseniz, şifreniz güvende demektir. Lütfen dikkate almayın.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </body>
             </html>";
 
@@ -85,24 +201,82 @@ public class EmailService : IEmailService
     {
         var subject = "Smart Campus'a Hoş Geldiniz!";
         var body = $@"
+            <!DOCTYPE html>
             <html>
-            <body style='font-family: Arial, sans-serif; line-height: 1.6;'>
-                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <h2 style='color: #2563eb;'>Hoş Geldiniz {userName}!</h2>
-                    <p>Smart Campus ailesine katıldığınız için teşekkür ederiz.</p>
-                    <p>Artık aşağıdaki özelliklere erişebilirsiniz:</p>
-                    <ul>
-                        <li>Ders kayıt ve yönetimi</li>
-                        <li>GPS tabanlı yoklama sistemi</li>
-                        <li>Yemekhane rezervasyonu</li>
-                        <li>Etkinlik takibi</li>
-                        <li>ve daha fazlası...</li>
-                    </ul>
-                    <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='color: #999; font-size: 12px;'>
-                        Smart Campus Ekibi
-                    </p>
-                </div>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Gradient -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #1a73e8 0%, #1668d6 50%, #0d47a1 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            🎉 Hoş Geldiniz!
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Smart Campus Ailesine Katıldınız
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Merhaba {userName}! 👋
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            Email adresiniz başarıyla doğrulandı. Smart Campus platformunun tüm özelliklerine artık erişebilirsiniz!
+                                        </p>
+                                        
+                                        <!-- Features List -->
+                                        <div style='background-color: #f8f9fa; border-radius: 8px; padding: 24px; margin: 24px 0;'>
+                                            <h3 style='margin: 0 0 16px 0; color: #1a1a1a; font-size: 18px; font-weight: 600;'>
+                                                ✨ Platform Özellikleri
+                                            </h3>
+                                            <ul style='margin: 0; padding-left: 20px; color: #5f6368; font-size: 15px; line-height: 1.8;'>
+                                                <li style='margin-bottom: 8px;'>📚 Ders kayıt ve yönetimi</li>
+                                                <li style='margin-bottom: 8px;'>📍 GPS tabanlı yoklama sistemi</li>
+                                                <li style='margin-bottom: 8px;'>🍽️ Yemekhane rezervasyonu</li>
+                                                <li style='margin-bottom: 8px;'>📅 Etkinlik takibi</li>
+                                                <li style='margin-bottom: 0;'>🎓 Akademik bilgi yönetimi</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <!-- CTA Button -->
+                                        <table role='presentation' style='width: 100%; border-collapse: collapse; margin: 32px 0;'>
+                                            <tr>
+                                                <td align='center'>
+                                                    <a href='{_configuration["Frontend:Url"] ?? "http://localhost:3000"}/login' 
+                                                       style='display: inline-block; background: linear-gradient(135deg, #1a73e8 0%, #1668d6 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);'>
+                                                        🚀 Platforma Giriş Yap
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0 0 12px 0; color: #5f6368; font-size: 14px;'>
+                                            Sorularınız için bizimle iletişime geçebilirsiniz.
+                                        </p>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </body>
             </html>";
 
@@ -113,12 +287,14 @@ public class EmailService : IEmailService
     {
         try
         {
-            var smtpServer = _configuration["Email:SmtpServer"];
-            var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
-            var smtpUsername = _configuration["Email:SmtpUsername"];
-            var smtpPassword = _configuration["Email:SmtpPassword"];
-            var fromEmail = _configuration["Email:FromEmail"] ?? "noreply@smartcampus.com";
-            var fromName = _configuration["Email:FromName"] ?? "Smart Campus";
+            // Önce environment variable'dan oku, yoksa appsettings'ten al
+            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? _configuration["Email:SmtpServer"];
+            var smtpPortStr = Environment.GetEnvironmentVariable("SMTP_PORT") ?? _configuration["Email:SmtpPort"];
+            var smtpPort = int.Parse(smtpPortStr ?? "587");
+            var smtpUsername = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? _configuration["Email:SmtpUsername"];
+            var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? _configuration["Email:SmtpPassword"];
+            var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL") ?? _configuration["Email:FromEmail"] ?? "noreply@smartcampus.com";
+            var fromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME") ?? _configuration["Email:FromName"] ?? "Smart Campus";
 
             // SMTP yapılandırması yoksa, sadece log'la (development için)
             if (string.IsNullOrEmpty(smtpUsername) || string.IsNullOrEmpty(smtpPassword))
@@ -140,7 +316,13 @@ public class EmailService : IEmailService
             message.Body = bodyBuilder.ToMessageBody();
 
             using var client = new SmtpClient();
-            await client.ConnectAsync(smtpServer, smtpPort, SecureSocketOptions.StartTls);
+            
+            // Port 465 için SSL, diğer portlar için StartTLS kullan
+            var secureSocketOptions = smtpPort == 465 
+                ? SecureSocketOptions.SslOnConnect 
+                : SecureSocketOptions.StartTls;
+            
+            await client.ConnectAsync(smtpServer, smtpPort, secureSocketOptions);
             await client.AuthenticateAsync(smtpUsername, smtpPassword);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);

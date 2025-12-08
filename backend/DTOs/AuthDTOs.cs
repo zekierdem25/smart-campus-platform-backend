@@ -16,6 +16,8 @@ public class RegisterRequestDto
 
     [Required(ErrorMessage = "Email alanı zorunludur")]
     [EmailAddress(ErrorMessage = "Geçerli bir email adresi giriniz")]
+    [RegularExpression(@"^[^@]+@([^@]+\.edu(\.\w+)?|smartcampus\.com)$", 
+        ErrorMessage = "Sadece .edu uzantılı eğitim kurumu email adresleri veya @smartcampus.com email adresleri kabul edilmektedir")]
     public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Şifre alanı zorunludur")]
@@ -29,13 +31,12 @@ public class RegisterRequestDto
     public string ConfirmPassword { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Kullanıcı tipi zorunludur")]
-    public string UserType { get; set; } = "Student"; // Student, Faculty
+    public string UserType { get; set; } = "Student"; // Student, Faculty, Admin
 
     // Student için
     public string? StudentNumber { get; set; }
 
-    // Ortak
-    [Required(ErrorMessage = "Bölüm seçimi zorunludur")]
+    // Ortak (Admin için gerekli değil)
     public Guid DepartmentId { get; set; }
 }
 
@@ -54,6 +55,7 @@ public class LoginRequestDto
 public class VerifyEmailRequestDto
 {
     [Required(ErrorMessage = "Token zorunludur")]
+    [System.Text.Json.Serialization.JsonPropertyName("token")]
     public string Token { get; set; } = string.Empty;
 }
 

@@ -23,6 +23,7 @@ public partial class Program
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 options.JsonSerializerOptions.WriteIndented = true;
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; // Frontend'den gelen küçük harfli property'leri kabul et
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 

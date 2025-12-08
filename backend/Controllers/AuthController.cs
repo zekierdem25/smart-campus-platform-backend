@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCampus.API.DTOs;
 using SmartCampus.API.Services;
+using Microsoft.Extensions.Logging;
 
 namespace SmartCampus.API.Controllers;
 
@@ -51,9 +52,14 @@ public class AuthController : ControllerBase
     [HttpPost("verify-email")]
     [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequestDto request)
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequestDto? request)
     {
-        if (!ModelState.IsValid)
+        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<AuthController>>();
+        
+        var token = request?.Token;
+        logger.LogInformation("VerifyEmail called. Token = {Token}", token ?? "null");
+        
+        if (string.IsNullOrEmpty(token))
         {
             return BadRequest(new AuthResponseDto
             {
@@ -62,7 +68,8 @@ public class AuthController : ControllerBase
             });
         }
 
-        var result = await _authService.VerifyEmailAsync(request.Token);
+        var result = await _authService.VerifyEmailAsync(token);
+        logger.LogInformation("VerifyEmail result: Success={Success}, Message={Message}", result.Success, result.Message);
 
         if (result.Success)
         {

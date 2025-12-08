@@ -90,7 +90,8 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.User)
                 .WithMany(u => u.EmailVerificationTokens)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false); // UserId nullable - email doğrulanmadan önce kullanıcı yok
         });
 
         // PasswordResetToken configuration
