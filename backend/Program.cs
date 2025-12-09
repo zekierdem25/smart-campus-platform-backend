@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SmartCampus.API.Data;
 using SmartCampus.API.Middleware;
@@ -124,6 +125,25 @@ public partial class Program
         });
 
         var app = builder.Build();
+
+        // Database Migration - Production'da otomatik çalıştır
+        if (app.Environment.EnvironmentName != "Testing")
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    dbContext.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    // Migration hatası loglanır ama uygulama çalışmaya devam eder
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Database migration hatası");
+                }
+            }
+        }
 
         // Configure the HTTP request pipeline
         app.UseErrorHandling();
