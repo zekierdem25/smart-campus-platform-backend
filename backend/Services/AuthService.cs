@@ -263,6 +263,16 @@ public class AuthService : IAuthService
             };
         }
 
+        // Email doğrulama kontrolü şifre kontrolünden önce yapılmalı
+        if (!user.IsEmailVerified)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Hesabınız doğrulanmamış. Lütfen email adresinizi doğrulayın."
+            };
+        }
+
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             return new AuthResponseDto
@@ -278,15 +288,6 @@ public class AuthService : IAuthService
             {
                 Success = false,
                 Message = "Hesabınız deaktif edilmiş"
-            };
-        }
-
-        if (!user.IsEmailVerified)
-        {
-            return new AuthResponseDto
-            {
-                Success = false,
-                Message = "Email adresinizi doğrulamanız gerekmektedir"
             };
         }
 
