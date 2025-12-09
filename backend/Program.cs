@@ -128,15 +128,13 @@ public partial class Program
         // Configure the HTTP request pipeline
         app.UseErrorHandling();
 
-        if (app.Environment.IsDevelopment())
+        // Swagger - Development ve Production'da aktif
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Campus API v1");
-                c.RoutePrefix = string.Empty;
-            });
-        }
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Campus API v1");
+            c.RoutePrefix = "swagger";
+        });
 
         app.UseHttpsRedirection();
 
