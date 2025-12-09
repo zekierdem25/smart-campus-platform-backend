@@ -8,6 +8,8 @@ steps:
     args: ['push', 'gcr.io/$PROJECT_ID/smart-campus-backend']
   
   # Deploy Backend to Cloud Run
+  # NOT: Hassas bilgiler (ConnectionStrings, JWT SecretKey, SMTP Password) 
+  # Cloud Run Console'dan manuel olarak environment variables olarak eklenmelidir
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -25,6 +27,12 @@ steps:
       - '${PROJECT_ID}:europe-west1:smart-campus-mysql'
       - '--set-env-vars'
       - 'ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080'
+      # Diğer environment variables Cloud Run Console'dan eklenmeli:
+      # ConnectionStrings__DefaultConnection
+      # JWT__SecretKey, JWT__Issuer, JWT__Audience, JWT__AccessTokenExpirationMinutes, JWT__RefreshTokenExpirationDays
+      # Email__SmtpServer, Email__SmtpPort, Email__SmtpUsername, Email__SmtpPassword, Email__FromEmail, Email__FromName
+      # Frontend__Url
+      # FileUpload__MaxFileSize, FileUpload__AllowedExtensions
   
 images:
   - 'gcr.io/$PROJECT_ID/smart-campus-backend'
