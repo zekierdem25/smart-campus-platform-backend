@@ -37,3 +37,6 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/smart-campus-backend'
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
