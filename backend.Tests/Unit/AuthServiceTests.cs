@@ -45,7 +45,7 @@ public class AuthServiceTests
         {
             FirstName = "New",
             LastName = "User",
-            Email = "newuser@test.com",
+            Email = "newuser@test.edu",
             Password = "NewUser123!",
             ConfirmPassword = "NewUser123!",
             UserType = "Student",
@@ -71,7 +71,7 @@ public class AuthServiceTests
         {
             FirstName = "Test",
             LastName = "User",
-            Email = "student@test.com", // Already exists
+            Email = "student@test.edu", // Already exists
             Password = "Test123!",
             ConfirmPassword = "Test123!",
             UserType = "Student",
@@ -84,7 +84,7 @@ public class AuthServiceTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Contains("zaten kullanılıyor", result.Message.ToLower());
+        Assert.Contains("zaten sistemde kayıtlı", result.Message.ToLower());
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class AuthServiceTests
         {
             FirstName = "New",
             LastName = "User",
-            Email = "newuser2@test.com",
+            Email = "newuser2@test.edu",
             Password = "NewUser123!",
             ConfirmPassword = "NewUser123!",
             UserType = "Student",
@@ -123,7 +123,7 @@ public class AuthServiceTests
         {
             FirstName = "New",
             LastName = "User",
-            Email = "newuser3@test.com",
+            Email = "newuser3@test.edu",
             Password = "NewUser123!",
             ConfirmPassword = "NewUser123!",
             UserType = "Student",
@@ -149,7 +149,7 @@ public class AuthServiceTests
         {
             FirstName = "New",
             LastName = "Faculty",
-            Email = "newfaculty@test.com",
+            Email = "newfaculty@test.edu",
             Password = "Faculty123!",
             ConfirmPassword = "Faculty123!",
             UserType = "Faculty",
@@ -178,7 +178,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "student@test.com",
+            Email = "student@test.edu",
             Password = "Student123!"
         };
 
@@ -190,7 +190,7 @@ public class AuthServiceTests
         Assert.NotNull(result.AccessToken);
         Assert.NotNull(result.RefreshToken);
         Assert.NotNull(result.User);
-        Assert.Equal("student@test.com", result.User.Email);
+        Assert.Equal("student@test.edu", result.User.Email);
     }
 
     [Fact]
@@ -201,7 +201,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "nonexistent@test.com",
+            Email = "nonexistent@test.edu",
             Password = "Test123!"
         };
 
@@ -221,7 +221,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "student@test.com",
+            Email = "student@test.edu",
             Password = "WrongPassword123!"
         };
 
@@ -241,7 +241,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "unverified@test.com",
+            Email = "unverified@test.edu",
             Password = "Test123!"
         };
 
@@ -261,7 +261,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "inactive@test.com",
+            Email = "inactive@test.edu",
             Password = "Test123!"
         };
 
@@ -287,7 +287,7 @@ public class AuthServiceTests
         // First login to get a refresh token
         var loginResult = await authService.LoginAsync(new LoginRequestDto
         {
-            Email = "student@test.com",
+            Email = "student@test.edu",
             Password = "Student123!"
         });
 
@@ -326,7 +326,7 @@ public class AuthServiceTests
         // First login
         var loginResult = await authService.LoginAsync(new LoginRequestDto
         {
-            Email = "student@test.com",
+            Email = "student@test.edu",
             Password = "Student123!"
         });
 
@@ -352,7 +352,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
 
         // Act
-        var result = await authService.ForgotPasswordAsync("student@test.com");
+        var result = await authService.ForgotPasswordAsync("student@test.edu");
 
         // Assert
         Assert.True(result.Success);
@@ -369,7 +369,7 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
 
         // Act
-        var result = await authService.ForgotPasswordAsync("nonexistent@test.com");
+        var result = await authService.ForgotPasswordAsync("nonexistent@test.edu");
 
         // Assert - Should succeed for security reasons
         Assert.True(result.Success);
@@ -382,13 +382,26 @@ public class AuthServiceTests
         var context = await TestDatabaseHelper.CreateSeededContextAsync();
         var authService = CreateAuthService(context);
         
-        // Create a verification token
-        var user = context.Users.First(u => u.Email == "unverified@test.com");
+        // Create a verification token with RegistrationData (new system)
+        var registrationData = new RegisterRequestDto
+        {
+            FirstName = "Verify",
+            LastName = "Test",
+            Email = "verify.test@test.edu",
+            Password = "Verify123!",
+            ConfirmPassword = "Verify123!",
+            UserType = "Student",
+            StudentNumber = "2024998",
+            DepartmentId = Guid.Parse("11111111-1111-1111-1111-111111111111")
+        };
+        var registrationDataJson = System.Text.Json.JsonSerializer.Serialize(registrationData);
+        
         var token = new EmailVerificationToken
         {
-            UserId = user.Id,
+            UserId = null, // No user yet, email not verified
             Token = "test-verification-token",
-            ExpiresAt = DateTime.UtcNow.AddHours(24)
+            ExpiresAt = DateTime.UtcNow.AddHours(24),
+            RegistrationData = registrationDataJson
         };
         context.EmailVerificationTokens.Add(token);
         await context.SaveChangesAsync();

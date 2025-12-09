@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartCampus.API.Data;
@@ -79,7 +80,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "User",
-            Email = "weakpass@test.com",
+            Email = "weakpass@test.edu",
             Password = "weak", // Too weak
             ConfirmPassword = "weak",
             UserType = "Student",
@@ -102,7 +103,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "User",
-            Email = "mismatch@test.com",
+            Email = "mismatch@test.edu",
             Password = "Test123!",
             ConfirmPassword = "Different123!",
             UserType = "Student",
@@ -621,18 +622,35 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory>
         await _client.PostAsJsonAsync("/api/v1/auth/register", registerRequest);
 
         // Get the verification token from the database
+        // In the new system, users aren't created until email is verified, so we need to find the token by RegistrationData
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var user = await db.Users.FirstOrDefaultAsync(u => u.Email == "verify.test2@smartcampus.com");
-        Assert.NotNull(user);
-
+        
         var verificationToken = await db.EmailVerificationTokens
-            .FirstOrDefaultAsync(t => t.UserId == user.Id && t.UsedAt == null);
-        Assert.NotNull(verificationToken);
+            .Where(t => t.UsedAt == null && !string.IsNullOrEmpty(t.RegistrationData))
+            .ToListAsync();
+        
+        // Find token with matching email in RegistrationData
+        var token = verificationToken.FirstOrDefault(t => 
+        {
+            try
+            {
+                var data = JsonSerializer.Deserialize<RegisterRequestDto>(
+                    t.RegistrationData, 
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return data?.Email?.ToLower() == "verify.test2@smartcampus.com";
+            }
+            catch
+            {
+                return false;
+            }
+        });
+        
+        Assert.NotNull(token);
 
         var verifyRequest = new VerifyEmailRequestDto
         {
-            Token = verificationToken.Token
+            Token = token.Token
         };
 
         // Act

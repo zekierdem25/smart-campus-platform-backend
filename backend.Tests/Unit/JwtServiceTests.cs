@@ -23,7 +23,7 @@ public class JwtServiceTests
             Id = Guid.NewGuid(),
             FirstName = "Test",
             LastName = "User",
-            Email = "test@test.com",
+            Email = "test@test.edu",
             Role = UserRole.Student
         };
 
@@ -45,7 +45,7 @@ public class JwtServiceTests
             Id = userId,
             FirstName = "Test",
             LastName = "User",
-            Email = "test@test.com",
+            Email = "test@test.edu",
             Role = UserRole.Admin
         };
 
@@ -90,7 +90,7 @@ public class JwtServiceTests
             Id = userId,
             FirstName = "Test",
             LastName = "User",
-            Email = "test@test.com",
+            Email = "test@test.edu",
             Role = UserRole.Student
         };
         var token = _jwtService.GenerateAccessToken(user);

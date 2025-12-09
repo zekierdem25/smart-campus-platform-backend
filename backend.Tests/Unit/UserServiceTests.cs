@@ -48,7 +48,7 @@ public class UserServiceTests
         // Assert
         Assert.True(result.Success);
         Assert.NotNull(result.Data);
-        Assert.Equal("student@test.com", result.Data.Email);
+        Assert.Equal("student@test.edu", result.Data.Email);
     }
 
     [Fact]
@@ -287,7 +287,7 @@ public class UserServiceTests
         var userService = CreateUserService(context);
         var request = new UserListRequestDto
         {
-            Search = "student@test"
+            Search = "student@test.edu"
         };
 
         // Act
@@ -295,7 +295,7 @@ public class UserServiceTests
 
         // Assert
         Assert.True(result.Users.Count > 0);
-        Assert.Contains(result.Users, u => u.Email.Contains("student@test"));
+        Assert.Contains(result.Users, u => u.Email.Contains("student@test.edu"));
     }
 
     [Fact]

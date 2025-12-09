@@ -42,7 +42,7 @@ public static class TestDatabaseHelper
             Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
             FirstName = "Admin",
             LastName = "User",
-            Email = "admin@test.com",
+            Email = "admin@test.edu",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
             Role = UserRole.Admin,
             IsEmailVerified = true,
@@ -56,7 +56,7 @@ public static class TestDatabaseHelper
             Id = Guid.Parse("c1111111-1111-1111-1111-111111111111"),
             FirstName = "Test",
             LastName = "Student",
-            Email = "student@test.com",
+            Email = "student@test.edu",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Student123!"),
             Role = UserRole.Student,
             IsEmailVerified = true,
@@ -83,7 +83,7 @@ public static class TestDatabaseHelper
             Id = Guid.Parse("f1111111-1111-1111-1111-111111111111"),
             FirstName = "Test",
             LastName = "Faculty",
-            Email = "faculty@test.com",
+            Email = "faculty@test.edu",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Faculty123!"),
             Role = UserRole.Faculty,
             IsEmailVerified = true,
@@ -107,7 +107,7 @@ public static class TestDatabaseHelper
             Id = Guid.Parse("d1111111-1111-1111-1111-111111111111"),
             FirstName = "Unverified",
             LastName = "User",
-            Email = "unverified@test.com",
+            Email = "unverified@test.edu",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"),
             Role = UserRole.Student,
             IsEmailVerified = false,
@@ -121,7 +121,7 @@ public static class TestDatabaseHelper
             Id = Guid.Parse("e1111111-1111-1111-1111-111111111111"),
             FirstName = "Inactive",
             LastName = "User",
-            Email = "inactive@test.com",
+            Email = "inactive@test.edu",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"),
             Role = UserRole.Student,
             IsEmailVerified = true,
@@ -132,7 +132,7 @@ public static class TestDatabaseHelper
         await context.SaveChangesAsync();
     }
 
-    public static User CreateTestUser(string email = "test@test.com", UserRole role = UserRole.Student, bool isVerified = true, bool isActive = true)
+    public static User CreateTestUser(string email = "test@test.edu", UserRole role = UserRole.Student, bool isVerified = true, bool isActive = true)
     {
         return new User
         {
