@@ -79,10 +79,32 @@ public partial class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins(builder.Configuration["Frontend:Url"] ?? "http://localhost:3000")
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials();
+                // Birden fazla origin destekle (örn: prod domain + localhost)
+                var urlsFromArray = builder.Configuration.GetSection("Frontend:Urls").Get<string[]>();
+                var singleUrl = builder.Configuration["Frontend:Url"];
+
+                var origins = (urlsFromArray ?? Array.Empty<string>())
+                    .Concat(string.IsNullOrWhiteSpace(singleUrl) ? Array.Empty<string>() : new[] { singleUrl })
+                    .Select(o => o.Trim())
+                    .Where(o => !string.IsNullOrWhiteSpace(o))
+                    .Distinct()
+                    .ToArray();
+
+                if (builder.Environment.IsDevelopment())
+                {
+                    // Dev'de CORS kaynaklı takılmamak için tüm origin'lere izin ver
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                }
+                else
+                {
+                    var allowedOrigins = origins.Length > 0 ? origins : new[] { "http://localhost:3000" };
+                    policy.WithOrigins(allowedOrigins)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                }
             });
         });
 
@@ -157,7 +179,11 @@ public partial class Program
             c.RoutePrefix = "swagger";
         });
 
-        app.UseHttpsRedirection();
+        // HTTPS redirect production'da anlamlı; Development'da boş https port uyarısı ve CORS sorununa yol açmasın
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
 
         // Static files for uploads
         var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads");

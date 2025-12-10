@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartCampus.API.Data;
 
@@ -11,9 +12,11 @@ using SmartCampus.API.Data;
 namespace SmartCampus.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251210123423_AddActivityLogs")]
+    partial class AddActivityLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,34 +106,34 @@ namespace SmartCampus.API.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Code = "BM",
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8735),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3706),
                             Description = "Bilgisayar Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Bilgisayar Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8820)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3790)
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Code = "EEM",
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8893),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3867),
                             Description = "Elektrik-Elektronik Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Elektrik-Elektronik Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8894)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3867)
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             Code = "MM",
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8896),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3869),
                             Description = "Makine Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Makine Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 687, DateTimeKind.Utc).AddTicks(8897)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 766, DateTimeKind.Utc).AddTicks(3870)
                         });
                 });
 
@@ -226,27 +229,27 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("fa111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(7705),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 175, DateTimeKind.Utc).AddTicks(2424),
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EmployeeNumber = "F001",
                             OfficeHours = "Pazartesi 10:00-12:00, Çarşamba 14:00-16:00",
                             OfficeLocation = "A-101",
                             Specialization = "Web Programlama, Yazılım Mühendisliği",
                             Title = "AssociateProfessor",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(7795),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 175, DateTimeKind.Utc).AddTicks(2513),
                             UserId = new Guid("f1111111-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("fa222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(7883),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 175, DateTimeKind.Utc).AddTicks(2590),
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             EmployeeNumber = "F002",
                             OfficeHours = "Salı 09:00-11:00, Perşembe 13:00-15:00",
                             OfficeLocation = "B-205",
                             Specialization = "Elektronik, Sinyal İşleme",
                             Title = "Professor",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(7883),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 175, DateTimeKind.Utc).AddTicks(2591),
                             UserId = new Guid("f2222222-2222-2222-2222-222222222222")
                         });
                 });
@@ -392,70 +395,70 @@ namespace SmartCampus.API.Migrations
                         {
                             Id = new Guid("d1111111-1111-1111-1111-111111111111"),
                             CGPA = 3.45m,
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 650, DateTimeKind.Utc).AddTicks(9845),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(1852),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.50m,
                             IsScholarship = true,
                             StudentNumber = "2021001",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 650, DateTimeKind.Utc).AddTicks(9931),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(1943),
                             UserId = new Guid("c1111111-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("d2222222-2222-2222-2222-222222222222"),
                             CGPA = 3.15m,
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(38),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2068),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.20m,
                             IsScholarship = false,
                             StudentNumber = "2021002",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(39),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2068),
                             UserId = new Guid("c2222222-2222-2222-2222-222222222222")
                         },
                         new
                         {
                             Id = new Guid("d3333333-3333-3333-3333-333333333333"),
                             CGPA = 3.75m,
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(49),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2073),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.80m,
                             IsScholarship = true,
                             StudentNumber = "2021003",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(49),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2074),
                             UserId = new Guid("c3333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             Id = new Guid("d4444444-4444-4444-4444-444444444444"),
                             CGPA = 3.55m,
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(53),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2084),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.60m,
                             IsScholarship = false,
                             StudentNumber = "2021004",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(53),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2085),
                             UserId = new Guid("c4444444-4444-4444-4444-444444444444")
                         },
                         new
                         {
                             Id = new Guid("d5555555-5555-5555-5555-555555555555"),
                             CGPA = 2.85m,
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(61),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2089),
                             CurrentSemester = 5,
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             EnrollmentYear = 2022,
                             GPA = 2.90m,
                             IsScholarship = false,
                             StudentNumber = "2022001",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 651, DateTimeKind.Utc).AddTicks(61),
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 741, DateTimeKind.Utc).AddTicks(2089),
                             UserId = new Guid("c5555555-5555-5555-5555-555555555555")
                         });
                 });
@@ -523,106 +526,106 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 859, DateTimeKind.Utc).AddTicks(7299),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 940, DateTimeKind.Utc).AddTicks(9411),
                             Email = "admin@smartcampus.com",
                             FirstName = "Admin",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "User",
-                            PasswordHash = "$2a$11$bComwpVKmO5bYfrkshNhnur9pd4OyobtXLiHmm5rzV1eAUGcAqBlK",
+                            PasswordHash = "$2a$11$eAfcBVTTkFCGTX12Q.zYDO7HVhIKZ4N3Qu9cISQ4/QOK80KXgqnC.",
                             Role = "Admin",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 859, DateTimeKind.Utc).AddTicks(7440)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 21, 940, DateTimeKind.Utc).AddTicks(9609)
                         },
                         new
                         {
                             Id = new Guid("f1111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 972, DateTimeKind.Utc).AddTicks(1721),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 62, DateTimeKind.Utc).AddTicks(8559),
                             Email = "mehmet.sevri@smartcampus.com",
                             FirstName = "Mehmet",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Sevri",
-                            PasswordHash = "$2a$11$/MSzYTfaauJGG2MqhqrUxOKjBYEimUNrIKo2mX9RGfAuChBgAF1My",
+                            PasswordHash = "$2a$11$gM61x9NJS3Q1BR39wRQ2IOJeiApFTnPHrWW6QWgKD5sjGdXeyaadW",
                             Role = "Faculty",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 47, 972, DateTimeKind.Utc).AddTicks(1726)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 62, DateTimeKind.Utc).AddTicks(8565)
                         },
                         new
                         {
                             Id = new Guid("f2222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(4747),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 174, DateTimeKind.Utc).AddTicks(9436),
                             Email = "ayse.yilmaz@smartcampus.com",
                             FirstName = "Ayşe",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Yılmaz",
-                            PasswordHash = "$2a$11$kCoMKJacXGCp73qjtHguKeg4YXk274Nc.JlKbo9SQ5tsvij5UvWGi",
+                            PasswordHash = "$2a$11$X40S7yhh6Y8/DVMWLMpKheJs/pSRz2okEpzmfkvcrGcp33AUIKvK2",
                             Role = "Faculty",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 85, DateTimeKind.Utc).AddTicks(4752)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 174, DateTimeKind.Utc).AddTicks(9438)
                         },
                         new
                         {
                             Id = new Guid("c1111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 199, DateTimeKind.Utc).AddTicks(1657),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 287, DateTimeKind.Utc).AddTicks(5347),
                             Email = "zeki.erdem@smartcampus.com",
                             FirstName = "Zeki",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Erdem",
-                            PasswordHash = "$2a$11$GRcyJyohvFiwcwjvIVCzQObjpfLEgbDVJlFULx/DMLs5Wb//Ov1xi",
+                            PasswordHash = "$2a$11$bm13L6Y3auKCbKkZ4IuaW.93gqBQkoLaJRytQAN/yINcScYn34Qey",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 199, DateTimeKind.Utc).AddTicks(1661)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 287, DateTimeKind.Utc).AddTicks(5353)
                         },
                         new
                         {
                             Id = new Guid("c2222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 312, DateTimeKind.Utc).AddTicks(3187),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 399, DateTimeKind.Utc).AddTicks(8913),
                             Email = "mert.abdullahoglu@smartcampus.com",
                             FirstName = "Mert",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Abdullahoğlu",
-                            PasswordHash = "$2a$11$bpBW6RW4rN4IhaFSDvvItuh.1TH5U4xi2/6hHIF13l92sTJRUc5xe",
+                            PasswordHash = "$2a$11$qzbW3lZcFD6SuEzXu8ALV.BBmqD1ho93Z/v7.zPztu703DqSxS9E.",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 312, DateTimeKind.Utc).AddTicks(3191)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 399, DateTimeKind.Utc).AddTicks(8918)
                         },
                         new
                         {
                             Id = new Guid("c3333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 424, DateTimeKind.Utc).AddTicks(6747),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 512, DateTimeKind.Utc).AddTicks(1562),
                             Email = "sena.kamiloglu@smartcampus.com",
                             FirstName = "Sena",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Kamiloğlu",
-                            PasswordHash = "$2a$11$O0/OmHEllYEDM3tmjv6dDeJTeCFrRDWcUlv9cyiUCK1eTFG/EpUtu",
+                            PasswordHash = "$2a$11$WmTOwllh5m3AEf7Zmibinu4T6seefe.5pqCfUFVraY0B3JTzkS0s6",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 424, DateTimeKind.Utc).AddTicks(6818)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 512, DateTimeKind.Utc).AddTicks(1567)
                         },
                         new
                         {
                             Id = new Guid("c4444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 537, DateTimeKind.Utc).AddTicks(6513),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 624, DateTimeKind.Utc).AddTicks(6137),
                             Email = "sevval.asi@smartcampus.com",
                             FirstName = "Şevval",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Asi",
-                            PasswordHash = "$2a$11$c97760inAV5cmt.E0MFld.nwWM34vn.RQxXZwWtDjab/Lm3g4Zxq6",
+                            PasswordHash = "$2a$11$AbviA5TuZ6qz2F7g3qq5k.9xnqJRgEMKsBmnTtVDCVWNmxDIgV.ie",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 537, DateTimeKind.Utc).AddTicks(6516)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 624, DateTimeKind.Utc).AddTicks(6213)
                         },
                         new
                         {
                             Id = new Guid("c5555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 649, DateTimeKind.Utc).AddTicks(7761),
+                            CreatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 739, DateTimeKind.Utc).AddTicks(9698),
                             Email = "ali.veli@smartcampus.com",
                             FirstName = "Ali",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Veli",
-                            PasswordHash = "$2a$11$WrvQk7c7fURTOJg/IME3IusCI.TD3BEyNlnoAwcdfPMZ.uXPtZb8W",
+                            PasswordHash = "$2a$11$u162/vOLXHE2xT8AuyDaGeU0MtXLIJDoiOt3Y.asZV91BvSvPjnji",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 10, 12, 56, 48, 649, DateTimeKind.Utc).AddTicks(7763)
+                            UpdatedAt = new DateTime(2025, 12, 10, 12, 34, 22, 739, DateTimeKind.Utc).AddTicks(9703)
                         });
                 });
 
