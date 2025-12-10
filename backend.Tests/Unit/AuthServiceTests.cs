@@ -11,6 +11,7 @@ public class AuthServiceTests
 {
     private readonly Mock<IEmailService> _mockEmailService;
     private readonly Mock<ILogger<AuthService>> _mockLogger;
+    private readonly Mock<IActivityLogService> _mockActivityLogService;
     private readonly IJwtService _jwtService;
     private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
 
@@ -20,6 +21,7 @@ public class AuthServiceTests
         _mockLogger = MockServices.CreateMockLogger<AuthService>();
         _configuration = MockServices.CreateMockConfiguration();
         _jwtService = new JwtService(_configuration);
+        _mockActivityLogService = new Mock<IActivityLogService>();
     }
 
     private AuthService CreateAuthService(SmartCampus.API.Data.ApplicationDbContext context)
@@ -29,9 +31,11 @@ public class AuthServiceTests
             _jwtService,
             _mockEmailService.Object,
             _configuration,
-            _mockLogger.Object
+            _mockLogger.Object,
+            _mockActivityLogService.Object
         );
     }
+
 
     #region Register Tests
 
@@ -250,7 +254,7 @@ public class AuthServiceTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Contains("doğrulama", result.Message.ToLower());
+        Assert.Contains("doğrulanmamış", result.Message.ToLower());
     }
 
     [Fact]

@@ -12,6 +12,7 @@ public class UserServiceTests
 {
     private readonly Mock<ILogger<UserService>> _mockLogger;
     private readonly Mock<IWebHostEnvironment> _mockEnvironment;
+    private readonly Mock<IActivityLogService> _mockActivityLogService;
     private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
 
     public UserServiceTests()
@@ -20,6 +21,7 @@ public class UserServiceTests
         _mockEnvironment = new Mock<IWebHostEnvironment>();
         _mockEnvironment.Setup(e => e.ContentRootPath).Returns(Path.GetTempPath());
         _configuration = MockServices.CreateMockConfiguration();
+        _mockActivityLogService = new Mock<IActivityLogService>();
     }
 
     private UserService CreateUserService(SmartCampus.API.Data.ApplicationDbContext context)
@@ -28,9 +30,11 @@ public class UserServiceTests
             context,
             _mockLogger.Object,
             _configuration,
-            _mockEnvironment.Object
+            _mockEnvironment.Object,
+            _mockActivityLogService.Object
         );
     }
+
 
     #region GetCurrentUser Tests
 
