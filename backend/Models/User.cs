@@ -46,6 +46,10 @@ public class User
 
     public bool IsActive { get; set; } = true;
 
+    public int FailedLoginAttempts { get; set; } = 0;
+
+    public DateTime? LockoutEndAt { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

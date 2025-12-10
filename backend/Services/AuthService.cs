@@ -15,6 +15,9 @@ public class AuthService : IAuthService
     private readonly ILogger<AuthService> _logger;
     private readonly IActivityLogService _activityLogService;
 
+    private const int MaxFailedLoginAttempts = 5;
+    private const int LockoutMinutes = 15;
+
     public AuthService(
         ApplicationDbContext context,
         IJwtService jwtService,
@@ -266,6 +269,17 @@ public class AuthService : IAuthService
             };
         }
 
+        // Kilit kontrolü
+        if (user.LockoutEndAt.HasValue && user.LockoutEndAt > DateTime.UtcNow)
+        {
+            var remaining = user.LockoutEndAt.Value - DateTime.UtcNow;
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = $"Hesabınız geçici olarak kilitli. Lütfen {Math.Ceiling(remaining.TotalMinutes)} dakika sonra tekrar deneyin."
+            };
+        }
+
         // Email doğrulama kontrolü şifre kontrolünden önce yapılmalı
         if (!user.IsEmailVerified)
         {
@@ -278,6 +292,22 @@ public class AuthService : IAuthService
 
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
+            user.FailedLoginAttempts += 1;
+
+            if (user.FailedLoginAttempts >= MaxFailedLoginAttempts)
+            {
+                user.LockoutEndAt = DateTime.UtcNow.AddMinutes(LockoutMinutes);
+                await _context.SaveChangesAsync();
+
+                return new AuthResponseDto
+                {
+                    Success = false,
+                    Message = $"Çok sayıda hatalı giriş. Hesabınız {LockoutMinutes} dakika kilitlendi."
+                };
+            }
+
+            await _context.SaveChangesAsync();
+
             return new AuthResponseDto
             {
                 Success = false,
@@ -310,6 +340,8 @@ public class AuthService : IAuthService
 
         // Son giriş zamanını güncelle
         user.LastLoginAt = DateTime.UtcNow;
+        user.FailedLoginAttempts = 0;
+        user.LockoutEndAt = null;
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Kullanıcı giriş yaptı: {Email}", user.Email);
