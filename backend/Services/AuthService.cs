@@ -13,19 +13,22 @@ public class AuthService : IAuthService
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
     private readonly ILogger<AuthService> _logger;
+    private readonly IActivityLogService _activityLogService;
 
     public AuthService(
         ApplicationDbContext context,
         IJwtService jwtService,
         IEmailService emailService,
         IConfiguration configuration,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger,
+        IActivityLogService activityLogService)
     {
         _context = context;
         _jwtService = jwtService;
         _emailService = emailService;
         _configuration = configuration;
         _logger = logger;
+        _activityLogService = activityLogService;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
@@ -310,6 +313,7 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Kullanıcı giriş yaptı: {Email}", user.Email);
+        await _activityLogService.RecordAsync(user.Id, "login", "Kullanıcı giriş yaptı");
 
         var accessTokenExpMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"] ?? "15");
 
@@ -652,6 +656,8 @@ public class AuthService : IAuthService
             await _context.SaveChangesAsync();
         }
 
+        await _activityLogService.RecordAsync(userId, "logout", "Kullanıcı çıkış yaptı");
+
         return new AuthResponseDto
         {
             Success = true,
@@ -740,6 +746,7 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Şifre sıfırlandı: {Email}", resetToken.User.Email);
+        await _activityLogService.RecordAsync(resetToken.UserId, "reset-password", "Şifre sıfırlandı");
 
         return new AuthResponseDto
         {

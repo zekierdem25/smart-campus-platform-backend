@@ -72,6 +72,7 @@ public partial class Program
         builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 
         // CORS Configuration
         builder.Services.AddCors(options =>

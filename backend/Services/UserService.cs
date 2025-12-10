@@ -11,17 +11,20 @@ public class UserService : IUserService
     private readonly ILogger<UserService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
+    private readonly IActivityLogService _activityLogService;
 
     public UserService(
         ApplicationDbContext context,
         ILogger<UserService> logger,
         IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IActivityLogService activityLogService)
     {
         _context = context;
         _logger = logger;
         _configuration = configuration;
         _environment = environment;
+        _activityLogService = activityLogService;
     }
 
     public async Task<ApiResponseDto<UserResponseDto>> GetCurrentUserAsync(Guid userId)
@@ -82,6 +85,7 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Profil güncellendi: {UserId}", userId);
+        await _activityLogService.RecordAsync(userId, "profile-update", "Profil bilgileri güncellendi");
 
         return new ApiResponseDto<UserResponseDto>
         {
@@ -161,6 +165,7 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Profil fotoğrafı güncellendi: {UserId}", userId);
+        await _activityLogService.RecordAsync(userId, "profile-picture", "Profil fotoğrafı güncellendi");
 
         return new ApiResponseDto<string>
         {
@@ -210,6 +215,7 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Şifre değiştirildi: {UserId}", userId);
+        await _activityLogService.RecordAsync(userId, "change-password", "Şifre değiştirildi");
 
         return new ApiResponseDto<bool>
         {
@@ -375,6 +381,7 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Kullanıcı silindi: {UserId} (Silen: {DeletedByUserId})", userId, deletedByUserId);
+        await _activityLogService.RecordAsync(deletedByUserId, "delete-user", $"Kullanıcı silindi: {user.Email}");
 
         return new ApiResponseDto<bool>
         {
