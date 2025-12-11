@@ -25,8 +25,8 @@ steps:
       - '--allow-unauthenticated'
       - '--set-cloudsql-instances'
       - '${PROJECT_ID}:europe-west1:smart-campus-mysql'
-      - '--set-env-vars'
-      - 'ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080'
+      - '--update-env-vars'
+      - 'ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080,ConnectionStrings__DefaultConnection=Server=/cloudsql/${PROJECT_ID}:europe-west1:smart-campus-mysql;Database=smartcampus_db;User=root;Password=Zerdem0202.;CharSet=utf8mb4,JWT__SecretKey=your-super-secret-key-min-32-characters-long-change-in-production,JWT__Issuer=SmartCampusAPI,JWT__Audience=SmartCampusClient,Frontend__Url=https://smart-campus-frontend-66lo2b37eq-ew.a.run.app'
       # Diğer environment variables Cloud Run Console'dan eklenmeli:
       # ConnectionStrings__DefaultConnection
       # JWT__SecretKey, JWT__Issuer, JWT__Audience, JWT__AccessTokenExpirationMinutes, JWT__RefreshTokenExpirationDays
