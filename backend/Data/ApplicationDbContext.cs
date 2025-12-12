@@ -32,6 +32,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<ExcuseRequest> ExcuseRequests { get; set; }
 
+    // DbSets - Security
+    public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

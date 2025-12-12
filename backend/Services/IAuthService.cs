@@ -11,5 +11,9 @@ public interface IAuthService
     Task<AuthResponseDto> LogoutAsync(Guid userId, string refreshToken);
     Task<AuthResponseDto> ForgotPasswordAsync(string email);
     Task<AuthResponseDto> ResetPasswordAsync(ResetPasswordRequestDto request);
+    
+    // 2FA methods
+    Task<AuthResponseDto> Verify2FAAsync(Verify2FARequestDto request);
+    Task<AuthResponseDto> Resend2FACodeAsync(Resend2FARequestDto request);
 }
 

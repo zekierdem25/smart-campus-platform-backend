@@ -324,41 +324,51 @@ public class AuthService : IAuthService
             };
         }
 
-        // Access token oluştur
-        var accessToken = _jwtService.GenerateAccessToken(user);
-        var refreshToken = _jwtService.GenerateRefreshToken();
+        // 2FA: Email ve şifre doğru, şimdi 2FA kodu gönder
+        // Önce mevcut kullanılmamış kodları iptal et
+        var existingCodes = await _context.TwoFactorCodes
+            .Where(c => c.UserId == user.Id && !c.IsUsed && c.ExpiresAt > DateTime.UtcNow)
+            .ToListAsync();
+        foreach (var existingCode in existingCodes)
+        {
+            existingCode.IsUsed = true;
+        }
 
-        // Refresh token kaydet
-        var refreshTokenExpDays = int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ?? "7");
-        var refreshTokenEntity = new RefreshToken
+        // 6 haneli rastgele kod oluştur
+        var random = new Random();
+        var code = random.Next(100000, 999999).ToString();
+        var tempToken = Guid.NewGuid().ToString("N");
+
+        var twoFactorCode = new TwoFactorCode
         {
             UserId = user.Id,
-            Token = refreshToken,
-            ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenExpDays)
+            Code = code,
+            TempToken = tempToken,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5), // 5 dakika geçerli
+            AttemptCount = 0,
+            IsUsed = false
         };
-        _context.RefreshTokens.Add(refreshTokenEntity);
+        _context.TwoFactorCodes.Add(twoFactorCode);
 
-        // Son giriş zamanını güncelle
-        user.LastLoginAt = DateTime.UtcNow;
+        // Başarısız giriş sayacını sıfırla (şifre doğru)
         user.FailedLoginAttempts = 0;
         user.LockoutEndAt = null;
         await _context.SaveChangesAsync();
 
-        _logger.LogInformation("Kullanıcı giriş yaptı: {Email}", user.Email);
-        await _activityLogService.RecordAsync(user.Id, "login", "Kullanıcı giriş yaptı");
+        // Email ile kod gönder
+        await _emailService.Send2FACodeAsync(user.Email, user.FullName, code);
 
-        var accessTokenExpMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"] ?? "15");
+        _logger.LogInformation("2FA kodu gönderildi: {Email}", user.Email);
 
         return new AuthResponseDto
         {
             Success = true,
-            Message = "Giriş başarılı",
-            AccessToken = accessToken,
-            RefreshToken = refreshToken,
-            AccessTokenExpiration = DateTime.UtcNow.AddMinutes(accessTokenExpMinutes),
-            User = MapUserToDto(user)
+            Message = "Doğrulama kodu email adresinize gönderildi.",
+            Requires2FA = true,
+            TempToken = tempToken
         };
     }
+
 
     public async Task<AuthResponseDto> VerifyEmailAsync(string token)
     {
@@ -784,6 +794,187 @@ public class AuthService : IAuthService
         {
             Success = true,
             Message = "Şifreniz başarıyla sıfırlandı. Artık giriş yapabilirsiniz."
+        };
+    }
+
+    private const int Max2FAAttempts = 5;
+    private const int TwoFactorLockoutMinutes = 30;
+
+    public async Task<AuthResponseDto> Verify2FAAsync(Verify2FARequestDto request)
+    {
+        var twoFactorCode = await _context.TwoFactorCodes
+            .Include(t => t.User)
+                .ThenInclude(u => u.Student)
+                    .ThenInclude(s => s!.Department)
+            .Include(t => t.User)
+                .ThenInclude(u => u.Faculty)
+                    .ThenInclude(f => f!.Department)
+            .FirstOrDefaultAsync(t => t.TempToken == request.TempToken);
+
+        if (twoFactorCode == null)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Geçersiz doğrulama oturumu. Lütfen tekrar giriş yapın."
+            };
+        }
+
+        // Kilitleme kontrolü
+        if (twoFactorCode.IsLocked)
+        {
+            var remaining = twoFactorCode.LockoutEndAt!.Value - DateTime.UtcNow;
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = $"Çok fazla hatalı deneme. Lütfen {Math.Ceiling(remaining.TotalMinutes)} dakika sonra tekrar deneyin."
+            };
+        }
+
+        // Süre dolmuş mu?
+        if (twoFactorCode.ExpiresAt <= DateTime.UtcNow)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Doğrulama kodunun süresi dolmuş. Lütfen yeni kod isteyin."
+            };
+        }
+
+        // Zaten kullanılmış mı?
+        if (twoFactorCode.IsUsed)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Bu doğrulama kodu zaten kullanılmış. Lütfen yeni kod isteyin."
+            };
+        }
+
+        // Kod doğru mu?
+        if (twoFactorCode.Code != request.Code)
+        {
+            twoFactorCode.AttemptCount += 1;
+
+            if (twoFactorCode.AttemptCount >= Max2FAAttempts)
+            {
+                twoFactorCode.LockoutEndAt = DateTime.UtcNow.AddMinutes(TwoFactorLockoutMinutes);
+                await _context.SaveChangesAsync();
+
+                return new AuthResponseDto
+                {
+                    Success = false,
+                    Message = $"Çok fazla hatalı deneme. Hesabınız {TwoFactorLockoutMinutes} dakika kilitlendi."
+                };
+            }
+
+            await _context.SaveChangesAsync();
+
+            var remainingAttempts = Max2FAAttempts - twoFactorCode.AttemptCount;
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = $"Yanlış doğrulama kodu. {remainingAttempts} deneme hakkınız kaldı."
+            };
+        }
+
+        // Kod doğru - işaretle ve token oluştur
+        twoFactorCode.IsUsed = true;
+        var user = twoFactorCode.User;
+
+        // Access token oluştur
+        var accessToken = _jwtService.GenerateAccessToken(user);
+        var refreshToken = _jwtService.GenerateRefreshToken();
+
+        // Refresh token kaydet
+        var refreshTokenExpDays = int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ?? "7");
+        var refreshTokenEntity = new RefreshToken
+        {
+            UserId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenExpDays)
+        };
+        _context.RefreshTokens.Add(refreshTokenEntity);
+
+        // Son giriş zamanını güncelle
+        user.LastLoginAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("2FA doğrulandı, kullanıcı giriş yaptı: {Email}", user.Email);
+        await _activityLogService.RecordAsync(user.Id, "login", "2FA ile giriş yapıldı");
+
+        var accessTokenExpMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"] ?? "15");
+
+        return new AuthResponseDto
+        {
+            Success = true,
+            Message = "Giriş başarılı",
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            AccessTokenExpiration = DateTime.UtcNow.AddMinutes(accessTokenExpMinutes),
+            User = MapUserToDto(user)
+        };
+    }
+
+    public async Task<AuthResponseDto> Resend2FACodeAsync(Resend2FARequestDto request)
+    {
+        var existingCode = await _context.TwoFactorCodes
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.TempToken == request.TempToken);
+
+        if (existingCode == null)
+        {
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Geçersiz oturum. Lütfen tekrar giriş yapın."
+            };
+        }
+
+        // Kilitleme kontrolü
+        if (existingCode.IsLocked)
+        {
+            var remaining = existingCode.LockoutEndAt!.Value - DateTime.UtcNow;
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = $"Hesabınız kilitli. Lütfen {Math.Ceiling(remaining.TotalMinutes)} dakika sonra tekrar deneyin."
+            };
+        }
+
+        var user = existingCode.User;
+
+        // Eski kodu işaretle
+        existingCode.IsUsed = true;
+
+        // Yeni kod oluştur
+        var random = new Random();
+        var code = random.Next(100000, 999999).ToString();
+        var tempToken = Guid.NewGuid().ToString("N");
+
+        var newTwoFactorCode = new TwoFactorCode
+        {
+            UserId = user.Id,
+            Code = code,
+            TempToken = tempToken,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+            AttemptCount = 0,
+            IsUsed = false
+        };
+        _context.TwoFactorCodes.Add(newTwoFactorCode);
+        await _context.SaveChangesAsync();
+
+        // Email gönder
+        await _emailService.Send2FACodeAsync(user.Email, user.FullName, code);
+
+        _logger.LogInformation("2FA kodu yeniden gönderildi: {Email}", user.Email);
+
+        return new AuthResponseDto
+        {
+            Success = true,
+            Message = "Yeni doğrulama kodu email adresinize gönderildi.",
+            Requires2FA = true,
+            TempToken = tempToken
         };
     }
 

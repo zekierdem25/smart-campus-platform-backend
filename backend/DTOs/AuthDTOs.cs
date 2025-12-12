@@ -98,6 +98,10 @@ public class AuthResponseDto
     public string? RefreshToken { get; set; }
     public DateTime? AccessTokenExpiration { get; set; }
     public UserResponseDto? User { get; set; }
+
+    // 2FA fields
+    public bool Requires2FA { get; set; } = false;
+    public string? TempToken { get; set; }
 }
 
 public class UserResponseDto
@@ -148,5 +152,23 @@ public class ApiResponseDto<T>
     public string Message { get; set; } = string.Empty;
     public T? Data { get; set; }
     public List<string>? Errors { get; set; }
+}
+
+// ==================== 2FA DTOs ====================
+
+public class Verify2FARequestDto
+{
+    [Required(ErrorMessage = "Geçici token zorunludur")]
+    public string TempToken { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Doğrulama kodu zorunludur")]
+    [StringLength(6, MinimumLength = 6, ErrorMessage = "Doğrulama kodu 6 haneli olmalıdır")]
+    public string Code { get; set; } = string.Empty;
+}
+
+public class Resend2FARequestDto
+{
+    [Required(ErrorMessage = "Geçici token zorunludur")]
+    public string TempToken { get; set; } = string.Empty;
 }
 

@@ -283,6 +283,86 @@ public class EmailService : IEmailService
         await SendEmailAsync(toEmail, subject, body);
     }
 
+    public async Task Send2FACodeAsync(string toEmail, string userName, string code)
+    {
+        var subject = "Smart Campus - Giriş Doğrulama Kodu";
+        var body = $@"
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Gradient -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            🔐 Giriş Doğrulama
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Smart Campus
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Merhaba {userName} 👋
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            Hesabınıza giriş yapmak için aşağıdaki doğrulama kodunu kullanın:
+                                        </p>
+                                        
+                                        <!-- Code Display -->
+                                        <table role='presentation' style='width: 100%; border-collapse: collapse; margin: 32px 0;'>
+                                            <tr>
+                                                <td align='center'>
+                                                    <div style='background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #059669; border-radius: 12px; padding: 24px 48px; display: inline-block;'>
+                                                        <span style='font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #059669; font-family: monospace;'>
+                                                            {code}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Warning Box -->
+                                        <div style='background-color: #fef3c7; border-left: 4px solid #d97706; padding: 16px; margin: 24px 0; border-radius: 4px;'>
+                                            <p style='margin: 0; color: #92400e; font-size: 14px; font-weight: 500;'>
+                                                ⏰ Bu kod 5 dakika içinde geçerliliğini yitirecektir.
+                                            </p>
+                                            <p style='margin: 8px 0 0 0; color: #92400e; font-size: 13px;'>
+                                                Bu giriş talebini siz yapmadıysanız, lütfen bu emaili dikkate almayın ve şifrenizi değiştirmeyi düşünün.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>";
+
+        await SendEmailAsync(toEmail, subject, body);
+    }
+
     private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
     {
         try

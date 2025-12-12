@@ -108,6 +108,62 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// 2FA doğrulama
+    /// </summary>
+    [HttpPost("verify-2fa")]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Verify2FA([FromBody] Verify2FARequestDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = "Geçersiz istek"
+            });
+        }
+
+        var result = await _authService.Verify2FAAsync(request);
+
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+
+        return Unauthorized(result);
+    }
+
+    /// <summary>
+    /// 2FA kodu yeniden gönder
+    /// </summary>
+    [HttpPost("resend-2fa")]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Resend2FA([FromBody] Resend2FARequestDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = "Geçersiz istek"
+            });
+        }
+
+        var result = await _authService.Resend2FACodeAsync(request);
+
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+
+        return BadRequest(result);
+    }
+
+
+    /// <summary>
     /// Token yenileme
     /// </summary>
     [HttpPost("refresh")]
