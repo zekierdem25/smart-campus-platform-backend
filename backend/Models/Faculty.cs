@@ -49,5 +49,9 @@ public class Faculty
 
     [ForeignKey("DepartmentId")]
     public Department Department { get; set; } = null!;
+
+    public ICollection<CourseSection> TeachingSections { get; set; } = new List<CourseSection>();
+    
+    public ICollection<AttendanceSession> AttendanceSessions { get; set; } = new List<AttendanceSession>();
 }
 

@@ -67,12 +67,22 @@ public partial class Program
         // Authorization
         builder.Services.AddAuthorization();
 
-        // Register Services
+        // Register Services - Part 1
         builder.Services.AddScoped<IJwtService, JwtService>();
         builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
+
+        // Register Services - Part 2: Academic Management
+        builder.Services.AddScoped<IPrerequisiteService, PrerequisiteService>();
+        builder.Services.AddScoped<IScheduleConflictService, ScheduleConflictService>();
+        builder.Services.AddScoped<IGradeCalculationService, GradeCalculationService>();
+        builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+
+        // Register Services - Part 2: Attendance System
+        builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+        builder.Services.AddScoped<ISpoofingDetectionService, SpoofingDetectionService>();
 
         // CORS Configuration
         builder.Services.AddCors(options =>

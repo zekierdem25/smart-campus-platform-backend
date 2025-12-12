@@ -30,5 +30,6 @@ public class Department
     // Navigation properties
     public ICollection<Student> Students { get; set; } = new List<Student>();
     public ICollection<Faculty> FacultyMembers { get; set; } = new List<Faculty>();
+    public ICollection<Course> Courses { get; set; } = new List<Course>();
 }
 

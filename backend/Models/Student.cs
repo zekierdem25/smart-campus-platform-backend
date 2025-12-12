@@ -42,5 +42,11 @@ public class Student
 
     [ForeignKey("DepartmentId")]
     public Department Department { get; set; } = null!;
+
+    public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    
+    public ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
+    
+    public ICollection<ExcuseRequest> ExcuseRequests { get; set; } = new List<ExcuseRequest>();
 }
 
