@@ -324,7 +324,48 @@ public class AuthService : IAuthService
             };
         }
 
-        // 2FA: Email ve şifre doğru, şimdi 2FA kodu gönder
+        // Email domain kontrolü - sadece .edu uzantılı email'ler 2FA gerektirir
+        // @smartcampus.com email'leri 2FA'yı atlar
+        var emailDomain = user.Email.Split('@').LastOrDefault()?.ToLower();
+        var skipTwoFactor = emailDomain == "smartcampus.com";
+
+        if (skipTwoFactor)
+        {
+            // smartcampus.com için direkt giriş yap
+            var accessToken = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            var refreshTokenExpDays = int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ?? "7");
+            var refreshTokenEntity = new RefreshToken
+            {
+                UserId = user.Id,
+                Token = refreshToken,
+                ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenExpDays)
+            };
+            _context.RefreshTokens.Add(refreshTokenEntity);
+
+            user.LastLoginAt = DateTime.UtcNow;
+            user.FailedLoginAttempts = 0;
+            user.LockoutEndAt = null;
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Kullanıcı giriş yaptı (2FA atlandı): {Email}", user.Email);
+            await _activityLogService.RecordAsync(user.Id, "login", "Kullanıcı giriş yaptı (2FA olmadan)");
+
+            var accessTokenExpMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"] ?? "15");
+
+            return new AuthResponseDto
+            {
+                Success = true,
+                Message = "Giriş başarılı",
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                AccessTokenExpiration = DateTime.UtcNow.AddMinutes(accessTokenExpMinutes),
+                User = MapUserToDto(user)
+            };
+        }
+
+        // 2FA: .edu uzantılı email için 2FA kodu gönder
         // Önce mevcut kullanılmamış kodları iptal et
         var existingCodes = await _context.TwoFactorCodes
             .Where(c => c.UserId == user.Id && !c.IsUsed && c.ExpiresAt > DateTime.UtcNow)
@@ -368,6 +409,7 @@ public class AuthService : IAuthService
             TempToken = tempToken
         };
     }
+
 
 
     public async Task<AuthResponseDto> VerifyEmailAsync(string token)
