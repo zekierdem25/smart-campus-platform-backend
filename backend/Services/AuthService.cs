@@ -396,10 +396,22 @@ public class AuthService : IAuthService
         user.LockoutEndAt = null;
         await _context.SaveChangesAsync();
 
-        // Email ile kod gönder
-        await _emailService.Send2FACodeAsync(user.Email, user.FullName, code);
-
-        _logger.LogInformation("2FA kodu gönderildi: {Email}", user.Email);
+        // Email ile kod gönder - hata olursa bile login işlemi başarısız olmasın
+        try
+        {
+            await _emailService.Send2FACodeAsync(user.Email, user.FullName, code);
+            _logger.LogInformation("2FA kodu gönderildi: {Email}", user.Email);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "2FA kodu email gönderilemedi: {Email}", user.Email);
+            // Email gönderilemese bile kullanıcıya bilgi ver
+            return new AuthResponseDto
+            {
+                Success = false,
+                Message = "Doğrulama kodu gönderilemedi. Lütfen daha sonra tekrar deneyin veya sistem yöneticisi ile iletişime geçin."
+            };
+        }
 
         return new AuthResponseDto
         {
@@ -409,6 +421,7 @@ public class AuthService : IAuthService
             TempToken = tempToken
         };
     }
+
 
 
 
