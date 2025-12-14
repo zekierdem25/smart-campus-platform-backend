@@ -225,7 +225,8 @@ public class GradesController : ControllerBase
     {
         var document = new PdfDocument();
         var page = document.AddPage();
-        page.Size = PdfSharpCore.Pdf.PdfPageSize.A4;
+        page.Width = XUnit.FromMillimeter(210); // A4 width
+        page.Height = XUnit.FromMillimeter(297); // A4 height
         var gfx = XGraphics.FromPdfPage(page);
 
         // Fonts
@@ -304,7 +305,8 @@ public class GradesController : ControllerBase
             if (yPos > pageHeight - 150)
             {
                 page = document.AddPage();
-                page.Size = PdfSharpCore.Pdf.PdfPageSize.A4;
+                page.Width = XUnit.FromMillimeter(210); // A4 width
+                page.Height = XUnit.FromMillimeter(297); // A4 height
                 gfx = XGraphics.FromPdfPage(page);
                 yPos = 50;
             }
@@ -349,7 +351,8 @@ public class GradesController : ControllerBase
                 if (yPos + rowHeight > pageHeight - 100)
                 {
                     page = document.AddPage();
-                    page.Size = PdfSharpCore.Pdf.PdfPageSize.A4;
+                    page.Width = XUnit.FromMillimeter(210); // A4 width
+                    page.Height = XUnit.FromMillimeter(297); // A4 height
                     gfx = XGraphics.FromPdfPage(page);
                     yPos = 50;
                     tableYStart = yPos;
