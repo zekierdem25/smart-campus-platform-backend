@@ -44,3 +44,8 @@ GCP_QUICK_START.md
 
 # Upload klasörleri (opsiyonel)
 backend/uploads/
+
+# Node.js
+node_modules/
+backend/node_modules/
+**/node_modules/
