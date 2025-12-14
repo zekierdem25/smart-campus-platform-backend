@@ -322,7 +322,8 @@ public class AttendanceController : ControllerBase
             request.Longitude,
             ipAddress,
             DateTime.UtcNow,
-            request.IsMockLocation);
+            request.IsMockLocation,
+            request.SensorData);
 
         // Create attendance record
         var record = new AttendanceRecord
@@ -339,7 +340,12 @@ public class AttendanceController : ControllerBase
             IsFlagged = spoofCheck.IsSuspicious || !isWithinGeofence,
             FlagReason = spoofCheck.IsSuspicious 
                 ? spoofCheck.Reason 
-                : (!isWithinGeofence ? "OUTSIDE_GEOFENCE" : null)
+                : (!isWithinGeofence ? "OUTSIDE_GEOFENCE" : null),
+            // Store sensor data for audit trail
+            SensorAccelerationX = request.SensorData?.X,
+            SensorAccelerationY = request.SensorData?.Y,
+            SensorAccelerationZ = request.SensorData?.Z,
+            SensorDataUnavailable = request.SensorData?.Unavailable ?? true
         };
 
         _context.AttendanceRecords.Add(record);
@@ -392,7 +398,8 @@ public class AttendanceController : ControllerBase
         {
             Latitude = request.Latitude,
             Longitude = request.Longitude,
-            Accuracy = request.Accuracy
+            Accuracy = request.Accuracy,
+            SensorData = request.SensorData
         };
 
         var result = await CheckIn(id, checkInRequest);

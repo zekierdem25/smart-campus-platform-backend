@@ -65,12 +65,21 @@ public class AttendanceRecordDto
     public bool IsQrVerified { get; set; }
 }
 
+public class SensorDataDto
+{
+    public decimal? X { get; set; }
+    public decimal? Y { get; set; }
+    public decimal? Z { get; set; }
+    public bool Unavailable { get; set; } = false;
+}
+
 public class CheckInRequest
 {
     public decimal Latitude { get; set; }
     public decimal Longitude { get; set; }
     public decimal Accuracy { get; set; }
     public bool? IsMockLocation { get; set; } // From browser API
+    public SensorDataDto? SensorData { get; set; } // Accelerometer data for spoofing detection
 }
 
 public class CheckInResult
@@ -88,6 +97,7 @@ public class QrCheckInRequest
     public decimal Latitude { get; set; }
     public decimal Longitude { get; set; }
     public decimal Accuracy { get; set; }
+    public SensorDataDto? SensorData { get; set; } // Accelerometer data for spoofing detection
 }
 
 // ========== Attendance Statistics DTOs ==========

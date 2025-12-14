@@ -9,7 +9,7 @@ namespace SmartCampus.API.Services;
 
 public interface ISpoofingDetectionService
 {
-    Task<SpoofingCheckResult> CheckForSpoofingAsync(Guid studentId, decimal latitude, decimal longitude, string? ipAddress, DateTime checkInTime, bool? isMockLocation);
+    Task<SpoofingCheckResult> CheckForSpoofingAsync(Guid studentId, decimal latitude, decimal longitude, string? ipAddress, DateTime checkInTime, bool? isMockLocation, SensorDataDto? sensorData = null);
     bool IsCampusIp(string? ipAddress);
 }
 
@@ -43,6 +43,7 @@ public class SpoofingDetectionService : ISpoofingDetectionService
     /// 1. Mock location flag from device
     /// 2. Campus IP validation (if enabled)
     /// 3. Velocity check (impossible travel)
+    /// 4. Sensor data integrity (static accelerometer data on mobile devices)
     /// </summary>
     public async Task<SpoofingCheckResult> CheckForSpoofingAsync(
         Guid studentId, 
@@ -50,7 +51,8 @@ public class SpoofingDetectionService : ISpoofingDetectionService
         decimal longitude, 
         string? ipAddress, 
         DateTime checkInTime,
-        bool? isMockLocation)
+        bool? isMockLocation,
+        SensorDataDto? sensorData = null)
     {
         // Check 1: Mock location flag
         if (isMockLocation == true)
@@ -73,7 +75,32 @@ public class SpoofingDetectionService : ISpoofingDetectionService
             };
         }
 
-        // Check 3: Velocity check (impossible travel)
+        // Check 3: Sensor data integrity (static accelerometer on mobile devices)
+        if (sensorData != null && !sensorData.Unavailable)
+        {
+            // Check if sensor data is completely static (0,0,0)
+            // This is suspicious for mobile devices as they should have some movement/gravity
+            const decimal threshold = 0.01m; // Small threshold to account for floating point precision
+            decimal x = sensorData.X ?? 0;
+            decimal y = sensorData.Y ?? 0;
+            decimal z = sensorData.Z ?? 0;
+            
+            bool isStatic = System.Math.Abs(x) < threshold &&
+                           System.Math.Abs(y) < threshold &&
+                           System.Math.Abs(z) < threshold;
+
+            if (isStatic)
+            {
+                // Flag as suspicious - real mobile devices should have gravity (9.8 m/s²) or movement
+                return new SpoofingCheckResult 
+                { 
+                    IsSuspicious = true, 
+                    Reason = "STATIC_SENSOR_DATA" 
+                };
+            }
+        }
+
+        // Check 4: Velocity check (impossible travel)
         var lastRecord = await _attendanceService.GetLastAttendanceRecordAsync(studentId);
         if (lastRecord != null)
         {

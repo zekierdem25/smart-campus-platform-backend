@@ -41,6 +41,18 @@ public class AttendanceRecord
 
     public bool IsQrVerified { get; set; } = false; // If verified via QR code
 
+    // Sensor data (Accelerometer) for spoofing detection
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal? SensorAccelerationX { get; set; }
+
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal? SensorAccelerationY { get; set; }
+
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal? SensorAccelerationZ { get; set; }
+
+    public bool SensorDataUnavailable { get; set; } = false;
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
