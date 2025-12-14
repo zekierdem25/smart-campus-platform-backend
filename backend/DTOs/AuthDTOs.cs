@@ -128,6 +128,7 @@ public class UserResponseDto
 public class StudentInfoDto
 {
     public string StudentNumber { get; set; } = string.Empty;
+    public Guid DepartmentId { get; set; }
     public string DepartmentName { get; set; } = string.Empty;
     public decimal GPA { get; set; }
     public decimal CGPA { get; set; }
@@ -139,6 +140,7 @@ public class StudentInfoDto
 public class FacultyInfoDto
 {
     public string EmployeeNumber { get; set; } = string.Empty;
+    public Guid DepartmentId { get; set; }
     public string DepartmentName { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string? OfficeLocation { get; set; }

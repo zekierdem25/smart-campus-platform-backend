@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,22 +31,54 @@ public class CoursesController : ControllerBase
         [FromQuery] Guid? departmentId = null,
         [FromQuery] bool? isActive = true)
     {
+        // Check if user is Student or Faculty and get their department
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Guid? userDepartmentId = null;
+
+        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var userIdGuid))
+        {
+            var user = await _context.Users
+                .Include(u => u.Student)
+                    .ThenInclude(s => s!.Department)
+                .Include(u => u.Faculty)
+                    .ThenInclude(f => f!.Department)
+                .FirstOrDefaultAsync(u => u.Id == userIdGuid);
+
+            if (user != null)
+            {
+                if (user.Role == UserRole.Student && user.Student != null)
+                {
+                    userDepartmentId = user.Student.DepartmentId;
+                }
+                else if (user.Role == UserRole.Faculty && user.Faculty != null)
+                {
+                    userDepartmentId = user.Faculty.DepartmentId;
+                }
+            }
+        }
+
         var query = _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Prerequisites)
             .Include(c => c.Sections.Where(s => s.IsActive))
             .AsQueryable();
 
+        // Student and Faculty can only see courses in their department (always enforce, ignore departmentId param)
+        if (userDepartmentId.HasValue)
+        {
+            query = query.Where(c => c.DepartmentId == userDepartmentId.Value);
+        }
+        else if (departmentId.HasValue)
+        {
+            // Only Admin can filter by departmentId (if no userDepartmentId)
+            query = query.Where(c => c.DepartmentId == departmentId.Value);
+        }
+
         if (!string.IsNullOrEmpty(search))
         {
             search = search.ToLower();
             query = query.Where(c => c.Code.ToLower().Contains(search) || 
                                      c.Name.ToLower().Contains(search));
-        }
-
-        if (departmentId.HasValue)
-        {
-            query = query.Where(c => c.DepartmentId == departmentId.Value);
         }
 
         if (isActive.HasValue)
@@ -88,6 +121,23 @@ public class CoursesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<CourseDto>> GetCourse(Guid id)
     {
+        // Check if user is Faculty and get their department
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Guid? facultyDepartmentId = null;
+
+        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var userIdGuid))
+        {
+            var user = await _context.Users
+                .Include(u => u.Faculty)
+                    .ThenInclude(f => f!.Department)
+                .FirstOrDefaultAsync(u => u.Id == userIdGuid);
+
+            if (user?.Role == UserRole.Faculty && user.Faculty != null)
+            {
+                facultyDepartmentId = user.Faculty.DepartmentId;
+            }
+        }
+
         var course = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Prerequisites)
@@ -101,6 +151,12 @@ public class CoursesController : ControllerBase
 
         if (course == null)
             return NotFound(new { message = "Course not found" });
+
+        // Faculty can only access courses in their department
+        if (facultyDepartmentId.HasValue && course.DepartmentId != facultyDepartmentId.Value)
+        {
+            return StatusCode(403, new { message = "Bu derse erişim yetkiniz yok. Sadece kendi bölümünüzün derslerine erişebilirsiniz." });
+        }
 
         var dto = new CourseDto
         {

@@ -413,6 +413,7 @@ public class UserService : IUserService
             dto.StudentInfo = new StudentInfoDto
             {
                 StudentNumber = user.Student.StudentNumber,
+                DepartmentId = user.Student.DepartmentId,
                 DepartmentName = user.Student.Department?.Name ?? "",
                 GPA = user.Student.GPA,
                 CGPA = user.Student.CGPA,
@@ -427,6 +428,7 @@ public class UserService : IUserService
             dto.FacultyInfo = new FacultyInfoDto
             {
                 EmployeeNumber = user.Faculty.EmployeeNumber,
+                DepartmentId = user.Faculty.DepartmentId,
                 DepartmentName = user.Faculty.Department?.Name ?? "",
                 Title = user.Faculty.Title.ToString(),
                 OfficeLocation = user.Faculty.OfficeLocation,

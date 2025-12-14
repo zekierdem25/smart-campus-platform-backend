@@ -32,6 +32,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<ExcuseRequest> ExcuseRequests { get; set; }
 
+    // DbSets - Announcements
+    public DbSet<Announcement> Announcements { get; set; }
+
     // DbSets - Security
     public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 
@@ -265,6 +268,24 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(er => er.ReviewedBy)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Announcement configuration
+        modelBuilder.Entity<Announcement>(entity =>
+        {
+            entity.HasIndex(e => new { e.CourseId, e.CreatedAt });
+            entity.Property(e => e.Title).HasMaxLength(200);
+            entity.Property(e => e.Content).HasMaxLength(5000);
+
+            entity.HasOne(a => a.Author)
+                .WithMany()
+                .HasForeignKey(a => a.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(a => a.Course)
+                .WithMany()
+                .HasForeignKey(a => a.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // Seed data

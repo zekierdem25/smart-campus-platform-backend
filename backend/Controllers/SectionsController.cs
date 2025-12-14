@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,12 +36,40 @@ public class SectionsController : ControllerBase
         [FromQuery] int? year = null,
         [FromQuery] bool? isActive = true)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        UserRole? userRole = null;
+        Guid? facultyDepartmentId = null;
+
+        if (!string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out var userIdGuid))
+        {
+            var user = await _context.Users
+                .Include(u => u.Faculty)
+                    .ThenInclude(f => f!.Department)
+                .FirstOrDefaultAsync(u => u.Id == userIdGuid);
+
+            if (user != null)
+            {
+                userRole = user.Role;
+                if (user.Role == UserRole.Faculty && user.Faculty != null)
+                {
+                    facultyDepartmentId = user.Faculty.DepartmentId;
+                }
+            }
+        }
+
         var query = _context.CourseSections
             .Include(s => s.Course)
+                .ThenInclude(c => c.Department)
             .Include(s => s.Instructor)
                 .ThenInclude(i => i.User)
             .Include(s => s.Classroom)
             .AsQueryable();
+
+        // Faculty can only see sections for courses in their department
+        if (userRole == UserRole.Faculty && facultyDepartmentId.HasValue)
+        {
+            query = query.Where(s => s.Course.DepartmentId == facultyDepartmentId.Value);
+        }
 
         if (courseId.HasValue)
             query = query.Where(s => s.CourseId == courseId.Value);
