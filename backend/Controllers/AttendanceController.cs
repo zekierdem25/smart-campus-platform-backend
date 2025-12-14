@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartCampus.API.Data;
@@ -6,6 +7,7 @@ using SmartCampus.API.DTOs;
 using SmartCampus.API.Models;
 using SmartCampus.API.Services;
 using System.Security.Claims;
+using System.IO;
 
 namespace SmartCampus.API.Controllers;
 
@@ -19,19 +21,22 @@ public class AttendanceController : ControllerBase
     private readonly ISpoofingDetectionService _spoofingDetectionService;
     private readonly INotificationService _notificationService;
     private readonly ILogger<AttendanceController> _logger;
+    private readonly IWebHostEnvironment _environment;
 
     public AttendanceController(
         ApplicationDbContext context,
         IAttendanceService attendanceService,
         ISpoofingDetectionService spoofingDetectionService,
         INotificationService notificationService,
-        ILogger<AttendanceController> logger)
+        ILogger<AttendanceController> logger,
+        IWebHostEnvironment environment)
     {
         _context = context;
         _attendanceService = attendanceService;
         _spoofingDetectionService = spoofingDetectionService;
         _notificationService = notificationService;
         _logger = logger;
+        _environment = environment;
     }
 
     // ========== Session Management (Faculty) ==========
@@ -602,7 +607,7 @@ public class AttendanceController : ControllerBase
     /// </summary>
     [HttpPost("excuse-requests")]
     [Authorize(Roles = "Student")]
-    public async Task<ActionResult> CreateExcuseRequest([FromBody] CreateExcuseRequestDto request)
+    public async Task<ActionResult> CreateExcuseRequest([FromForm] CreateExcuseRequestDto request, [FromForm] IFormFile? file)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -623,11 +628,58 @@ public class AttendanceController : ControllerBase
         if (existing)
             return BadRequest(new { message = "Excuse request already submitted for this session" });
 
+        string? documentUrl = null;
+
+        // Handle file upload if provided
+        if (file != null && file.Length > 0)
+        {
+            // Validate file extension
+            var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".png" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return BadRequest(new { message = "Invalid file type. Only PDF, JPG, and PNG files are allowed." });
+            }
+
+            // Validate file size (5MB max)
+            const long maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+            if (file.Length > maxFileSize)
+            {
+                return BadRequest(new { message = "File size exceeds the maximum limit of 5MB." });
+            }
+
+            try
+            {
+                // Create uploads/excuses directory if it doesn't exist
+                var uploadsPath = Path.Combine(_environment.ContentRootPath, "uploads", "excuses");
+                Directory.CreateDirectory(uploadsPath);
+
+                // Generate unique filename
+                var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                var filePath = Path.Combine(uploadsPath, uniqueFileName);
+
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Store relative path for URL access
+                documentUrl = $"/uploads/excuses/{uniqueFileName}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading excuse document");
+                return StatusCode(500, new { message = "Error uploading file. Please try again." });
+            }
+        }
+
         var excuseRequest = new ExcuseRequest
         {
             StudentId = student.Id,
             SessionId = request.SessionId,
             Reason = request.Reason,
+            DocumentUrl = documentUrl,
             Status = ExcuseRequestStatus.Pending
         };
 
