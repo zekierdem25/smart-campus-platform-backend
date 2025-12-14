@@ -17,15 +17,21 @@ public class AttendanceController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IAttendanceService _attendanceService;
     private readonly ISpoofingDetectionService _spoofingDetectionService;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<AttendanceController> _logger;
 
     public AttendanceController(
         ApplicationDbContext context,
         IAttendanceService attendanceService,
-        ISpoofingDetectionService spoofingDetectionService)
+        ISpoofingDetectionService spoofingDetectionService,
+        INotificationService notificationService,
+        ILogger<AttendanceController> logger)
     {
         _context = context;
         _attendanceService = attendanceService;
         _spoofingDetectionService = spoofingDetectionService;
+        _notificationService = notificationService;
+        _logger = logger;
     }
 
     // ========== Session Management (Faculty) ==========
@@ -94,6 +100,20 @@ public class AttendanceController : ControllerBase
         // Get enrolled student count
         var enrolledCount = await _context.Enrollments
             .CountAsync(e => e.SectionId == request.SectionId && e.Status == EnrollmentStatus.Active);
+
+        // Notify enrolled students asynchronously (fire and forget)
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _notificationService.NotifyStudentsOnAttendanceSessionStartAsync(session.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't fail the request
+                _logger.LogError(ex, "Failed to send attendance session start notifications");
+            }
+        });
 
         return CreatedAtAction(nameof(GetSession), new { id = session.Id }, new AttendanceSessionDto
         {

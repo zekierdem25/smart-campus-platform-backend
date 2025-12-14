@@ -16,13 +16,19 @@ public class GradesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IGradeCalculationService _gradeCalculationService;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<GradesController> _logger;
 
     public GradesController(
         ApplicationDbContext context,
-        IGradeCalculationService gradeCalculationService)
+        IGradeCalculationService gradeCalculationService,
+        INotificationService notificationService,
+        ILogger<GradesController> logger)
     {
         _context = context;
         _gradeCalculationService = gradeCalculationService;
+        _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -229,6 +235,20 @@ public class GradesController : ControllerBase
             student.CGPA = _gradeCalculationService.CalculateCGPA(student.Enrollments.ToList());
             await _context.SaveChangesAsync();
         }
+
+        // Notify student asynchronously (fire and forget)
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _notificationService.NotifyStudentOnGradeEntryAsync(request.EnrollmentId);
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't fail the request
+                _logger.LogError(ex, "Failed to send grade entry notification");
+            }
+        });
 
         return Ok(new 
         { 

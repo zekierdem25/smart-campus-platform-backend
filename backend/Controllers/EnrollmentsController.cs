@@ -17,15 +17,21 @@ public class EnrollmentsController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IEnrollmentService _enrollmentService;
     private readonly IScheduleConflictService _scheduleConflictService;
+    private readonly INotificationService _notificationService;
+    private readonly ILogger<EnrollmentsController> _logger;
 
     public EnrollmentsController(
         ApplicationDbContext context,
         IEnrollmentService enrollmentService,
-        IScheduleConflictService scheduleConflictService)
+        IScheduleConflictService scheduleConflictService,
+        INotificationService notificationService,
+        ILogger<EnrollmentsController> logger)
     {
         _context = context;
         _enrollmentService = enrollmentService;
         _scheduleConflictService = scheduleConflictService;
+        _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -110,6 +116,21 @@ public class EnrollmentsController : ControllerBase
         try
         {
             await _enrollmentService.DropCourseAsync(id, student.Id);
+            
+            // Notify faculty asynchronously (fire and forget)
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _notificationService.NotifyFacultyOnCourseDropAsync(id);
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't fail the request
+                    _logger.LogError(ex, "Failed to send course drop notification");
+                }
+            });
+            
             return Ok(new { message = "Course dropped successfully" });
         }
         catch (InvalidOperationException ex)

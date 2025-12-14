@@ -8,5 +8,6 @@ public interface IEmailService
     Task Send2FACodeAsync(string toEmail, string userName, string code);
     Task SendAttendanceWarningAsync(string toEmail, string studentName, string courseCode);
     Task SendAttendanceFailureAsync(string toEmail, string studentName, string courseCode);
+    Task SendCustomEmailAsync(string toEmail, string subject, string htmlBody);
 }
 

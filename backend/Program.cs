@@ -85,6 +85,9 @@ public partial class Program
         builder.Services.AddScoped<IAttendanceService, AttendanceService>();
         builder.Services.AddScoped<ISpoofingDetectionService, SpoofingDetectionService>();
 
+        // Register Services - Notification System
+        builder.Services.AddScoped<INotificationService, NotificationService>();
+
         // Register Background Services
         builder.Services.AddHostedService<AttendanceWarningJob>();
 
