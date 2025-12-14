@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartCampus.API.Data;
 
@@ -11,9 +12,11 @@ using SmartCampus.API.Data;
 namespace SmartCampus.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214113514_AddOfficialHolidays")]
+    partial class AddOfficialHolidays
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,882 +66,90 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("ae000001-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2181),
                             Description = "Yeni Yıl Tatili",
                             EndDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Yeni Yıl",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2261)
                         },
                         new
                         {
                             Id = new Guid("ae000002-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2348),
                             Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
                             EndDate = new DateTime(2025, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Ulusal Egemenlik ve Çocuk Bayramı",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2349)
                         },
                         new
                         {
                             Id = new Guid("ae000003-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2352),
                             Description = "1 Mayıs Emek ve Dayanışma Günü",
                             EndDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Emek ve Dayanışma Günü",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2353)
                         },
                         new
                         {
                             Id = new Guid("ae000004-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2355),
                             Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
                             EndDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2356)
                         },
                         new
                         {
                             Id = new Guid("ae000005-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000006-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000007-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4166),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2358),
                             Description = "Ramazan Bayramı (3 gün)",
                             EndDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Ramazan Bayramı",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4166)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2359)
+                        },
+                        new
+                        {
+                            Id = new Guid("ae000006-0006-0006-0006-000000000006"),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2362),
+                            Description = "30 Ağustos Zafer Bayramı",
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Zafer Bayramı",
+                            Type = "Holiday",
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2362)
+                        },
+                        new
+                        {
+                            Id = new Guid("ae000007-0007-0007-0007-000000000007"),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2365),
+                            Description = "29 Ekim Cumhuriyet Bayramı",
+                            EndDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Cumhuriyet Bayramı",
+                            Type = "Holiday",
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2365)
                         },
                         new
                         {
                             Id = new Guid("ae000008-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4166),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2371),
                             Description = "Kurban Bayramı (4 gün)",
                             EndDate = new DateTime(2025, 6, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Kurban Bayramı",
                             Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4166)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000011-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000012-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2026, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000013-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000014-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2026, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000015-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2026, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000016-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000017-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4384),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2026, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4384)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000018-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4384),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2026, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2026, 5, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4384)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000021-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2027, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000022-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2027, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000023-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2027, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000024-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2027, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000025-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2027, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000026-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2027, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000027-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4439),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2027, 3, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 3, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4439)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000028-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4439),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2027, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2027, 5, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4439)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000031-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000032-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2028, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000033-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2028, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000034-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2028, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000035-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2028, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000036-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2028, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000037-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4518),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2028, 2, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 2, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4518)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000038-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4518),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2028, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2028, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4518)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000041-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2029, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000042-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2029, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000043-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2029, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000044-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2029, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000045-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2029, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000046-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2029, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000047-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4552),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2029, 2, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4552)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000048-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4552),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2029, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2029, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4552)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000051-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000052-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2030, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000053-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2030, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000054-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2030, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000055-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2030, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000056-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2030, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000057-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4598),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2030, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 2, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4598)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000058-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4598),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2030, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2030, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4598)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000061-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2031, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000062-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2031, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000063-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2031, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000064-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2031, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000065-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2031, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000066-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2031, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000067-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4631),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2031, 1, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 1, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4631)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000068-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4631),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2031, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2031, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4631)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000071-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2032, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000072-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2032, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000073-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2032, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000074-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2032, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000075-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2032, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000076-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2032, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000077-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4662),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2032, 1, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4662)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000078-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4662),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2032, 3, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 3, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4662)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000081-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2033, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000082-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2033, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000083-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2033, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000084-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2033, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000085-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2033, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000086-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2033, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000087-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4718),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2033, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2032, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4718)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000088-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4718),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2033, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2033, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4718)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000091-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "Yeni Yıl Tatili",
-                            EndDate = new DateTime(2034, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Yeni Yıl",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000092-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
-                            EndDate = new DateTime(2034, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ulusal Egemenlik ve Çocuk Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000093-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "1 Mayıs Emek ve Dayanışma Günü",
-                            EndDate = new DateTime(2034, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Emek ve Dayanışma Günü",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000094-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            EndDate = new DateTime(2034, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000095-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "30 Ağustos Zafer Bayramı",
-                            EndDate = new DateTime(2034, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Zafer Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000096-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587),
-                            Description = "29 Ekim Cumhuriyet Bayramı",
-                            EndDate = new DateTime(2034, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Cumhuriyet Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9587)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000097-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4749),
-                            Description = "Ramazan Bayramı (3 gün)",
-                            EndDate = new DateTime(2034, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Ramazan Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4749)
-                        },
-                        new
-                        {
-                            Id = new Guid("ae000098-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4749),
-                            Description = "Kurban Bayramı (4 gün)",
-                            EndDate = new DateTime(2034, 3, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2034, 2, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Kurban Bayramı",
-                            Type = "Holiday",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 351, DateTimeKind.Utc).AddTicks(4749)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(2371)
                         });
                 });
 
@@ -1180,65 +391,65 @@ namespace SmartCampus.API.Migrations
                             Id = new Guid("c1a00001-0001-0001-0001-000000000001"),
                             Building = "A Blok",
                             Capacity = 50,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3819),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(4945),
                             FeaturesJson = "[\"projector\", \"whiteboard\", \"ac\", \"computer\"]",
                             IsActive = true,
                             Latitude = 41.1055m,
                             Longitude = 29.0250m,
                             RoomNumber = "101",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3897)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5023)
                         },
                         new
                         {
                             Id = new Guid("c2a00002-0002-0002-0002-000000000002"),
                             Building = "A Blok",
                             Capacity = 40,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3972),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5095),
                             FeaturesJson = "[\"projector\", \"whiteboard\"]",
                             IsActive = true,
                             Latitude = 41.1056m,
                             Longitude = 29.0251m,
                             RoomNumber = "102",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3972)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5096)
                         },
                         new
                         {
                             Id = new Guid("c3a00003-0003-0003-0003-000000000003"),
                             Building = "B Blok",
                             Capacity = 60,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3986),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5099),
                             FeaturesJson = "[\"projector\", \"whiteboard\", \"ac\", \"lab_computers\"]",
                             IsActive = true,
                             Latitude = 41.1060m,
                             Longitude = 29.0255m,
                             RoomNumber = "201",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3986)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5099)
                         },
                         new
                         {
                             Id = new Guid("c4a00004-0004-0004-0004-000000000004"),
                             Building = "B Blok",
                             Capacity = 35,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3989),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5102),
                             FeaturesJson = "[\"projector\", \"whiteboard\", \"ac\"]",
                             IsActive = true,
                             Latitude = 41.1061m,
                             Longitude = 29.0256m,
                             RoomNumber = "202",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3989)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5102)
                         },
                         new
                         {
                             Id = new Guid("c5a00005-0005-0005-0005-000000000005"),
                             Building = "C Blok",
                             Capacity = 30,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3996),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5105),
                             FeaturesJson = "[\"projector\", \"whiteboard\", \"ac\", \"lab_computers\", \"network\"]",
                             IsActive = true,
                             Latitude = 41.1065m,
                             Longitude = 29.0260m,
                             RoomNumber = "Lab-1",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(3997)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(5105)
                         });
                 });
 
@@ -1298,105 +509,105 @@ namespace SmartCampus.API.Migrations
                         {
                             Id = new Guid("c0a00001-0001-0001-0001-000000000001"),
                             Code = "BM101",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5840),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(6879),
                             Credits = 4,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "Temel programlama kavramları, değişkenler, döngüler, fonksiyonlar ve nesne yönelimli programlamaya giriş.",
                             ECTS = 6,
                             IsActive = true,
                             Name = "Programlamaya Giriş",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5914)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(6953)
                         },
                         new
                         {
                             Id = new Guid("c0a00002-0002-0002-0002-000000000002"),
                             Code = "BM201",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5986),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7039),
                             Credits = 4,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "Diziler, bağlı listeler, yığınlar, kuyruklar, ağaçlar ve graf veri yapıları.",
                             ECTS = 6,
                             IsActive = true,
                             Name = "Veri Yapıları",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5986)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7039)
                         },
                         new
                         {
                             Id = new Guid("c0a00003-0003-0003-0003-000000000003"),
                             Code = "BM301",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5989),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7042),
                             Credits = 3,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "Algoritma analizi, sıralama ve arama algoritmaları, dinamik programlama, açgözlü algoritmalar.",
                             ECTS = 5,
                             IsActive = true,
                             Name = "Algoritmalar",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5989)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7043)
                         },
                         new
                         {
                             Id = new Guid("c0a00004-0004-0004-0004-000000000004"),
                             Code = "BM302",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5992),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7045),
                             Credits = 3,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "İlişkisel veritabanları, SQL, normalizasyon, indeksleme ve transaction yönetimi.",
                             ECTS = 5,
                             IsActive = true,
                             Name = "Veritabanı Sistemleri",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5992)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7045)
                         },
                         new
                         {
                             Id = new Guid("c0a00005-0005-0005-0005-000000000005"),
                             Code = "BM401",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5995),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7048),
                             Credits = 3,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "Yazılım geliştirme süreçleri, tasarım desenleri, test ve kalite güvencesi.",
                             ECTS = 5,
                             IsActive = true,
                             Name = "Yazılım Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5995)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7048)
                         },
                         new
                         {
                             Id = new Guid("c0a00006-0006-0006-0006-000000000006"),
                             Code = "BM402",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5998),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7050),
                             Credits = 3,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "HTML, CSS, JavaScript, React, Node.js ve modern web teknolojileri.",
                             ECTS = 5,
                             IsActive = true,
                             Name = "Web Programlama",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(5998)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7051)
                         },
                         new
                         {
                             Id = new Guid("c0a00007-0007-0007-0007-000000000007"),
                             Code = "EEM101",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(6015),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7053),
                             Credits = 4,
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Temel elektrik devreleri, Kirchhoff yasaları, Thevenin ve Norton teoremleri.",
                             ECTS = 6,
                             IsActive = true,
                             Name = "Devre Analizi",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(6015)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7054)
                         },
                         new
                         {
                             Id = new Guid("c0a00008-0008-0008-0008-000000000008"),
                             Code = "EEM201",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(6022),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7056),
                             Credits = 4,
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Description = "Diyotlar, transistörler, opamp'lar ve temel elektronik devreler.",
                             ECTS = 6,
                             IsActive = true,
                             Name = "Elektronik",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(6022)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(7056)
                         });
                 });
 
@@ -1515,14 +726,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 50,
                             ClassroomId = new Guid("c1a00001-0001-0001-0001-000000000001"),
                             CourseId = new Guid("c0a00001-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8271),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9237),
                             EnrolledCount = 3,
                             InstructorId = new Guid("fa111111-1111-1111-1111-111111111111"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Monday\",\"startTime\":\"09:00\",\"endTime\":\"10:50\"},{\"day\":\"Wednesday\",\"startTime\":\"09:00\",\"endTime\":\"10:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8346),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9312),
                             Year = 2025
                         },
                         new
@@ -1531,14 +742,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 40,
                             ClassroomId = new Guid("c2a00002-0002-0002-0002-000000000002"),
                             CourseId = new Guid("c0a00002-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8419),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9389),
                             EnrolledCount = 2,
                             InstructorId = new Guid("fa111111-1111-1111-1111-111111111111"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Tuesday\",\"startTime\":\"11:00\",\"endTime\":\"12:50\"},{\"day\":\"Thursday\",\"startTime\":\"11:00\",\"endTime\":\"12:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8419),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9389),
                             Year = 2025
                         },
                         new
@@ -1547,14 +758,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 35,
                             ClassroomId = new Guid("c3a00003-0003-0003-0003-000000000003"),
                             CourseId = new Guid("c0a00003-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8425),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9395),
                             EnrolledCount = 2,
                             InstructorId = new Guid("fa111111-1111-1111-1111-111111111111"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Monday\",\"startTime\":\"13:00\",\"endTime\":\"14:50\"},{\"day\":\"Wednesday\",\"startTime\":\"13:00\",\"endTime\":\"14:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8425),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9395),
                             Year = 2025
                         },
                         new
@@ -1563,14 +774,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 35,
                             ClassroomId = new Guid("c4a00004-0004-0004-0004-000000000004"),
                             CourseId = new Guid("c0a00004-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8429),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9398),
                             EnrolledCount = 1,
                             InstructorId = new Guid("fa111111-1111-1111-1111-111111111111"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Tuesday\",\"startTime\":\"14:00\",\"endTime\":\"15:50\"},{\"day\":\"Thursday\",\"startTime\":\"14:00\",\"endTime\":\"15:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8441),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9398),
                             Year = 2025
                         },
                         new
@@ -1579,14 +790,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 30,
                             ClassroomId = new Guid("c5a00005-0005-0005-0005-000000000005"),
                             CourseId = new Guid("c0a00006-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8444),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9401),
                             EnrolledCount = 2,
                             InstructorId = new Guid("fa111111-1111-1111-1111-111111111111"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Friday\",\"startTime\":\"10:00\",\"endTime\":\"12:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8445),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9402),
                             Year = 2025
                         },
                         new
@@ -1595,14 +806,14 @@ namespace SmartCampus.API.Migrations
                             Capacity = 45,
                             ClassroomId = new Guid("c1a00001-0001-0001-0001-000000000001"),
                             CourseId = new Guid("c0a00007-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8448),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9405),
                             EnrolledCount = 1,
                             InstructorId = new Guid("fa222222-2222-2222-2222-222222222222"),
                             IsActive = true,
                             ScheduleJson = "[{\"day\":\"Monday\",\"startTime\":\"15:00\",\"endTime\":\"16:50\"},{\"day\":\"Wednesday\",\"startTime\":\"15:00\",\"endTime\":\"16:50\"}]",
                             SectionNumber = 1,
                             Semester = "Fall",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(8448),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 419, DateTimeKind.Utc).AddTicks(9405),
                             Year = 2025
                         });
                 });
@@ -1652,34 +863,34 @@ namespace SmartCampus.API.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Code = "BM",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4728),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5615),
                             Description = "Bilgisayar Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Bilgisayar Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4810)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5781)
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Code = "EEM",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4885),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5946),
                             Description = "Elektrik-Elektronik Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Elektrik-Elektronik Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4886)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5947)
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             Code = "MM",
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4888),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5950),
                             Description = "Makine Mühendisliği Bölümü",
                             Faculty = "Mühendislik Fakültesi",
                             IsActive = true,
                             Name = "Makine Mühendisliği",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 356, DateTimeKind.Utc).AddTicks(4889)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 359, DateTimeKind.Utc).AddTicks(5950)
                         });
                 });
 
@@ -1780,133 +991,133 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("e0a00001-0001-0001-0001-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9291),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9170),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(397),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(262),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00001-0001-0001-0001-000000000001"),
                             Status = "Active",
                             StudentId = new Guid("d1111111-1111-1111-1111-111111111111"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9361),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(470),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00002-0002-0002-0002-000000000002"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9436),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9434),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(552),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(550),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00002-0002-0002-0002-000000000002"),
                             Status = "Active",
                             StudentId = new Guid("d1111111-1111-1111-1111-111111111111"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9437),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(553),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00003-0003-0003-0003-000000000003"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9440),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9440),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(577),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(576),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00003-0003-0003-0003-000000000003"),
                             Status = "Active",
                             StudentId = new Guid("d1111111-1111-1111-1111-111111111111"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9441),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(578),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00004-0004-0004-0004-000000000004"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9444),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9443),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(581),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(581),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00001-0001-0001-0001-000000000001"),
                             Status = "Active",
                             StudentId = new Guid("d2222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9444),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(582),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00005-0005-0005-0005-000000000005"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9447),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9447),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(585),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(584),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00004-0004-0004-0004-000000000004"),
                             Status = "Active",
                             StudentId = new Guid("d2222222-2222-2222-2222-222222222222"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9447),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(585),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00006-0006-0006-0006-000000000006"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9450),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9450),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(588),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(588),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00002-0002-0002-0002-000000000002"),
                             Status = "Active",
                             StudentId = new Guid("d3333333-3333-3333-3333-333333333333"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9451),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(589),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00007-0007-0007-0007-000000000007"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9454),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9453),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(592),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(591),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00003-0003-0003-0003-000000000003"),
                             Status = "Active",
                             StudentId = new Guid("d3333333-3333-3333-3333-333333333333"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9454),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(592),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00008-0008-0008-0008-000000000008"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9468),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9467),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(597),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(596),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00005-0005-0005-0005-000000000005"),
                             Status = "Active",
                             StudentId = new Guid("d3333333-3333-3333-3333-333333333333"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9468),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(597),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00009-0009-0009-0009-000000000009"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9471),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9471),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(601),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(600),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00001-0001-0001-0001-000000000001"),
                             Status = "Active",
                             StudentId = new Guid("d4444444-4444-4444-4444-444444444444"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9472),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(602),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00010-0010-0010-0010-000000000010"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9477),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9476),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(605),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(605),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00005-0005-0005-0005-000000000005"),
                             Status = "Active",
                             StudentId = new Guid("d4444444-4444-4444-4444-444444444444"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9477),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(606),
                             WarningEmailSent = false
                         },
                         new
                         {
                             Id = new Guid("e0a00011-0011-0011-0011-000000000011"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9480),
-                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9480),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(612),
+                            EnrollmentDate = new DateTime(2025, 11, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(611),
                             FailureEmailSent = false,
                             SectionId = new Guid("5ec00006-0006-0006-0006-000000000006"),
                             Status = "Active",
                             StudentId = new Guid("d5555555-5555-5555-5555-555555555555"),
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 349, DateTimeKind.Utc).AddTicks(9480),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 420, DateTimeKind.Utc).AddTicks(612),
                             WarningEmailSent = false
                         });
                 });
@@ -2019,27 +1230,27 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("fa111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(7993),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 800, DateTimeKind.Utc).AddTicks(1867),
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EmployeeNumber = "F001",
                             OfficeHours = "Pazartesi 10:00-12:00, Çarşamba 14:00-16:00",
                             OfficeLocation = "A-101",
                             Specialization = "Web Programlama, Yazılım Mühendisliği",
                             Title = "AssociateProfessor",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(8078),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 800, DateTimeKind.Utc).AddTicks(1948),
                             UserId = new Guid("f1111111-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("fa222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(8152),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 800, DateTimeKind.Utc).AddTicks(2024),
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             EmployeeNumber = "F002",
                             OfficeHours = "Salı 09:00-11:00, Perşembe 13:00-15:00",
                             OfficeLocation = "B-205",
                             Specialization = "Elektronik, Sinyal İşleme",
                             Title = "Professor",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(8152),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 800, DateTimeKind.Utc).AddTicks(2025),
                             UserId = new Guid("f2222222-2222-2222-2222-222222222222")
                         });
                 });
@@ -2185,70 +1396,70 @@ namespace SmartCampus.API.Migrations
                         {
                             Id = new Guid("d1111111-1111-1111-1111-111111111111"),
                             CGPA = 3.45m,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(5874),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8324),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.50m,
                             IsScholarship = true,
                             StudentNumber = "2021001",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(5959),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8412),
                             UserId = new Guid("c1111111-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("d2222222-2222-2222-2222-222222222222"),
                             CGPA = 3.15m,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6084),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8534),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.20m,
                             IsScholarship = false,
                             StudentNumber = "2021002",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6085),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8535),
                             UserId = new Guid("c2222222-2222-2222-2222-222222222222")
                         },
                         new
                         {
                             Id = new Guid("d3333333-3333-3333-3333-333333333333"),
                             CGPA = 3.75m,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6091),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8546),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.80m,
                             IsScholarship = true,
                             StudentNumber = "2021003",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6091),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8546),
                             UserId = new Guid("c3333333-3333-3333-3333-333333333333")
                         },
                         new
                         {
                             Id = new Guid("d4444444-4444-4444-4444-444444444444"),
                             CGPA = 3.55m,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6095),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8550),
                             CurrentSemester = 7,
                             DepartmentId = new Guid("11111111-1111-1111-1111-111111111111"),
                             EnrollmentYear = 2021,
                             GPA = 3.60m,
                             IsScholarship = false,
                             StudentNumber = "2021004",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6095),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8550),
                             UserId = new Guid("c4444444-4444-4444-4444-444444444444")
                         },
                         new
                         {
                             Id = new Guid("d5555555-5555-5555-5555-555555555555"),
                             CGPA = 2.85m,
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6108),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8558),
                             CurrentSemester = 5,
                             DepartmentId = new Guid("22222222-2222-2222-2222-222222222222"),
                             EnrollmentYear = 2022,
                             GPA = 2.90m,
                             IsScholarship = false,
                             StudentNumber = "2022001",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 347, DateTimeKind.Utc).AddTicks(6108),
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 417, DateTimeKind.Utc).AddTicks(8558),
                             UserId = new Guid("c5555555-5555-5555-5555-555555555555")
                         });
                 });
@@ -2362,114 +1573,114 @@ namespace SmartCampus.API.Migrations
                         new
                         {
                             Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 544, DateTimeKind.Utc).AddTicks(9912),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 558, DateTimeKind.Utc).AddTicks(4242),
                             Email = "admin@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Admin",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "User",
-                            PasswordHash = "$2a$11$87b5DnGiPKb4JoptNHzyDebruAlfvuWyYOv9cfQ63yrh6e00uYXeq",
+                            PasswordHash = "$2a$11$qBf/Due3asceNnzgeniZWOwZFHy.pHLbu.Y5xsek70vKgu1hW133q",
                             Role = "Admin",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 545, DateTimeKind.Utc).AddTicks(56)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 558, DateTimeKind.Utc).AddTicks(4462)
                         },
                         new
                         {
                             Id = new Guid("f1111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 659, DateTimeKind.Utc).AddTicks(7280),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 680, DateTimeKind.Utc).AddTicks(136),
                             Email = "mehmet.sevri@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Mehmet",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Sevri",
-                            PasswordHash = "$2a$11$HDCg5qzgX/lDoeK45bAEZ.EeHxDCT9xYi6QGG6PMTRrCj/0AJPGjq",
+                            PasswordHash = "$2a$11$q/GCGC7ZfMR0LAL5jgWzm.nuTpNjBQQiuvkOJBEAdNvqj7WnyqwrW",
                             Role = "Faculty",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 659, DateTimeKind.Utc).AddTicks(7286)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 680, DateTimeKind.Utc).AddTicks(141)
                         },
                         new
                         {
                             Id = new Guid("f2222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(4947),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 799, DateTimeKind.Utc).AddTicks(8526),
                             Email = "ayse.yilmaz@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Ayşe",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Yılmaz",
-                            PasswordHash = "$2a$11$dcQE9ghyGnGgUfKVauPhueRYwXtM.B75fZz818J6Yn2BeE4UCAbiC",
+                            PasswordHash = "$2a$11$WIMy/EKM/gwl/WBl0V5z8.0Q6rKUzNk/O6ai50N3e2P99VQnMCGtq",
                             Role = "Faculty",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 773, DateTimeKind.Utc).AddTicks(4951)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 799, DateTimeKind.Utc).AddTicks(8531)
                         },
                         new
                         {
                             Id = new Guid("c1111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 887, DateTimeKind.Utc).AddTicks(7979),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 919, DateTimeKind.Utc).AddTicks(7654),
                             Email = "zeki.erdem@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Zeki",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Erdem",
-                            PasswordHash = "$2a$11$JEkrQtUN5b/zyeV85OgPbecsoeja.93/620WQxksjhYh98SF10WJm",
+                            PasswordHash = "$2a$11$vHLJesRe0XtSZoDT5S6ywu.ZsWxA9R5Yu6zYyyx1wFnmQdVbV1612",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 27, 887, DateTimeKind.Utc).AddTicks(7984)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 12, 919, DateTimeKind.Utc).AddTicks(7658)
                         },
                         new
                         {
                             Id = new Guid("c2222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 2, DateTimeKind.Utc).AddTicks(7419),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 45, DateTimeKind.Utc).AddTicks(9708),
                             Email = "mert.abdullahoglu@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Mert",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Abdullahoğlu",
-                            PasswordHash = "$2a$11$LZZ6LdhIphkcIMg6MLzeweNhswmlvvFjtkrixb1aGnsBNXTSDhMoS",
+                            PasswordHash = "$2a$11$WvkpKBwLpDGVJKgNEdJ6FOHV6VBiIeczD4oGAFJuZTlCXrNaRK1xK",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 2, DateTimeKind.Utc).AddTicks(7424)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 45, DateTimeKind.Utc).AddTicks(9713)
                         },
                         new
                         {
                             Id = new Guid("c3333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 117, DateTimeKind.Utc).AddTicks(7668),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 173, DateTimeKind.Utc).AddTicks(8088),
                             Email = "sena.kamiloglu@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Sena",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Kamiloğlu",
-                            PasswordHash = "$2a$11$.1DpXHmAPLUM8nmADRcETu3IdgLeEJt05Nqoafb/F0tXELV442NCa",
+                            PasswordHash = "$2a$11$8j9F2K9E9l5mSLP191mvSeA15mieyQuLLtgroNTqz8FHgi6pxMQ3.",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 117, DateTimeKind.Utc).AddTicks(7738)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 173, DateTimeKind.Utc).AddTicks(8183)
                         },
                         new
                         {
                             Id = new Guid("c4444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 232, DateTimeKind.Utc).AddTicks(7105),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 297, DateTimeKind.Utc).AddTicks(5237),
                             Email = "sevval.asi@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Şevval",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Asi",
-                            PasswordHash = "$2a$11$ZZh/FMLorOjk/fDtjiX3aeUkQpf6u9ZznkcmqieGavgTq7kp6.PWa",
+                            PasswordHash = "$2a$11$4iicdqvRZOQUOsIiVO809ePy2zaXwxUG5tFNLDlAD3rxlzFsrIiOC",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 232, DateTimeKind.Utc).AddTicks(7107)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 297, DateTimeKind.Utc).AddTicks(5240)
                         },
                         new
                         {
                             Id = new Guid("c5555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 346, DateTimeKind.Utc).AddTicks(2951),
+                            CreatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 416, DateTimeKind.Utc).AddTicks(5747),
                             Email = "ali.veli@smartcampus.com",
                             FailedLoginAttempts = 0,
                             FirstName = "Ali",
                             IsActive = true,
                             IsEmailVerified = true,
                             LastName = "Veli",
-                            PasswordHash = "$2a$11$Bpk41WXqUgk3JO78LXCWS.sjD7JAMDfkBOyy3Hu/zGwhyVnVaDoQe",
+                            PasswordHash = "$2a$11$diFBSi5LAM7xKL0OGymEOeimUBZBoiAGhetGC2pL/I3YpRifgSmHO",
                             Role = "Student",
-                            UpdatedAt = new DateTime(2025, 12, 14, 11, 45, 28, 346, DateTimeKind.Utc).AddTicks(2955)
+                            UpdatedAt = new DateTime(2025, 12, 14, 11, 35, 13, 416, DateTimeKind.Utc).AddTicks(5751)
                         });
                 });
 

@@ -35,6 +35,9 @@ public class ApplicationDbContext : DbContext
     // DbSets - Announcements
     public DbSet<Announcement> Announcements { get; set; }
 
+    // DbSets - Academic Calendar
+    public DbSet<AcademicEvent> AcademicEvents { get; set; }
+
     // DbSets - Security
     public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 
@@ -286,6 +289,15 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(a => a.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // AcademicEvent configuration
+        modelBuilder.Entity<AcademicEvent>(entity =>
+        {
+            entity.HasIndex(e => new { e.StartDate, e.EndDate });
+            entity.Property(e => e.Title).HasMaxLength(200);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.Type).HasConversion<string>();
         });
 
         // Seed data
@@ -1012,5 +1024,386 @@ public class ApplicationDbContext : DbContext
                 UpdatedAt = DateTime.UtcNow
             }
         );
+
+        // Seed Academic Events - Resmi Tatiller (2025-2034 - 10 Yıllık)
+        // Sabit resmi tatiller her yıl için otomatik ekleniyor
+        var holidays = new List<AcademicEvent>();
+        var baseDate = DateTime.UtcNow;
+
+        for (int year = 2025; year <= 2034; year++)
+        {
+            var uniqueNum = (year - 2025) * 10; // Her yıl için benzersiz numara (0-90)
+
+            // Yeni Yıl - 1 Ocak
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 1:D6}-0001-0001-0001-000000000001"),
+                Title = "Yeni Yıl",
+                StartDate = new DateTime(year, 1, 1),
+                EndDate = new DateTime(year, 1, 1),
+                Type = AcademicEventType.Holiday,
+                Description = "Yeni Yıl Tatili",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Ulusal Egemenlik ve Çocuk Bayramı - 23 Nisan
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 2:D6}-0002-0002-0002-000000000002"),
+                Title = "Ulusal Egemenlik ve Çocuk Bayramı",
+                StartDate = new DateTime(year, 4, 23),
+                EndDate = new DateTime(year, 4, 23),
+                Type = AcademicEventType.Holiday,
+                Description = "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Emek ve Dayanışma Günü - 1 Mayıs
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 3:D6}-0003-0003-0003-000000000003"),
+                Title = "Emek ve Dayanışma Günü",
+                StartDate = new DateTime(year, 5, 1),
+                EndDate = new DateTime(year, 5, 1),
+                Type = AcademicEventType.Holiday,
+                Description = "1 Mayıs Emek ve Dayanışma Günü",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Atatürk'ü Anma, Gençlik ve Spor Bayramı - 19 Mayıs
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 4:D6}-0004-0004-0004-000000000004"),
+                Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+                StartDate = new DateTime(year, 5, 19),
+                EndDate = new DateTime(year, 5, 19),
+                Type = AcademicEventType.Holiday,
+                Description = "19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Zafer Bayramı - 30 Ağustos
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 5:D6}-0005-0005-0005-000000000005"),
+                Title = "Zafer Bayramı",
+                StartDate = new DateTime(year, 8, 30),
+                EndDate = new DateTime(year, 8, 30),
+                Type = AcademicEventType.Holiday,
+                Description = "30 Ağustos Zafer Bayramı",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Cumhuriyet Bayramı - 29 Ekim
+            holidays.Add(new AcademicEvent
+            {
+                Id = new Guid($"ae{uniqueNum + 6:D6}-0006-0006-0006-000000000006"),
+                Title = "Cumhuriyet Bayramı",
+                StartDate = new DateTime(year, 10, 29),
+                EndDate = new DateTime(year, 10, 29),
+                Type = AcademicEventType.Holiday,
+                Description = "29 Ekim Cumhuriyet Bayramı",
+                CreatedAt = baseDate,
+                UpdatedAt = baseDate
+            });
+
+            // Dini Bayramlar - Her yıl için özel tarihler
+            var religiousHolidays = GetReligiousHolidays(year);
+            foreach (var holiday in religiousHolidays)
+            {
+                holidays.Add(holiday);
+            }
+        }
+
+        modelBuilder.Entity<AcademicEvent>().HasData(holidays);
+    }
+
+    private List<AcademicEvent> GetReligiousHolidays(int year)
+    {
+        var baseDate = DateTime.UtcNow;
+        var yearIndex = year - 2025;
+        var uniqueNum = yearIndex * 10;
+        var holidays = new List<AcademicEvent>();
+
+        // Her yıl için Ramazan ve Kurban Bayramı tarihleri
+        switch (year)
+        {
+            case 2025:
+                // Ramazan Bayramı - 30 Mart - 1 Nisan
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2025, 3, 30),
+                    EndDate = new DateTime(2025, 4, 1),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 6 Haziran - 9 Haziran
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2025, 6, 6),
+                    EndDate = new DateTime(2025, 6, 9),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2026:
+                // Ramazan Bayramı - 20 Mart - 22 Mart
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2026, 3, 20),
+                    EndDate = new DateTime(2026, 3, 22),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 27 Mayıs - 30 Mayıs
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2026, 5, 27),
+                    EndDate = new DateTime(2026, 5, 30),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2027:
+                // Ramazan Bayramı - 9 Mart - 11 Mart
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2027, 3, 9),
+                    EndDate = new DateTime(2027, 3, 11),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 16 Mayıs - 19 Mayıs
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2027, 5, 16),
+                    EndDate = new DateTime(2027, 5, 19),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2028:
+                // Ramazan Bayramı - 26 Şubat - 28 Şubat
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2028, 2, 26),
+                    EndDate = new DateTime(2028, 2, 28),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 4 Mayıs - 7 Mayıs
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2028, 5, 4),
+                    EndDate = new DateTime(2028, 5, 7),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2029:
+                // Ramazan Bayramı - 14 Şubat - 16 Şubat
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2029, 2, 14),
+                    EndDate = new DateTime(2029, 2, 16),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 23 Nisan - 26 Nisan
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2029, 4, 23),
+                    EndDate = new DateTime(2029, 4, 26),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2030:
+                // Ramazan Bayramı - 3 Şubat - 5 Şubat
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2030, 2, 3),
+                    EndDate = new DateTime(2030, 2, 5),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 12 Nisan - 15 Nisan
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2030, 4, 12),
+                    EndDate = new DateTime(2030, 4, 15),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2031:
+                // Ramazan Bayramı - 23 Ocak - 25 Ocak
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2031, 1, 23),
+                    EndDate = new DateTime(2031, 1, 25),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 1 Nisan - 4 Nisan
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2031, 4, 1),
+                    EndDate = new DateTime(2031, 4, 4),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2032:
+                // Ramazan Bayramı - 12 Ocak - 14 Ocak
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2032, 1, 12),
+                    EndDate = new DateTime(2032, 1, 14),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 21 Mart - 24 Mart
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2032, 3, 21),
+                    EndDate = new DateTime(2032, 3, 24),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2033:
+                // Ramazan Bayramı - 31 Aralık 2032 - 2 Ocak 2033 (2033 yılı için)
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2032, 12, 31), // 2032 son günü ama 2033 yılı için
+                    EndDate = new DateTime(2033, 1, 2),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 10 Mart - 13 Mart
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2033, 3, 10),
+                    EndDate = new DateTime(2033, 3, 13),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+
+            case 2034:
+                // Ramazan Bayramı - 20 Aralık - 22 Aralık
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Title = "Ramazan Bayramı",
+                    StartDate = new DateTime(2034, 12, 20),
+                    EndDate = new DateTime(2034, 12, 22),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Ramazan Bayramı (3 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                // Kurban Bayramı - 27 Şubat - 2 Mart
+                holidays.Add(new AcademicEvent
+                {
+                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Title = "Kurban Bayramı",
+                    StartDate = new DateTime(2034, 2, 27),
+                    EndDate = new DateTime(2034, 3, 2),
+                    Type = AcademicEventType.Holiday,
+                    Description = "Kurban Bayramı (4 gün)",
+                    CreatedAt = baseDate,
+                    UpdatedAt = baseDate
+                });
+                break;
+        }
+
+        return holidays;
     }
 }
