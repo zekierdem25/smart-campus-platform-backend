@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using SmartCampus.API.Data;
 using SmartCampus.API.Middleware;
 using SmartCampus.API.Services;
+using SmartCampus.API.Extensions.BackgroundServices;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 
@@ -83,6 +84,9 @@ public partial class Program
         // Register Services - Part 2: Attendance System
         builder.Services.AddScoped<IAttendanceService, AttendanceService>();
         builder.Services.AddScoped<ISpoofingDetectionService, SpoofingDetectionService>();
+
+        // Register Background Services
+        builder.Services.AddHostedService<AttendanceWarningJob>();
 
         // CORS Configuration
         builder.Services.AddCors(options =>

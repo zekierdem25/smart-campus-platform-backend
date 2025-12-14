@@ -363,6 +363,148 @@ public class EmailService : IEmailService
         await SendEmailAsync(toEmail, subject, body);
     }
 
+    public async Task SendAttendanceWarningAsync(string toEmail, string studentName, string courseCode)
+    {
+        var subject = "Smart Campus - Devamsızlık Uyarısı";
+        var body = $@"
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Warning Color -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            ⚠️ Devamsızlık Uyarısı
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Smart Campus
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Sayın {studentName},
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            <strong>{courseCode}</strong> dersinden devamsızlık oranınız sınıra yaklaşmaktadır. Lütfen dikkat ediniz.
+                                        </p>
+                                        
+                                        <!-- Warning Box -->
+                                        <div style='background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 24px 0; border-radius: 4px;'>
+                                            <p style='margin: 0; color: #92400e; font-size: 14px; font-weight: 500;'>
+                                                📌 Önemli Bilgi
+                                            </p>
+                                            <p style='margin: 8px 0 0 0; color: #92400e; font-size: 13px;'>
+                                                Devamsızlık oranınız %15 seviyesine ulaştığında uyarı alırsınız. %30 seviyesine ulaştığında dersten kalırsınız.
+                                            </p>
+                                        </div>
+                                        
+                                        <p style='margin: 24px 0 0 0; color: #5f6368; font-size: 14px; line-height: 1.6;'>
+                                            Devamsızlık durumunuzu kontrol etmek için Smart Campus sistemine giriş yapabilirsiniz.
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>";
+
+        await SendEmailAsync(toEmail, subject, body);
+    }
+
+    public async Task SendAttendanceFailureAsync(string toEmail, string studentName, string courseCode)
+    {
+        var subject = "Smart Campus - Devamsızlık Sınırı Aşıldı";
+        var body = $@"
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='utf-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            </head>
+            <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+                <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+                    <tr>
+                        <td align='center' style='padding: 40px 20px;'>
+                            <table role='presentation' style='max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;'>
+                                <!-- Header with Error Color -->
+                                <tr>
+                                    <td style='background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); padding: 40px 30px; text-align: center;'>
+                                        <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;'>
+                                            ❌ Devamsızlık Sınırı Aşıldı
+                                        </h1>
+                                        <p style='margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 300;'>
+                                            Smart Campus
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Content -->
+                                <tr>
+                                    <td style='padding: 40px 30px;'>
+                                        <h2 style='margin: 0 0 20px 0; color: #1a1a1a; font-size: 24px; font-weight: 600;'>
+                                            Sayın {studentName},
+                                        </h2>
+                                        <p style='margin: 0 0 24px 0; color: #5f6368; font-size: 16px; line-height: 1.6;'>
+                                            <strong>{courseCode}</strong> dersinden devamsızlık sınırını aştınız ve dersten kaldınız.
+                                        </p>
+                                        
+                                        <!-- Error Box -->
+                                        <div style='background-color: #fee2e2; border-left: 4px solid #dc2626; padding: 16px; margin: 24px 0; border-radius: 4px;'>
+                                            <p style='margin: 0; color: #991b1b; font-size: 14px; font-weight: 500;'>
+                                                ⚠️ Önemli Uyarı
+                                            </p>
+                                            <p style='margin: 8px 0 0 0; color: #991b1b; font-size: 13px;'>
+                                                Devamsızlık oranınız %30 seviyesini aştığı için bu dersten kaldınız. Detaylı bilgi için lütfen akademik danışmanınızla iletişime geçiniz.
+                                            </p>
+                                        </div>
+                                        
+                                        <p style='margin: 24px 0 0 0; color: #5f6368; font-size: 14px; line-height: 1.6;'>
+                                            Devamsızlık durumunuzu kontrol etmek için Smart Campus sistemine giriş yapabilirsiniz.
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Footer -->
+                                <tr>
+                                    <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed;'>
+                                        <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                            © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>";
+
+        await SendEmailAsync(toEmail, subject, body);
+    }
+
     private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
     {
         try

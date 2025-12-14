@@ -49,6 +49,10 @@ public class Enrollment
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    public bool WarningEmailSent { get; set; } = false;
+
+    public bool FailureEmailSent { get; set; } = false;
+
     // Navigation properties
     [ForeignKey("StudentId")]
     public Student Student { get; set; } = null!;
