@@ -91,7 +91,7 @@ public class AttendanceController : ControllerBase
             Longitude = request.Longitude,
             GeofenceRadius = request.GeofenceRadius,
             QrCode = _attendanceService.GenerateQrCode(Guid.NewGuid()), // Will be regenerated
-            QrCodeExpiresAt = DateTime.UtcNow.AddSeconds(5),
+            QrCodeExpiresAt = DateTime.UtcNow.AddSeconds(60),
             Status = AttendanceSessionStatus.Active
         };
 
@@ -830,7 +830,7 @@ public class AttendanceController : ControllerBase
 
         // Always generate new QR
         session.QrCode = _attendanceService.GenerateQrCode(session.Id);
-        session.QrCodeExpiresAt = DateTime.UtcNow.AddSeconds(5);
+        session.QrCodeExpiresAt = DateTime.UtcNow.AddSeconds(60);
         await _context.SaveChangesAsync();
 
         return Ok(new QrCodeUpdateDto

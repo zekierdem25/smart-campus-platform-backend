@@ -79,7 +79,7 @@ public class AttendanceService : IAttendanceService
 
     /// <summary>
     /// Generates a QR code token for attendance session.
-    /// Token expires in 5 seconds for security.
+    /// Token expires in 60 seconds for security while allowing time for scanning.
     /// </summary>
     public string GenerateQrCode(Guid sessionId)
     {
@@ -87,7 +87,7 @@ public class AttendanceService : IAttendanceService
         var payload = new
         {
             sessionId = sessionId.ToString(),
-            exp = DateTimeOffset.UtcNow.AddSeconds(5).ToUnixTimeSeconds(),
+            exp = DateTimeOffset.UtcNow.AddSeconds(60).ToUnixTimeSeconds(), // 60 seconds expiry
             nonce = Guid.NewGuid().ToString("N")[..8]
         };
 
