@@ -135,37 +135,79 @@ public class EnrollmentService : IEnrollmentService
     /// </summary>
     public async Task<Enrollment> EnrollStudentAsync(Guid studentId, Guid sectionId)
     {
-        // Double-check eligibility
-        var eligibility = await CheckEnrollmentEligibilityAsync(studentId, sectionId);
-        if (!eligibility.CanEnroll)
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            throw new InvalidOperationException(string.Join("; ", eligibility.Errors));
+            // Double-check eligibility
+            var eligibility = await CheckEnrollmentEligibilityAsync(studentId, sectionId);
+            if (!eligibility.CanEnroll)
+            {
+                throw new InvalidOperationException(string.Join("; ", eligibility.Errors));
+            }
+
+            // Atomic capacity increment with row-level locking
+            // This prevents race conditions
+            var rowsAffected = await _context.Database.ExecuteSqlRawAsync(
+                "UPDATE CourseSections SET EnrolledCount = EnrolledCount + 1 WHERE Id = {0} AND EnrolledCount < Capacity",
+                sectionId);
+
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Section is full or enrollment failed");
+            }
+
+            // Check if enrollment already exists (e.g. Dropped)
+            var enrollment = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentId == studentId && e.SectionId == sectionId);
+
+            if (enrollment != null)
+            {
+                // If exists but not active, reactivate it
+                if (enrollment.Status != EnrollmentStatus.Active)
+                {
+                    enrollment.Status = EnrollmentStatus.Active;
+                    enrollment.EnrollmentDate = DateTime.UtcNow;
+                    enrollment.UpdatedAt = DateTime.UtcNow;
+                    
+                    // Reset grades and flags
+                    enrollment.MidtermGrade = null;
+                    enrollment.FinalGrade = null;
+                    enrollment.HomeworkGrade = null;
+                    enrollment.LetterGrade = null;
+                    enrollment.GradePoint = null;
+                    enrollment.WarningEmailSent = false;
+                    enrollment.FailureEmailSent = false;
+                }
+                else
+                {
+                    // Should be caught by CheckEnrollmentEligibilityAsync but just in case
+                    throw new InvalidOperationException("Student is already enrolled in this section");
+                }
+            }
+            else
+            {
+                // Create new enrollment record
+                enrollment = new Enrollment
+                {
+                    StudentId = studentId,
+                    SectionId = sectionId,
+                    Status = EnrollmentStatus.Active,
+                    EnrollmentDate = DateTime.UtcNow
+                };
+
+                _context.Enrollments.Add(enrollment);
+            }
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return enrollment;
         }
-
-        // Atomic capacity increment with row-level locking
-        // This prevents race conditions
-        var rowsAffected = await _context.Database.ExecuteSqlRawAsync(
-            "UPDATE CourseSections SET EnrolledCount = EnrolledCount + 1 WHERE Id = {0} AND EnrolledCount < Capacity",
-            sectionId);
-
-        if (rowsAffected == 0)
+        catch (Exception)
         {
-            throw new InvalidOperationException("Section is full or enrollment failed");
+            await transaction.RollbackAsync();
+            throw;
         }
-
-        // Create enrollment record
-        var enrollment = new Enrollment
-        {
-            StudentId = studentId,
-            SectionId = sectionId,
-            Status = EnrollmentStatus.Active,
-            EnrollmentDate = DateTime.UtcNow
-        };
-
-        _context.Enrollments.Add(enrollment);
-        await _context.SaveChangesAsync();
-
-        return enrollment;
     }
 
     /// <summary>
