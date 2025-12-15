@@ -31,6 +31,8 @@ public class CreateAttendanceSessionRequest
     public Guid SectionId { get; set; }
     public int DurationMinutes { get; set; } = 30;
     public int GeofenceRadius { get; set; } = 15;
+    public decimal Latitude { get; set; }
+    public decimal Longitude { get; set; }
 }
 
 public class AttendanceSessionListDto

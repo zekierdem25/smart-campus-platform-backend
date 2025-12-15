@@ -79,7 +79,7 @@ public class AttendanceController : ControllerBase
         if (existingSession)
             return BadRequest(new { message = "An active session already exists for this section" });
 
-        // Create session
+        // Create session using teacher's current location
         var session = new AttendanceSession
         {
             SectionId = request.SectionId,
@@ -87,8 +87,8 @@ public class AttendanceController : ControllerBase
             Date = DateTime.UtcNow.Date,
             StartTime = DateTime.UtcNow.TimeOfDay,
             EndTime = DateTime.UtcNow.AddMinutes(request.DurationMinutes).TimeOfDay,
-            Latitude = section.Classroom.Latitude,
-            Longitude = section.Classroom.Longitude,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
             GeofenceRadius = request.GeofenceRadius,
             QrCode = _attendanceService.GenerateQrCode(Guid.NewGuid()), // Will be regenerated
             QrCodeExpiresAt = DateTime.UtcNow.AddSeconds(5),
