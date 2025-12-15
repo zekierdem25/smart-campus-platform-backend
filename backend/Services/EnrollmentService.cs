@@ -49,14 +49,14 @@ public class EnrollmentService : IEnrollmentService
         if (section == null)
         {
             result.CanEnroll = false;
-            result.Errors.Add("Section not found");
+            result.Errors.Add("Ders şubesi bulunamadı");
             return result;
         }
 
         if (!section.IsActive)
         {
             result.CanEnroll = false;
-            result.Errors.Add("Section is not active");
+            result.Errors.Add("Ders şubesi aktif değil");
             return result;
         }
 
@@ -69,7 +69,7 @@ public class EnrollmentService : IEnrollmentService
         if (existingEnrollment)
         {
             result.CanEnroll = false;
-            result.Errors.Add("Already enrolled in this section");
+            result.Errors.Add("Bu ders şubesine zaten kayıtlısınız");
             return result;
         }
 
@@ -82,7 +82,7 @@ public class EnrollmentService : IEnrollmentService
         if (enrolledInSameCourse)
         {
             result.CanEnroll = false;
-            result.Errors.Add("Already enrolled in another section of this course");
+            result.Errors.Add("Bu dersin başka bir şubesine zaten kayıtlısınız");
             return result;
         }
 
@@ -91,7 +91,7 @@ public class EnrollmentService : IEnrollmentService
         if (missingPrereqs.Any())
         {
             result.CanEnroll = false;
-            result.Errors.Add($"Missing prerequisites: {string.Join(", ", missingPrereqs)}");
+            result.Errors.Add($"Eksik önkoşullar: {string.Join(", ", missingPrereqs)}");
         }
 
         // Check 3: Schedule conflict
@@ -112,18 +112,18 @@ public class EnrollmentService : IEnrollmentService
         if (_scheduleConflictService.HasScheduleConflict(existingSchedule, newSchedule))
         {
             result.CanEnroll = false;
-            result.Errors.Add("Schedule conflict with existing courses");
+            result.Errors.Add("Mevcut derslerle program çakışması var");
         }
 
         // Check 4: Capacity (with some buffer warning)
         if (section.EnrolledCount >= section.Capacity)
         {
             result.CanEnroll = false;
-            result.Errors.Add("Section is full");
+            result.Errors.Add("Kontenjan dolu");
         }
         else if (section.EnrolledCount >= section.Capacity * 0.9)
         {
-            result.Warnings.Add($"Only {section.Capacity - section.EnrolledCount} seats remaining");
+            result.Warnings.Add($"Sadece {section.Capacity - section.EnrolledCount} kontenjan kaldı");
         }
 
         return result;

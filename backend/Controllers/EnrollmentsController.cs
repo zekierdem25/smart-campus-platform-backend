@@ -57,7 +57,7 @@ public class EnrollmentsController : ControllerBase
             {
                 return BadRequest(new 
                 { 
-                    message = "Cannot enroll", 
+                    message = "Kayıt işlemi gerçekleştirilemedi", 
                     errors = eligibility.Errors,
                     warnings = eligibility.Warnings
                 });
