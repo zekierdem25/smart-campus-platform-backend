@@ -27,9 +27,9 @@ public class EnrollmentService : IEnrollmentService
         IPrerequisiteService prerequisiteService,
         IScheduleConflictService scheduleConflictService)
     {
-        _context = context;
-        _prerequisiteService = prerequisiteService;
-        _scheduleConflictService = scheduleConflictService;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _prerequisiteService = prerequisiteService ?? throw new ArgumentNullException(nameof(prerequisiteService));
+        _scheduleConflictService = scheduleConflictService ?? throw new ArgumentNullException(nameof(scheduleConflictService));
     }
 
     /// <summary>

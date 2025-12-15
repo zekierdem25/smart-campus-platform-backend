@@ -27,10 +27,10 @@ public class GradesController : ControllerBase
         INotificationService notificationService,
         ILogger<GradesController> logger)
     {
-        _context = context;
-        _gradeCalculationService = gradeCalculationService;
-        _notificationService = notificationService;
-        _logger = logger;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _gradeCalculationService = gradeCalculationService ?? throw new ArgumentNullException(nameof(gradeCalculationService));
+        _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     /// <summary>

@@ -31,9 +31,9 @@ public class SpoofingDetectionService : ISpoofingDetectionService
         IAttendanceService attendanceService,
         IConfiguration configuration)
     {
-        _context = context;
-        _attendanceService = attendanceService;
-        _configuration = configuration;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _attendanceService = attendanceService ?? throw new ArgumentNullException(nameof(attendanceService));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _campusNetworks = ParseCampusNetworks();
     }
 

@@ -21,8 +21,8 @@ public class SectionsController : ControllerBase
         ApplicationDbContext context,
         IScheduleConflictService scheduleConflictService)
     {
-        _context = context;
-        _scheduleConflictService = scheduleConflictService;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _scheduleConflictService = scheduleConflictService ?? throw new ArgumentNullException(nameof(scheduleConflictService));
     }
 
     /// <summary>

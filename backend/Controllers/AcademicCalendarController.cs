@@ -17,7 +17,7 @@ public class AcademicCalendarController : ControllerBase
 
     public AcademicCalendarController(ApplicationDbContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     /// <summary>

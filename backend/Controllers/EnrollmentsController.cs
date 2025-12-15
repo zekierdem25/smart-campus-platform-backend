@@ -27,11 +27,11 @@ public class EnrollmentsController : ControllerBase
         INotificationService notificationService,
         ILogger<EnrollmentsController> logger)
     {
-        _context = context;
-        _enrollmentService = enrollmentService;
-        _scheduleConflictService = scheduleConflictService;
-        _notificationService = notificationService;
-        _logger = logger;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _enrollmentService = enrollmentService ?? throw new ArgumentNullException(nameof(enrollmentService));
+        _scheduleConflictService = scheduleConflictService ?? throw new ArgumentNullException(nameof(scheduleConflictService));
+        _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     /// <summary>

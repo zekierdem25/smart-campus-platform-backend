@@ -17,7 +17,7 @@ public class CoursesController : ControllerBase
 
     public CoursesController(ApplicationDbContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     /// <summary>

@@ -31,12 +31,12 @@ public class AttendanceController : ControllerBase
         ILogger<AttendanceController> logger,
         IWebHostEnvironment environment)
     {
-        _context = context;
-        _attendanceService = attendanceService;
-        _spoofingDetectionService = spoofingDetectionService;
-        _notificationService = notificationService;
-        _logger = logger;
-        _environment = environment;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _attendanceService = attendanceService ?? throw new ArgumentNullException(nameof(attendanceService));
+        _spoofingDetectionService = spoofingDetectionService ?? throw new ArgumentNullException(nameof(spoofingDetectionService));
+        _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _environment = environment ?? throw new ArgumentNullException(nameof(environment));
     }
 
     // ========== Session Management (Faculty) ==========

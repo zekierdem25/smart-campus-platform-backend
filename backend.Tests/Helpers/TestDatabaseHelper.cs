@@ -129,6 +129,20 @@ public static class TestDatabaseHelper
         };
         context.Users.Add(inactiveUser);
 
+        // Seed Direct Login User (skips 2FA)
+        var directLoginUser = new User
+        {
+            Id = Guid.Parse("b1111111-1111-1111-1111-111111111111"),
+            FirstName = "Direct",
+            LastName = "Login",
+            Email = "direct.login@smartcampus.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("DirectLogin123!"),
+            Role = UserRole.Student,
+            IsEmailVerified = true,
+            IsActive = true
+        };
+        context.Users.Add(directLoginUser);
+
         await context.SaveChangesAsync();
     }
 

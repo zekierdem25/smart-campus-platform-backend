@@ -13,7 +13,7 @@ public class ActivityLogsController : ControllerBase
 
     public ActivityLogsController(IActivityLogService activityLogService)
     {
-        _activityLogService = activityLogService;
+        _activityLogService = activityLogService ?? throw new ArgumentNullException(nameof(activityLogService));
     }
 
     /// <summary>

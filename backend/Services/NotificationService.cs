@@ -15,9 +15,9 @@ public class NotificationService : INotificationService
         IEmailService emailService,
         ILogger<NotificationService> logger)
     {
-        _context = context;
-        _emailService = emailService;
-        _logger = logger;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task NotifyFacultyOnCourseDropAsync(Guid enrollmentId)

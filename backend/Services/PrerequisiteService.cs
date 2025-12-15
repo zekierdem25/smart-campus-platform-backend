@@ -17,7 +17,7 @@ public class PrerequisiteService : IPrerequisiteService
 
     public PrerequisiteService(ApplicationDbContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     /// <summary>

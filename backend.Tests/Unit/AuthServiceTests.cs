@@ -182,8 +182,8 @@ public class AuthServiceTests
         var authService = CreateAuthService(context);
         var request = new LoginRequestDto
         {
-            Email = "student@test.edu",
-            Password = "Student123!"
+            Email = "direct.login@smartcampus.com",
+            Password = "DirectLogin123!"
         };
 
         // Act
@@ -194,7 +194,30 @@ public class AuthServiceTests
         Assert.NotNull(result.AccessToken);
         Assert.NotNull(result.RefreshToken);
         Assert.NotNull(result.User);
-        Assert.Equal("student@test.edu", result.User.Email);
+        Assert.Equal("direct.login@smartcampus.com", result.User.Email);
+    }
+
+    [Fact]
+    public async Task LoginAsync_WithEduEmail_ShouldRequire2FA()
+    {
+        // Arrange
+        var context = await TestDatabaseHelper.CreateSeededContextAsync();
+        var authService = CreateAuthService(context);
+        var request = new LoginRequestDto
+        {
+            Email = "student@test.edu",
+            Password = "Student123!"
+        };
+
+        // Act
+        var result = await authService.LoginAsync(request);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.True(result.Requires2FA);
+        Assert.Null(result.AccessToken); // Token hemen dönmemeli
+        Assert.NotNull(result.TempToken);
+        Assert.Contains("doğrulama kodu", result.Message.ToLower());
     }
 
     [Fact]
@@ -291,8 +314,8 @@ public class AuthServiceTests
         // First login to get a refresh token
         var loginResult = await authService.LoginAsync(new LoginRequestDto
         {
-            Email = "student@test.edu",
-            Password = "Student123!"
+            Email = "direct.login@smartcampus.com",
+            Password = "DirectLogin123!"
         });
 
         // Act
@@ -325,13 +348,13 @@ public class AuthServiceTests
         // Arrange
         var context = await TestDatabaseHelper.CreateSeededContextAsync();
         var authService = CreateAuthService(context);
-        var userId = Guid.Parse("c1111111-1111-1111-1111-111111111111");
+        var userId = Guid.Parse("b1111111-1111-1111-1111-111111111111"); // Direct login user ID
         
         // First login
         var loginResult = await authService.LoginAsync(new LoginRequestDto
         {
-            Email = "student@test.edu",
-            Password = "Student123!"
+            Email = "direct.login@smartcampus.com",
+            Password = "DirectLogin123!"
         });
 
         // Act

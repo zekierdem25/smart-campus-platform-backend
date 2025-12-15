@@ -23,8 +23,8 @@ public class AttendanceService : IAttendanceService
 
     public AttendanceService(ApplicationDbContext context, IJwtService jwtService)
     {
-        _context = context;
-        _jwtService = jwtService;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _jwtService = jwtService ?? throw new ArgumentNullException(nameof(jwtService));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class AttendanceService : IAttendanceService
         try
         {
             var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(qrCode));
-            var payload = System.Text.Json.JsonSerializer.Deserialize<QrPayload>(json);
+            var payload = System.Text.Json.JsonSerializer.Deserialize<QrPayload>(json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (payload == null)
                 return false;

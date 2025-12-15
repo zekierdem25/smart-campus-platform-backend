@@ -213,22 +213,43 @@ var assemblies = [
   {
     "name": "SmartCampus.API",
     "classes": [
-      { "name": "SmartCampus.API.Controllers.ActivityLogsController", "rp": "SmartCampus.API_ActivityLogsController.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 32, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Controllers.AuthController", "rp": "SmartCampus.API_AuthController.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 215, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.AcademicCalendarController", "rp": "SmartCampus.API_AcademicCalendarController.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 265, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.ActivityLogsController", "rp": "SmartCampus.API_ActivityLogsController.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 32, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.AnnouncementsController", "rp": "SmartCampus.API_AnnouncementsController.html", "cl": 4, "ucl": 7, "cal": 11, "tl": 248, "cb": 2, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.AttendanceController", "rp": "SmartCampus.API_AttendanceController.html", "cl": 15, "ucl": 0, "cal": 15, "tl": 913, "cb": 12, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.AuthController", "rp": "SmartCampus.API_AuthController.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 271, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.CoursesController", "rp": "SmartCampus.API_CoursesController.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 304, "cb": 5, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.DocumentsController", "rp": "SmartCampus.API_DocumentsController.html", "cl": 104, "ucl": 7, "cal": 111, "tl": 213, "cb": 5, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.EnrollmentsController", "rp": "SmartCampus.API_EnrollmentsController.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 229, "cb": 10, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.GradesController", "rp": "SmartCampus.API_GradesController.html", "cl": 142, "ucl": 35, "cal": 177, "tl": 577, "cb": 18, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Controllers.SectionsController", "rp": "SmartCampus.API_SectionsController.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 255, "cb": 4, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Controllers.UsersController", "rp": "SmartCampus.API_UsersController.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 202, "cb": 2, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Data.ApplicationDbContext", "rp": "SmartCampus.API_ApplicationDbContext.html", "cl": 346, "ucl": 0, "cal": 346, "tl": 399, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Data.ApplicationDbContext", "rp": "SmartCampus.API_ApplicationDbContext.html", "cl": 1222, "ucl": 0, "cal": 1222, "tl": 1409, "cb": 15, "tb": 15, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.DTOs.AnnouncementDto", "rp": "SmartCampus.API_AnnouncementDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 35, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.DTOs.ClassroomDto", "rp": "SmartCampus.API_ClassroomDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 224, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.DTOs.CourseSectionDto", "rp": "SmartCampus.API_CourseSectionDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 224, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.DTOs.CourseSectionSummaryDto", "rp": "SmartCampus.API_CourseSectionSummaryDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 224, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Extensions.BackgroundServices.AttendanceWarningJob", "rp": "SmartCampus.API_AttendanceWarningJob.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 191, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Middleware.ErrorHandlingMiddleware", "rp": "SmartCampus.API_ErrorHandlingMiddleware.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 76, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Middleware.ErrorHandlingMiddlewareExtensions", "rp": "SmartCampus.API_ErrorHandlingMiddlewareExtensions.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 76, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Models.EmailVerificationToken", "rp": "SmartCampus.API_EmailVerificationToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 43, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Models.PasswordResetToken", "rp": "SmartCampus.API_PasswordResetToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 42, "cb": 1, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Models.RefreshToken", "rp": "SmartCampus.API_RefreshToken.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 51, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Models.TwoFactorCode", "rp": "SmartCampus.API_TwoFactorCode.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 69, "cb": 7, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Models.User", "rp": "SmartCampus.API_User.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 70, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Program", "rp": "SmartCampus.API_Program.html", "cl": 134, "ucl": 20, "cal": 154, "tl": 206, "cb": 5, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Program", "rp": "SmartCampus.API_Program.html", "cl": 142, "ucl": 20, "cal": 162, "tl": 223, "cb": 5, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Services.ActivityLogService", "rp": "SmartCampus.API_ActivityLogService.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 71, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.AuthService", "rp": "SmartCampus.API_AuthService.html", "cl": 57, "ucl": 0, "cal": 57, "tl": 837, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.EmailService", "rp": "SmartCampus.API_EmailService.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 339, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.AttendanceService", "rp": "SmartCampus.API_AttendanceService.html", "cl": 46, "ucl": 2, "cal": 48, "tl": 135, "cb": 9, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.AuthService", "rp": "SmartCampus.API_AuthService.html", "cl": 57, "ucl": 0, "cal": 57, "tl": 1083, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.EmailService", "rp": "SmartCampus.API_EmailService.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 566, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.EnrollmentService", "rp": "SmartCampus.API_EnrollmentService.html", "cl": 9, "ucl": 0, "cal": 9, "tl": 241, "cb": 6, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.GradeCalculationService", "rp": "SmartCampus.API_GradeCalculationService.html", "cl": 42, "ucl": 1, "cal": 43, "tl": 86, "cb": 25, "tb": 26, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "SmartCampus.API.Services.JwtService", "rp": "SmartCampus.API_JwtService.html", "cl": 72, "ucl": 1, "cal": 73, "tl": 114, "cb": 5, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "SmartCampus.API.Services.UserService", "rp": "SmartCampus.API_UserService.html", "cl": 55, "ucl": 0, "cal": 55, "tl": 441, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.NotificationService", "rp": "SmartCampus.API_NotificationService.html", "cl": 9, "ucl": 0, "cal": 9, "tl": 359, "cb": 6, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.PrerequisiteService", "rp": "SmartCampus.API_PrerequisiteService.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 117, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.ScheduleConflictService", "rp": "SmartCampus.API_ScheduleConflictService.html", "cl": 32, "ucl": 4, "cal": 36, "tl": 77, "cb": 12, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.SpoofingDetectionService", "rp": "SmartCampus.API_SpoofingDetectionService.html", "cl": 69, "ucl": 8, "cal": 77, "tl": 238, "cb": 55, "tb": 64, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "SmartCampus.API.Services.UserService", "rp": "SmartCampus.API_UserService.html", "cl": 57, "ucl": 0, "cal": 57, "tl": 443, "cb": 8, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -237,9 +258,35 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
+      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
+      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Services.GradeCalculationService", "reportPath": "SmartCampus.API_GradeCalculationService.html", "methodName": "CalculateLetterGrade(System.Nullable`1<System.Decimal>,System.Nullable`1<System.Decimal>,System.Nullable`1<System.Decimal>)", "methodShortName": "CalculateLetterGrade(...)", "fileIndex": 0, "line": 20,
+    "metrics": [
+      { "value": 22, "exceeded": false },
+      { "value": 22, "exceeded": true },
+    ]},
+  {
+    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Controllers.GradesController", "reportPath": "SmartCampus.API_GradesController.html", "methodName": "GenerateTranscriptPdf(SmartCampus.API.DTOs.TranscriptDto,SmartCampus.API.Models.Student)", "methodShortName": "GenerateTranscriptPdf(...)", "fileIndex": 0, "line": 225,
+    "metrics": [
+      { "value": 24, "exceeded": false },
+      { "value": 20, "exceeded": true },
+    ]},
+  {
+    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Services.SpoofingDetectionService", "reportPath": "SmartCampus.API_SpoofingDetectionService.html", "methodName": "IsCampusIp(System.String)", "methodShortName": "IsCampusIp(...)", "fileIndex": 0, "line": 145,
+    "metrics": [
+      { "value": 19, "exceeded": false },
+      { "value": 18, "exceeded": true },
+    ]},
+  {
+    "assembly": "SmartCampus.API", "class": "SmartCampus.API.Services.SpoofingDetectionService", "reportPath": "SmartCampus.API_SpoofingDetectionService.html", "methodName": "IsMobileDevice(System.String)", "methodShortName": "IsMobileDevice(...)", "fileIndex": 0, "line": 172,
+    "metrics": [
+      { "value": 18, "exceeded": false },
+      { "value": 18, "exceeded": true },
+    ]},
 ];
 
 var branchCoverageAvailable = true;
