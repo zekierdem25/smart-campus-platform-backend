@@ -339,6 +339,7 @@ public class AttendanceController : ControllerBase
 
         // Get client IP
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var userAgent = Request.Headers.UserAgent.ToString();
 
         // Spoofing detection
         var spoofCheck = await _spoofingDetectionService.CheckForSpoofingAsync(
@@ -348,7 +349,8 @@ public class AttendanceController : ControllerBase
             ipAddress,
             DateTime.UtcNow,
             request.IsMockLocation,
-            request.SensorData);
+            request.SensorData,
+            userAgent);
 
         // Create attendance record
         var record = new AttendanceRecord
@@ -522,6 +524,74 @@ public class AttendanceController : ControllerBase
                     CheckInTime = s.Records.FirstOrDefault(r => r.StudentId == student.Id)?.CheckInTime
                 }).OrderByDescending(h => h.Date).ToList()
             };
+        }).ToList();
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get active attendance sessions for enrolled courses (Student)
+    /// </summary>
+    [HttpGet("active-sessions")]
+    [Authorize(Roles = "Student")]
+    public async Task<ActionResult<List<AttendanceSessionDto>>> GetActiveSessions()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var student = await _context.Students
+            .FirstOrDefaultAsync(s => s.UserId == Guid.Parse(userId));
+        if (student == null)
+            return BadRequest(new { message = "Student profile not found" });
+
+        // Get all enrollments for this student
+        var enrollments = await _context.Enrollments
+            .Include(e => e.Section)
+                .ThenInclude(s => s.Course)
+            .Where(e => e.StudentId == student.Id && e.Status == EnrollmentStatus.Active)
+            .Select(e => e.SectionId)
+            .ToListAsync();
+
+        if (!enrollments.Any())
+            return Ok(new List<AttendanceSessionDto>());
+
+        // Get active sessions for enrolled sections
+        var activeSessions = await _context.AttendanceSessions
+            .Include(s => s.Section)
+                .ThenInclude(sec => sec.Course)
+            .Include(s => s.Instructor)
+                .ThenInclude(i => i.User)
+            .Include(s => s.Records)
+            .Where(s => enrollments.Contains(s.SectionId) && 
+                       s.Status == AttendanceSessionStatus.Active &&
+                       s.Date == DateTime.UtcNow.Date &&
+                       s.EndTime > DateTime.UtcNow.TimeOfDay)
+            .ToListAsync();
+
+        var result = activeSessions.Select(s => new AttendanceSessionDto
+        {
+            Id = s.Id,
+            SectionId = s.SectionId,
+            CourseCode = s.Section.Course.Code,
+            CourseName = s.Section.Course.Name,
+            SectionNumber = s.Section.SectionNumber,
+            InstructorId = s.InstructorId,
+            InstructorName = $"{s.Instructor.User.FirstName} {s.Instructor.User.LastName}",
+            Date = s.Date,
+            StartTime = s.StartTime,
+            EndTime = s.EndTime,
+            Latitude = s.Latitude,
+            Longitude = s.Longitude,
+            GeofenceRadius = s.GeofenceRadius,
+            QrCode = s.QrCode,
+            QrCodeExpiresAt = s.QrCodeExpiresAt,
+            Status = s.Status.ToString(),
+            TotalStudents = _context.Enrollments.Count(e => e.SectionId == s.SectionId && e.Status == EnrollmentStatus.Active),
+            PresentStudents = s.Records.Count,
+            FlaggedStudents = s.Records.Count(r => r.IsFlagged),
+            CreatedAt = s.CreatedAt,
+            HasCheckedIn = s.Records.Any(r => r.StudentId == student.Id) // Check if student has already checked in
         }).ToList();
 
         return Ok(result);

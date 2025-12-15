@@ -9,7 +9,7 @@ namespace SmartCampus.API.Services;
 
 public interface ISpoofingDetectionService
 {
-    Task<SpoofingCheckResult> CheckForSpoofingAsync(Guid studentId, decimal latitude, decimal longitude, string? ipAddress, DateTime checkInTime, bool? isMockLocation, SensorDataDto? sensorData = null);
+    Task<SpoofingCheckResult> CheckForSpoofingAsync(Guid studentId, decimal latitude, decimal longitude, string? ipAddress, DateTime checkInTime, bool? isMockLocation, SensorDataDto? sensorData = null, string? userAgent = null);
     bool IsCampusIp(string? ipAddress);
 }
 
@@ -52,7 +52,8 @@ public class SpoofingDetectionService : ISpoofingDetectionService
         string? ipAddress, 
         DateTime checkInTime,
         bool? isMockLocation,
-        SensorDataDto? sensorData = null)
+        SensorDataDto? sensorData = null,
+        string? userAgent = null)
     {
         // Check 1: Mock location flag
         if (isMockLocation == true)
@@ -76,15 +77,19 @@ public class SpoofingDetectionService : ISpoofingDetectionService
         }
 
         // Check 3: Sensor data integrity (static accelerometer on mobile devices)
-        if (sensorData != null && !sensorData.Unavailable)
+        // Only check if sensor data is available and from a mobile device
+        // PC/Desktop devices don't have accelerometers, so (0,0,0) or unavailable is normal
+        bool isMobileDevice = IsMobileDevice(userAgent);
+        
+        if (sensorData != null && !sensorData.Unavailable && isMobileDevice)
         {
-            // Check if sensor data is completely static (0,0,0)
-            // This is suspicious for mobile devices as they should have some movement/gravity
-            const decimal threshold = 0.01m; // Small threshold to account for floating point precision
             decimal x = sensorData.X ?? 0;
             decimal y = sensorData.Y ?? 0;
             decimal z = sensorData.Z ?? 0;
             
+            // Check if sensor data is completely static (0,0,0)
+            // This is suspicious for mobile devices as they should have some movement/gravity
+            const decimal threshold = 0.01m; // Small threshold to account for floating point precision
             bool isStatic = System.Math.Abs(x) < threshold &&
                            System.Math.Abs(y) < threshold &&
                            System.Math.Abs(z) < threshold;
@@ -158,6 +163,28 @@ public class SpoofingDetectionService : ISpoofingDetectionService
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Checks if the User-Agent string indicates a mobile device.
+    /// </summary>
+    private bool IsMobileDevice(string? userAgent)
+    {
+        if (string.IsNullOrWhiteSpace(userAgent))
+            return false; // If no user agent, assume desktop (safer for PC users)
+
+        var ua = userAgent.ToLowerInvariant();
+        
+        // Common mobile device indicators
+        return ua.Contains("mobile") ||
+               ua.Contains("android") ||
+               ua.Contains("iphone") ||
+               ua.Contains("ipad") ||
+               ua.Contains("ipod") ||
+               ua.Contains("blackberry") ||
+               ua.Contains("windows phone") ||
+               ua.Contains("opera mini") ||
+               ua.Contains("iemobile");
     }
 
     private List<(IPAddress network, int prefixLength)> ParseCampusNetworks()

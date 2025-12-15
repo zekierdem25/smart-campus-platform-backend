@@ -24,6 +24,7 @@ public class AttendanceSessionDto
     public int PresentStudents { get; set; }
     public int FlaggedStudents { get; set; }
     public DateTime CreatedAt { get; set; }
+    public bool HasCheckedIn { get; set; } // Whether the current student has checked in to this session
 }
 
 public class CreateAttendanceSessionRequest
