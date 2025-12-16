@@ -11,12 +11,17 @@ using SmartCampus.API.Extensions.BackgroundServices;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 
+using PdfSharpCore.Fonts;
+
 namespace SmartCampus.API;
 
 public partial class Program
 {
     public static void Main(string[] args)
     {
+        // Configure Font Resolver for Linux (Cloud Run) support
+        GlobalFontSettings.FontResolver = new CustomFontResolver();
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container
