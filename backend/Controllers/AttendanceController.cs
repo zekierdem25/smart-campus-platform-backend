@@ -337,6 +337,16 @@ public class AttendanceController : ControllerBase
             session.Latitude, session.Longitude,
             session.GeofenceRadius, request.Accuracy);
 
+        // Reject check-in if outside geofence - student cannot participate
+        if (!isWithinGeofence)
+        {
+            return BadRequest(new { 
+                message = $"Sınıfa {distance:F0}m uzaktasınız. Maksimum izin verilen mesafe: {session.GeofenceRadius}m. Check-in yapamazsınız.",
+                distanceFromCenter = (decimal)distance,
+                geofenceRadius = session.GeofenceRadius
+            });
+        }
+
         // Get client IP
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         var userAgent = Request.Headers.UserAgent.ToString();
@@ -364,10 +374,8 @@ public class AttendanceController : ControllerBase
             Accuracy = request.Accuracy,
             IpAddress = ipAddress,
             UserAgent = Request.Headers.UserAgent.ToString(),
-            IsFlagged = spoofCheck.IsSuspicious || !isWithinGeofence,
-            FlagReason = spoofCheck.IsSuspicious 
-                ? spoofCheck.Reason 
-                : (!isWithinGeofence ? "OUTSIDE_GEOFENCE" : null),
+            IsFlagged = spoofCheck.IsSuspicious,
+            FlagReason = spoofCheck.IsSuspicious ? spoofCheck.Reason : null,
             // Store sensor data for audit trail
             SensorAccelerationX = request.SensorData?.X,
             SensorAccelerationY = request.SensorData?.Y,
@@ -381,17 +389,13 @@ public class AttendanceController : ControllerBase
         // Prepare result
         var result = new CheckInResult
         {
-            Success = isWithinGeofence && !spoofCheck.IsSuspicious,
+            Success = !spoofCheck.IsSuspicious,
             DistanceFromCenter = (decimal)distance,
             IsFlagged = record.IsFlagged,
             FlagReason = record.FlagReason
         };
 
-        if (!isWithinGeofence)
-        {
-            result.Message = $"You are {distance:F0}m from the classroom. Maximum allowed: {session.GeofenceRadius}m";
-        }
-        else if (spoofCheck.IsSuspicious)
+        if (spoofCheck.IsSuspicious)
         {
             result.Message = $"Check-in flagged for review: {spoofCheck.Reason}";
         }
