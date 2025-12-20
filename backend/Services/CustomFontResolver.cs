@@ -30,7 +30,8 @@ public class CustomFontResolver : IFontResolver
                 return File.ReadAllBytes(fullPath);
         }
 
-        return null;
+        // Return empty array if font not found (fallback to default)
+        return Array.Empty<byte>();
     }
 
     public FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)

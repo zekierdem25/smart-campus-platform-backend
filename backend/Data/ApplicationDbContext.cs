@@ -41,6 +41,33 @@ public class ApplicationDbContext : DbContext
     // DbSets - Security
     public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 
+    // DbSets - Part 3: Meal Module
+    public DbSet<Cafeteria> Cafeterias { get; set; }
+    public DbSet<MealMenu> MealMenus { get; set; }
+    public DbSet<MealReservation> MealReservations { get; set; }
+    public DbSet<Wallet> Wallets { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
+
+    // DbSets - Part 3: Event Module
+    public DbSet<Event> Events { get; set; }
+    public DbSet<EventRegistration> EventRegistrations { get; set; }
+    public DbSet<EventWaitlist> EventWaitlists { get; set; }
+
+    // DbSets - Part 3: Scheduling Module
+    public DbSet<Schedule> Schedules { get; set; }
+    public DbSet<ClassroomReservation> ClassroomReservations { get; set; }
+
+    // DbSets - Part 3: Payment Module
+    public DbSet<PendingPayment> PendingPayments { get; set; }
+
+    // DbSets - Part 3: Equipment Module
+    public DbSet<Equipment> Equipments { get; set; }
+    public DbSet<EquipmentBorrowing> EquipmentBorrowings { get; set; }
+
+    // DbSets - Part 3: Survey Module
+    public DbSet<EventSurvey> EventSurveys { get; set; }
+    public DbSet<EventSurveyResponse> EventSurveyResponses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -298,6 +325,242 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Title).HasMaxLength(200);
             entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.Type).HasConversion<string>();
+        });
+
+        // ========== Part 3: Meal Module Configurations ==========
+
+        // Cafeteria configuration
+        modelBuilder.Entity<Cafeteria>(entity =>
+        {
+            entity.HasIndex(e => e.Name);
+        });
+
+        // MealMenu configuration
+        modelBuilder.Entity<MealMenu>(entity =>
+        {
+            entity.HasIndex(e => new { e.CafeteriaId, e.Date, e.MealType }).IsUnique();
+            entity.Property(e => e.MealType).HasConversion<string>();
+
+            entity.HasOne(m => m.Cafeteria)
+                .WithMany(c => c.MealMenus)
+                .HasForeignKey(m => m.CafeteriaId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // MealReservation configuration
+        modelBuilder.Entity<MealReservation>(entity =>
+        {
+            entity.HasIndex(e => e.QrCode).IsUnique();
+            entity.HasIndex(e => new { e.UserId, e.Date, e.MealType });
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.MealType).HasConversion<string>();
+
+            entity.HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.Menu)
+                .WithMany(m => m.MealReservations)
+                .HasForeignKey(r => r.MenuId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(r => r.Cafeteria)
+                .WithMany(c => c.MealReservations)
+                .HasForeignKey(r => r.CafeteriaId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Wallet configuration
+        modelBuilder.Entity<Wallet>(entity =>
+        {
+            entity.HasIndex(e => e.UserId).IsUnique();
+
+            entity.HasOne(w => w.User)
+                .WithMany()
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Transaction configuration
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasIndex(e => new { e.WalletId, e.CreatedAt });
+            entity.Property(e => e.Type).HasConversion<string>();
+
+            entity.HasOne(t => t.Wallet)
+                .WithMany(w => w.Transactions)
+                .HasForeignKey(t => t.WalletId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ========== Part 3: Event Module Configurations ==========
+
+        // Event configuration
+        modelBuilder.Entity<Event>(entity =>
+        {
+            entity.HasIndex(e => new { e.Date, e.Status });
+            entity.Property(e => e.Category).HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
+
+            entity.HasOne(e => e.Creator)
+                .WithMany()
+                .HasForeignKey(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // EventRegistration configuration
+        modelBuilder.Entity<EventRegistration>(entity =>
+        {
+            entity.HasIndex(e => new { e.EventId, e.UserId }).IsUnique();
+            entity.HasIndex(e => e.QrCode).IsUnique();
+
+            entity.HasOne(r => r.Event)
+                .WithMany(e => e.EventRegistrations)
+                .HasForeignKey(r => r.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // EventWaitlist configuration
+        modelBuilder.Entity<EventWaitlist>(entity =>
+        {
+            entity.HasIndex(e => new { e.EventId, e.UserId }).IsUnique();
+            entity.HasIndex(e => new { e.EventId, e.Position });
+            entity.Property(e => e.Status).HasConversion<string>();
+
+            entity.HasOne(w => w.Event)
+                .WithMany()
+                .HasForeignKey(w => w.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(w => w.User)
+                .WithMany()
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ========== Part 3: Scheduling Module Configurations ==========
+
+        // Schedule configuration
+        modelBuilder.Entity<Schedule>(entity =>
+        {
+            entity.HasIndex(e => new { e.SectionId, e.DayOfWeek, e.Semester, e.Year });
+            entity.HasIndex(e => new { e.ClassroomId, e.DayOfWeek, e.StartTime, e.Semester, e.Year });
+            entity.Property(e => e.DayOfWeek).HasConversion<string>();
+
+            entity.HasOne(s => s.Section)
+                .WithMany()
+                .HasForeignKey(s => s.SectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(s => s.Classroom)
+                .WithMany()
+                .HasForeignKey(s => s.ClassroomId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ClassroomReservation configuration
+        modelBuilder.Entity<ClassroomReservation>(entity =>
+        {
+            entity.HasIndex(e => new { e.ClassroomId, e.Date, e.StartTime });
+            entity.Property(e => e.Status).HasConversion<string>();
+
+            entity.HasOne(r => r.Classroom)
+                .WithMany()
+                .HasForeignKey(r => r.ClassroomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.Approver)
+                .WithMany()
+                .HasForeignKey(r => r.ApprovedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // ========== Part 3: Payment Module Configurations ==========
+
+        // PendingPayment configuration
+        modelBuilder.Entity<PendingPayment>(entity =>
+        {
+            entity.HasIndex(e => e.SessionId).IsUnique();
+            entity.HasIndex(e => new { e.UserId, e.Status });
+
+            entity.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ========== Part 3: Equipment Module Configurations ==========
+
+        // Equipment configuration
+        modelBuilder.Entity<Equipment>(entity =>
+        {
+            entity.HasIndex(e => e.SerialNumber).IsUnique();
+            entity.HasIndex(e => new { e.Type, e.Status });
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
+        });
+
+        // EquipmentBorrowing configuration
+        modelBuilder.Entity<EquipmentBorrowing>(entity =>
+        {
+            entity.HasIndex(e => new { e.UserId, e.Status });
+            entity.HasIndex(e => new { e.EquipmentId, e.Status });
+            entity.Property(e => e.Status).HasConversion<string>();
+
+            entity.HasOne(b => b.Equipment)
+                .WithMany(e => e.Borrowings)
+                .HasForeignKey(b => b.EquipmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(b => b.User)
+                .WithMany()
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(b => b.Approver)
+                .WithMany()
+                .HasForeignKey(b => b.ApprovedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // ========== Part 3: Survey Module Configurations ==========
+
+        // EventSurvey configuration
+        modelBuilder.Entity<EventSurvey>(entity =>
+        {
+            entity.HasIndex(e => new { e.EventId, e.IsActive });
+
+            entity.HasOne(s => s.Event)
+                .WithMany()
+                .HasForeignKey(s => s.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // EventSurveyResponse configuration
+        modelBuilder.Entity<EventSurveyResponse>(entity =>
+        {
+            entity.HasIndex(e => new { e.SurveyId, e.UserId }).IsUnique();
+
+            entity.HasOne(r => r.Survey)
+                .WithMany(s => s.Responses)
+                .HasForeignKey(r => r.SurveyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // Seed data
@@ -577,6 +840,9 @@ public class ApplicationDbContext : DbContext
 
         // ========== Part 2: Seed Data ==========
         SeedPart2Data(modelBuilder, csDepartmentId, eeDepartmentId);
+
+        // ========== Part 3: Seed Data ==========
+        SeedPart3Data(modelBuilder);
     }
 
     private void SeedPart2Data(ModelBuilder modelBuilder, Guid csDepartmentId, Guid eeDepartmentId)
@@ -1405,5 +1671,142 @@ public class ApplicationDbContext : DbContext
         }
 
         return holidays;
+    }
+
+    private void SeedPart3Data(ModelBuilder modelBuilder)
+    {
+        // 1. Seed Cafeterias
+        var mainCafeteriaId = Guid.Parse("caf11111-1111-1111-1111-111111111111");
+        var engCafeteriaId = Guid.Parse("caf22222-2222-2222-2222-222222222222");
+
+        modelBuilder.Entity<Cafeteria>().HasData(
+            new Cafeteria
+            {
+                Id = mainCafeteriaId,
+                Name = "Ana Yemekhane",
+                Location = "Kampüs Merkezi",
+                Capacity = 500,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Cafeteria
+            {
+                Id = engCafeteriaId,
+                Name = "Mühendislik Kantini",
+                Location = "Mühendislik Fakültesi",
+                Capacity = 200,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
+
+        // 2. Seed Events
+        var adminUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+        var faculty1UserId = Guid.Parse("f1111111-1111-1111-1111-111111111111");
+
+        modelBuilder.Entity<Event>().HasData(
+            new Event
+            {
+                Id = Guid.Parse("e0e11111-1111-1111-1111-111111111111"),
+                Title = "Bahar Şenliği 2024",
+                Description = "Yıllık geleneksel bahar şenliği etkinlikleri.",
+                Category = EventCategory.Social,
+                Date = DateTime.UtcNow.AddDays(30).Date,
+                StartTime = new TimeSpan(10, 0, 0),
+                EndTime = new TimeSpan(18, 0, 0),
+                Location = "Kampüs Meydanı",
+                Capacity = 1000,
+                RegistrationDeadline = DateTime.UtcNow.AddDays(25),
+                IsPaid = false,
+                Status = EventStatus.Published,
+                CreatedBy = adminUserId,
+                RegisteredCount = 0,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Event
+            {
+                Id = Guid.Parse("e0e22222-2222-2222-2222-222222222222"),
+                Title = "Yapay Zeka Semineri",
+                Description = "Geleceğin teknolojisi yapay zeka üzerine derinlemesine bir bakış.",
+                Category = EventCategory.Conference,
+                Date = DateTime.UtcNow.AddDays(5).Date,
+                StartTime = new TimeSpan(14, 0, 0),
+                EndTime = new TimeSpan(16, 0, 0),
+                Location = "Konferans Salonu A",
+                Capacity = 150,
+                RegistrationDeadline = DateTime.UtcNow.AddDays(4),
+                IsPaid = false,
+                Status = EventStatus.Published,
+                CreatedBy = faculty1UserId,
+                RegisteredCount = 0,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+             new Event
+            {
+                Id = Guid.Parse("e0e33333-3333-3333-3333-333333333333"),
+                Title = "Python Atölyesi",
+                Description = "Başlangıç seviyesi Python programlama atölyesi.",
+                Category = EventCategory.Workshop,
+                Date = DateTime.UtcNow.AddDays(10).Date,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(12, 0, 0),
+                Location = "Bilgisayar Lab 1",
+                Capacity = 30,
+                RegistrationDeadline = DateTime.UtcNow.AddDays(8),
+                IsPaid = true,
+                Price = 50.00m,
+                Status = EventStatus.Published,
+                CreatedBy = faculty1UserId,
+                RegisteredCount = 0,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
+
+        // 3. Seed Meal Menus
+        var today = DateTime.UtcNow.Date;
+        
+        modelBuilder.Entity<MealMenu>().HasData(
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa11111-1111-1111-1111-111111111111"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today,
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Mercimek Çorbası\", \"Orman Kebabı\", \"Pirinç Pilavı\", \"Ayran\"]",
+                CalorieCount = 850,
+                Price = 20.00m,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa22222-2222-2222-2222-222222222222"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today,
+                MealType = MealType.Dinner,
+                ItemsJson = "[\"Domates Çorbası\", \"Tavuk Sote\", \"Bulgur Pilavı\", \"Meyve\"]",
+                CalorieCount = 750,
+                Price = 20.00m,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa33333-3333-3333-3333-333333333333"),
+                CafeteriaId = engCafeteriaId,
+                Date = today,
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Ezogelin Çorbası\", \"İzmir Köfte\", \"Makarna\", \"Salata\"]",
+                CalorieCount = 900,
+                Price = 25.00m,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
     }
 }

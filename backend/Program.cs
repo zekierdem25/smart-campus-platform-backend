@@ -10,6 +10,8 @@ using SmartCampus.API.Services;
 using SmartCampus.API.Extensions.BackgroundServices;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
+using Hangfire;
+using Hangfire.InMemory;
 
 using PdfSharpCore.Fonts;
 
@@ -92,6 +94,41 @@ public partial class Program
 
         // Register Services - Notification System
         builder.Services.AddScoped<INotificationService, NotificationService>();
+
+        // Register Services - Payment System
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+        // Register Services - Scheduling System
+        builder.Services.AddScoped<ISchedulingService, SchedulingService>();
+
+        // Register Services - QR Code System
+        builder.Services.AddSingleton<IQRCodeService, QRCodeService>();
+
+        // Register Services - Background Jobs
+        builder.Services.AddScoped<IEventReminderService, EventReminderService>();
+        builder.Services.AddScoped<IWaitlistProcessingService, WaitlistProcessingService>();
+
+        // Hangfire Configuration (In-Memory for development/testing, MySQL for production)
+        builder.Services.AddHangfire(config =>
+        {
+            config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings();
+            
+            // Use InMemory for development/testing, configure MySQL/SQL Server for production
+            if (builder.Environment.IsDevelopment() || builder.Environment.EnvironmentName == "Testing")
+            {
+                config.UseInMemoryStorage();
+            }
+            else
+            {
+                // Production: Use InMemory for now (change to UseMySqlStorage when Hangfire.MySql is added)
+                // Install Hangfire.MySql package and configure:
+                // config.UseStorage(new MySqlStorage(connectionString, new MySqlStorageOptions()));
+                config.UseInMemoryStorage();
+            }
+        });
+        builder.Services.AddHangfireServer();
 
         // Register Background Services
         builder.Services.AddHostedService<AttendanceWarningJob>();
@@ -188,6 +225,20 @@ public partial class Program
                     logger.LogError(ex, "Database migration hatası");
                 }
             }
+        }
+
+        // Hangfire Dashboard (Admin only in production)
+        app.UseHangfireDashboard("/hangfire", new DashboardOptions
+        {
+            DashboardTitle = "Smart Campus Background Jobs",
+            // In development, allow anonymous access; in production, restrict to admin
+            IsReadOnlyFunc = (context) => !app.Environment.IsDevelopment()
+        });
+
+        // Register recurring background jobs
+        if (app.Environment.EnvironmentName != "Testing")
+        {
+            BackgroundJobsRegistration.RegisterRecurringJobs();
         }
 
         // Configure the HTTP request pipeline

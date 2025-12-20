@@ -356,4 +356,483 @@ public class NotificationService : INotificationService
             _logger.LogError(ex, "Error in NotifyStudentsOnAttendanceSessionStartAsync for session: {SessionId}", sessionId);
         }
     }
+
+    // ========== Part 3: Meal Notifications ==========
+
+    public async Task SendMealReservationConfirmationAsync(Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _context.MealReservations
+                .Include(r => r.Menu)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation?.User?.Email == null)
+            {
+                _logger.LogWarning("User email not found for meal reservation: {ReservationId}", reservationId);
+                return;
+            }
+
+            var mealTypeText = reservation.Menu.MealType.ToString() switch
+            {
+                "Breakfast" => "Kahvaltı",
+                "Lunch" => "Öğle Yemeği",
+                "Dinner" => "Akşam Yemeği",
+                _ => reservation.Menu.MealType.ToString()
+            };
+
+            var subject = $"Yemek Rezervasyonunuz Onaylandı - {reservation.Menu.Date:dd.MM.yyyy}";
+            var htmlBody = BuildEmailTemplate(
+                "Yemek Rezervasyonu",
+                "#34a853",
+                $"Sayın <strong>{reservation.User.FirstName} {reservation.User.LastName}</strong>,",
+                "Yemek rezervasyonunuz başarıyla oluşturuldu.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {reservation.Menu.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Öğün:</strong> {mealTypeText}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>QR Kod:</strong> {reservation.QrCode}</p>");
+
+            await SendEmailFireAndForgetAsync(reservation.User.Email, subject, htmlBody, "Meal reservation confirmation");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendMealReservationConfirmationAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    public async Task SendMealReservationCancellationAsync(Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _context.MealReservations
+                .Include(r => r.Menu)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation?.User?.Email == null) return;
+
+            var subject = $"Yemek Rezervasyonunuz İptal Edildi - {reservation.Menu.Date:dd.MM.yyyy}";
+            var htmlBody = BuildEmailTemplate(
+                "Rezervasyon İptali",
+                "#ea4335",
+                $"Sayın <strong>{reservation.User.FirstName} {reservation.User.LastName}</strong>,",
+                $"{reservation.Menu.Date:dd.MM.yyyy} tarihli yemek rezervasyonunuz iptal edilmiştir.",
+                "");
+
+            await SendEmailFireAndForgetAsync(reservation.User.Email, subject, htmlBody, "Meal reservation cancellation");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendMealReservationCancellationAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    // ========== Part 3: Event Notifications ==========
+
+    public async Task SendEventRegistrationConfirmationAsync(Guid registrationId)
+    {
+        try
+        {
+            var registration = await _context.EventRegistrations
+                .Include(r => r.Event)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == registrationId);
+
+            if (registration?.User?.Email == null) return;
+
+            var subject = $"Etkinlik Kaydınız Onaylandı - {registration.Event.Title}";
+            var htmlBody = BuildEmailTemplate(
+                "Etkinlik Kaydı",
+                "#1a73e8",
+                $"Sayın <strong>{registration.User.FirstName} {registration.User.LastName}</strong>,",
+                $"<strong>{registration.Event.Title}</strong> etkinliğine kaydınız başarıyla tamamlandı.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Etkinlik:</strong> {registration.Event.Title}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {registration.Event.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Saat:</strong> {registration.Event.StartTime:hh\\:mm} - {registration.Event.EndTime:hh\\:mm}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Konum:</strong> {registration.Event.Location}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>QR Kod:</strong> {registration.QrCode}</p>");
+
+            await SendEmailFireAndForgetAsync(registration.User.Email, subject, htmlBody, "Event registration confirmation");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEventRegistrationConfirmationAsync: {RegistrationId}", registrationId);
+        }
+    }
+
+    public async Task SendEventRegistrationCancellationAsync(Guid registrationId)
+    {
+        try
+        {
+            var registration = await _context.EventRegistrations
+                .Include(r => r.Event)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == registrationId);
+
+            if (registration?.User?.Email == null) return;
+
+            var subject = $"Etkinlik Kaydınız İptal Edildi - {registration.Event.Title}";
+            var htmlBody = BuildEmailTemplate(
+                "Kayıt İptali",
+                "#ea4335",
+                $"Sayın <strong>{registration.User.FirstName} {registration.User.LastName}</strong>,",
+                $"<strong>{registration.Event.Title}</strong> etkinliğine kaydınız iptal edilmiştir.",
+                "");
+
+            await SendEmailFireAndForgetAsync(registration.User.Email, subject, htmlBody, "Event registration cancellation");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEventRegistrationCancellationAsync: {RegistrationId}", registrationId);
+        }
+    }
+
+    public async Task SendEventWaitlistPromotionAsync(Guid registrationId)
+    {
+        try
+        {
+            var registration = await _context.EventRegistrations
+                .Include(r => r.Event)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == registrationId);
+
+            if (registration?.User?.Email == null) return;
+
+            var subject = $"Bekleme Listesinden Kaydınız Yapıldı - {registration.Event.Title}";
+            var htmlBody = BuildEmailTemplate(
+                "Waitlist Promosyonu",
+                "#34a853",
+                $"Sayın <strong>{registration.User.FirstName} {registration.User.LastName}</strong>,",
+                "Bekleme listesinde yeriniz açıldı ve etkinliğe otomatik olarak kaydedildiniz!",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Etkinlik:</strong> {registration.Event.Title}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {registration.Event.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>QR Kod:</strong> {registration.QrCode}</p>");
+
+            await SendEmailFireAndForgetAsync(registration.User.Email, subject, htmlBody, "Waitlist promotion");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEventWaitlistPromotionAsync: {RegistrationId}", registrationId);
+        }
+    }
+
+    // ========== Part 3: Classroom Reservation Notifications ==========
+
+    public async Task SendClassroomReservationPendingAsync(Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _context.ClassroomReservations
+                .Include(r => r.Classroom)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation?.User?.Email == null) return;
+
+            var subject = "Derslik Rezervasyonunuz Alındı";
+            var htmlBody = BuildEmailTemplate(
+                "Rezervasyon Bekleniyor",
+                "#fbbc04",
+                $"Sayın <strong>{reservation.User.FirstName} {reservation.User.LastName}</strong>,",
+                "Derslik rezervasyon talebiniz alınmıştır. Onay bekleniyor.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Derslik:</strong> {reservation.Classroom.Building} - {reservation.Classroom.RoomNumber}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {reservation.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Saat:</strong> {reservation.StartTime:hh\\:mm} - {reservation.EndTime:hh\\:mm}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Amaç:</strong> {reservation.Purpose}</p>");
+
+            await SendEmailFireAndForgetAsync(reservation.User.Email, subject, htmlBody, "Classroom reservation pending");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendClassroomReservationPendingAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    public async Task SendClassroomReservationApprovalAsync(Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _context.ClassroomReservations
+                .Include(r => r.Classroom)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation?.User?.Email == null) return;
+
+            var subject = "Derslik Rezervasyonunuz Onaylandı";
+            var htmlBody = BuildEmailTemplate(
+                "Rezervasyon Onaylandı",
+                "#34a853",
+                $"Sayın <strong>{reservation.User.FirstName} {reservation.User.LastName}</strong>,",
+                "Derslik rezervasyonunuz onaylanmıştır.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Derslik:</strong> {reservation.Classroom.Building} - {reservation.Classroom.RoomNumber}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {reservation.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Saat:</strong> {reservation.StartTime:hh\\:mm} - {reservation.EndTime:hh\\:mm}</p>");
+
+            await SendEmailFireAndForgetAsync(reservation.User.Email, subject, htmlBody, "Classroom reservation approval");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendClassroomReservationApprovalAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    public async Task SendClassroomReservationRejectionAsync(Guid reservationId, string? reason = null)
+    {
+        try
+        {
+            var reservation = await _context.ClassroomReservations
+                .Include(r => r.Classroom)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation?.User?.Email == null) return;
+
+            var reasonText = !string.IsNullOrEmpty(reason) 
+                ? $"<p style='margin: 10px 0 0 0; color: #ea4335; font-size: 14px;'><strong>Red Nedeni:</strong> {reason}</p>" 
+                : "";
+
+            var subject = "Derslik Rezervasyonunuz Reddedildi";
+            var htmlBody = BuildEmailTemplate(
+                "Rezervasyon Reddedildi",
+                "#ea4335",
+                $"Sayın <strong>{reservation.User.FirstName} {reservation.User.LastName}</strong>,",
+                "Derslik rezervasyonunuz reddedilmiştir." + reasonText,
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Derslik:</strong> {reservation.Classroom.Building} - {reservation.Classroom.RoomNumber}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {reservation.Date:dd.MM.yyyy}</p>");
+
+            await SendEmailFireAndForgetAsync(reservation.User.Email, subject, htmlBody, "Classroom reservation rejection");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendClassroomReservationRejectionAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    public async Task NotifyAdminClassroomReservationPendingAsync(Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _context.ClassroomReservations
+                .Include(r => r.Classroom)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation == null) return;
+
+            // Get admin emails
+            var adminEmails = await _context.Users
+                .Where(u => u.Role == UserRole.Admin)
+                .Select(u => u.Email)
+                .ToListAsync();
+
+            if (!adminEmails.Any()) return;
+
+            var subject = "[Admin] Yeni Derslik Rezervasyon Talebi";
+            var htmlBody = BuildEmailTemplate(
+                "Yeni Rezervasyon Talebi",
+                "#1a73e8",
+                "Sayın Admin,",
+                "Yeni bir derslik rezervasyon talebi var ve onay bekliyor.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Talep Eden:</strong> {reservation.User.FirstName} {reservation.User.LastName}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Email:</strong> {reservation.User.Email}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Derslik:</strong> {reservation.Classroom.Building} - {reservation.Classroom.RoomNumber}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Tarih:</strong> {reservation.Date:dd.MM.yyyy}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Saat:</strong> {reservation.StartTime:hh\\:mm} - {reservation.EndTime:hh\\:mm}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Amaç:</strong> {reservation.Purpose}</p>");
+
+            foreach (var email in adminEmails)
+            {
+                await SendEmailFireAndForgetAsync(email, subject, htmlBody, "Admin classroom reservation notification");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in NotifyAdminClassroomReservationPendingAsync: {ReservationId}", reservationId);
+        }
+    }
+
+    // ========== Part 3: Equipment Notifications ==========
+
+    public async Task SendEquipmentBorrowingRequestAsync(Guid borrowingId)
+    {
+        try
+        {
+            var borrowing = await _context.EquipmentBorrowings
+                .Include(b => b.Equipment)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.Id == borrowingId);
+
+            if (borrowing?.User?.Email == null) return;
+
+            var subject = $"Ekipman Ödünç Alma Talebiniz Alındı - {borrowing.Equipment.Name}";
+            var htmlBody = BuildEmailTemplate(
+                "Ekipman Talebi",
+                "#fbbc04",
+                $"Sayın <strong>{borrowing.User.FirstName} {borrowing.User.LastName}</strong>,",
+                "Ekipman ödünç alma talebiniz alınmıştır. Admin onayı bekleniyor.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Ekipman:</strong> {borrowing.Equipment.Name}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Seri No:</strong> {borrowing.Equipment.SerialNumber}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Beklenen İade:</strong> {borrowing.ExpectedReturnDate:dd.MM.yyyy}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Amaç:</strong> {borrowing.Purpose}</p>");
+
+            await SendEmailFireAndForgetAsync(borrowing.User.Email, subject, htmlBody, "Equipment borrowing request");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEquipmentBorrowingRequestAsync: {BorrowingId}", borrowingId);
+        }
+    }
+
+    public async Task SendEquipmentBorrowingApprovalAsync(Guid borrowingId)
+    {
+        try
+        {
+            var borrowing = await _context.EquipmentBorrowings
+                .Include(b => b.Equipment)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.Id == borrowingId);
+
+            if (borrowing?.User?.Email == null) return;
+
+            var subject = $"Ekipman Ödünç Alma Talebiniz Onaylandı - {borrowing.Equipment.Name}";
+            var htmlBody = BuildEmailTemplate(
+                "Talep Onaylandı",
+                "#34a853",
+                $"Sayın <strong>{borrowing.User.FirstName} {borrowing.User.LastName}</strong>,",
+                "Ekipman ödünç alma talebiniz onaylanmıştır. Ekipmanı teslim alabilirsiniz.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Ekipman:</strong> {borrowing.Equipment.Name}</p>
+                   <p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Konum:</strong> {borrowing.Equipment.Location}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>İade Tarihi:</strong> {borrowing.ExpectedReturnDate:dd.MM.yyyy}</p>");
+
+            await SendEmailFireAndForgetAsync(borrowing.User.Email, subject, htmlBody, "Equipment borrowing approval");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEquipmentBorrowingApprovalAsync: {BorrowingId}", borrowingId);
+        }
+    }
+
+    public async Task SendEquipmentBorrowingRejectionAsync(Guid borrowingId, string? reason = null)
+    {
+        try
+        {
+            var borrowing = await _context.EquipmentBorrowings
+                .Include(b => b.Equipment)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.Id == borrowingId);
+
+            if (borrowing?.User?.Email == null) return;
+
+            var reasonText = !string.IsNullOrEmpty(reason) 
+                ? $"<p style='margin: 10px 0 0 0; color: #ea4335; font-size: 14px;'><strong>Red Nedeni:</strong> {reason}</p>" 
+                : "";
+
+            var subject = $"Ekipman Ödünç Alma Talebiniz Reddedildi - {borrowing.Equipment.Name}";
+            var htmlBody = BuildEmailTemplate(
+                "Talep Reddedildi",
+                "#ea4335",
+                $"Sayın <strong>{borrowing.User.FirstName} {borrowing.User.LastName}</strong>,",
+                "Ekipman ödünç alma talebiniz reddedilmiştir." + reasonText,
+                $@"<p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>Ekipman:</strong> {borrowing.Equipment.Name}</p>");
+
+            await SendEmailFireAndForgetAsync(borrowing.User.Email, subject, htmlBody, "Equipment borrowing rejection");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEquipmentBorrowingRejectionAsync: {BorrowingId}", borrowingId);
+        }
+    }
+
+    public async Task SendEquipmentReturnConfirmationAsync(Guid borrowingId)
+    {
+        try
+        {
+            var borrowing = await _context.EquipmentBorrowings
+                .Include(b => b.Equipment)
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.Id == borrowingId);
+
+            if (borrowing?.User?.Email == null) return;
+
+            var subject = $"Ekipman İadesi Tamamlandı - {borrowing.Equipment.Name}";
+            var htmlBody = BuildEmailTemplate(
+                "İade Tamamlandı",
+                "#34a853",
+                $"Sayın <strong>{borrowing.User.FirstName} {borrowing.User.LastName}</strong>,",
+                "Ekipman iadeniz başarıyla tamamlanmıştır. Teşekkür ederiz.",
+                $@"<p style='margin: 0 0 10px 0; color: #5f6368; font-size: 14px;'><strong>Ekipman:</strong> {borrowing.Equipment.Name}</p>
+                   <p style='margin: 0; color: #5f6368; font-size: 14px;'><strong>İade Tarihi:</strong> {borrowing.ActualReturnDate:dd.MM.yyyy}</p>");
+
+            await SendEmailFireAndForgetAsync(borrowing.User.Email, subject, htmlBody, "Equipment return confirmation");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in SendEquipmentReturnConfirmationAsync: {BorrowingId}", borrowingId);
+        }
+    }
+
+    // ========== Helper Methods ==========
+
+    private string BuildEmailTemplate(string title, string color, string greeting, string message, string details)
+    {
+        return $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+<body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f5f5f5;'>
+    <table role='presentation' style='width: 100%; border-collapse: collapse; background-color: #f5f5f5;'>
+        <tr>
+            <td style='padding: 40px 20px;'>
+                <table role='presentation' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                    <tr>
+                        <td style='background-color: {color}; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;'>
+                            <h1 style='margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;'>{title}</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='padding: 30px;'>
+                            <p style='margin: 0 0 20px 0; color: #202124; font-size: 16px; line-height: 1.5;'>
+                                {greeting}
+                            </p>
+                            <p style='margin: 0 0 20px 0; color: #202124; font-size: 16px; line-height: 1.5;'>
+                                {message}
+                            </p>
+                            {(string.IsNullOrEmpty(details) ? "" : $"<div style='background-color: #f8f9fa; padding: 20px; border-radius: 4px; margin: 20px 0;'>{details}</div>")}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='background-color: #f8f9fa; padding: 24px 30px; text-align: center; border-top: 1px solid #e8eaed; border-radius: 0 0 8px 8px;'>
+                            <p style='margin: 0; color: #9aa0a6; font-size: 12px;'>
+                                © {DateTime.Now.Year} Smart Campus. Tüm hakları saklıdır.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
+    }
+
+    private Task SendEmailFireAndForgetAsync(string email, string subject, string body, string logContext)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _emailService.SendCustomEmailAsync(email, subject, body);
+                _logger.LogInformation("{Context} notification sent to: {Email}", logContext, email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send {Context} notification to: {Email}", logContext, email);
+            }
+        });
+        return Task.CompletedTask;
+    }
 }

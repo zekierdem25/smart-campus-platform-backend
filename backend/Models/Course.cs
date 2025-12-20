@@ -33,6 +33,13 @@ public class Course
 
     public bool IsActive { get; set; } = true;
 
+    /// <summary>
+    /// JSON array of required classroom features for this course
+    /// Example: ["projector", "computers", "lab_equipment"]
+    /// </summary>
+    [StringLength(1000)]
+    public string? RequirementsJson { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

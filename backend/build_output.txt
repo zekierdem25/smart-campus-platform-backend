@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\Services\CustomFontResolver.cs(33,16): warning CS8603: Possible null reference return. [C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\SmartCampus.API.csproj]
+C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\Services\PaymentService.cs(250,31): error CS0029: Cannot implicitly convert type 'string' to 'System.Guid?' [C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\SmartCampus.API.csproj]
+
+Build FAILED.
+
+C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\Services\CustomFontResolver.cs(33,16): warning CS8603: Possible null reference return. [C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\SmartCampus.API.csproj]
+C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\Services\PaymentService.cs(250,31): error CS0029: Cannot implicitly convert type 'string' to 'System.Guid?' [C:\Users\zekierdem\Desktop\smart-campus-workspace\smart-campus-platform-backend\backend\SmartCampus.API.csproj]
+    1 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.87
+
+Workload updates are available. Run `dotnet workload list` for more information.
