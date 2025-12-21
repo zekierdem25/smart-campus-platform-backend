@@ -197,7 +197,12 @@ public class SchedulingController : ControllerBase
         [FromQuery] string? semester = null,
         [FromQuery] int? year = null)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
+
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
         semester ??= "Fall";
@@ -254,6 +259,9 @@ public class SchedulingController : ControllerBase
                 .ThenInclude(sec => sec.Instructor)
                     .ThenInclude(i => i.User)
             .Include(s => s.Classroom)
+            .Where(s => s.Section != null && s.Section.Course != null && 
+                       s.Section.Instructor != null && s.Section.Instructor.User != null && 
+                       s.Classroom != null)
             .OrderBy(s => s.DayOfWeek)
             .ThenBy(s => s.StartTime)
             .Select(s => new
@@ -297,7 +305,12 @@ public class SchedulingController : ControllerBase
         [FromQuery] string? semester = null,
         [FromQuery] int? year = null)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
+
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
         semester ??= "Fall";
@@ -333,6 +346,7 @@ public class SchedulingController : ControllerBase
             .Include(s => s.Section)
                 .ThenInclude(sec => sec.Course)
             .Include(s => s.Classroom)
+            .Where(s => s.Section != null && s.Section.Course != null && s.Classroom != null)
             .ToListAsync();
 
         // Generate iCal content
@@ -343,6 +357,9 @@ public class SchedulingController : ControllerBase
 
         foreach (var schedule in schedules)
         {
+            if (schedule.Section?.Course == null || schedule.Classroom == null)
+                continue;
+
             ical.AppendLine("BEGIN:VEVENT");
             ical.AppendLine($"UID:{schedule.Id}@smartcampus.com");
             ical.AppendLine($"SUMMARY:{schedule.Section.Course.Code} - {schedule.Section.Course.Name}");

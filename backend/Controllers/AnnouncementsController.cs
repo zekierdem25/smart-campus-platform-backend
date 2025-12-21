@@ -113,6 +113,7 @@ public class AnnouncementsController : ControllerBase
         // Admin can see all announcements
 
         var announcements = await query
+            .Where(a => a.Author != null)
             .OrderByDescending(a => a.IsImportant)
             .ThenByDescending(a => a.CreatedAt)
             .ToListAsync();
@@ -124,7 +125,7 @@ public class AnnouncementsController : ControllerBase
             Content = a.Content,
             CreatedAt = a.CreatedAt,
             AuthorId = a.AuthorId,
-            AuthorName = $"{a.Author.FirstName} {a.Author.LastName}",
+            AuthorName = a.Author != null ? $"{a.Author.FirstName} {a.Author.LastName}" : "Bilinmeyen",
             CourseId = a.CourseId,
             CourseName = a.Course?.Name,
             CourseCode = a.Course?.Code,
