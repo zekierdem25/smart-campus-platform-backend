@@ -166,11 +166,7 @@ public class ClassroomReservationsController : ControllerBase
 
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-        var query = _context.ClassroomReservations
-            .Include(r => r.Classroom)
-            .Include(r => r.User)
-            .Where(r => r.Classroom != null && r.User != null)
-            .AsQueryable();
+        var query = _context.ClassroomReservations.AsQueryable();
 
         // Non-admin users can only see their own reservations or all approved ones
         if (userRole != "Admin")
@@ -190,25 +186,30 @@ public class ClassroomReservationsController : ControllerBase
         if (status.HasValue)
             query = query.Where(r => r.Status == status.Value);
 
-        var totalCount = await query.CountAsync();
+        // Count with join to ensure we only count valid reservations
+        var totalCount = await (from r in query
+                                join c in _context.Classrooms on r.ClassroomId equals c.Id
+                                join u in _context.Users on r.UserId equals u.Id
+                                select r).CountAsync();
 
-        var reservations = await query
-            .OrderByDescending(r => r.Date)
-            .ThenBy(r => r.StartTime)
+        var reservations = await (from r in query
+                                   join c in _context.Classrooms on r.ClassroomId equals c.Id
+                                   join u in _context.Users on r.UserId equals u.Id
+                                   orderby r.Date descending, r.StartTime
+                                   select new
+                                   {
+                                       r.Id,
+                                       r.Date,
+                                       r.StartTime,
+                                       r.EndTime,
+                                       r.Purpose,
+                                       r.Status,
+                                       ClassroomName = $"{c.Building} {c.RoomNumber}",
+                                       UserName = $"{u.FirstName} {u.LastName}",
+                                       r.CreatedAt
+                                   })
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(r => new
-            {
-                r.Id,
-                r.Date,
-                r.StartTime,
-                r.EndTime,
-                r.Purpose,
-                r.Status,
-                ClassroomName = r.Classroom != null ? $"{r.Classroom.Building} {r.Classroom.RoomNumber}" : "Bilinmeyen",
-                UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Bilinmeyen",
-                r.CreatedAt
-            })
             .ToListAsync();
 
         return Ok(new

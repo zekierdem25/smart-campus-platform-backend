@@ -366,32 +366,32 @@ public class EquipmentController : ControllerBase
         }
 
         var query = _context.EquipmentBorrowings
-            .Include(b => b.Equipment)
-            .Where(b => b.UserId == userId && b.Equipment != null)
+            .Where(b => b.UserId == userId)
             .AsQueryable();
 
         if (status.HasValue)
             query = query.Where(b => b.Status == status.Value);
 
-        var borrowings = await query
-            .OrderByDescending(b => b.CreatedAt)
-            .Select(b => new
-            {
-                b.Id,
-                b.BorrowDate,
-                b.ExpectedReturnDate,
-                b.ActualReturnDate,
-                b.Status,
-                b.Purpose,
-                Equipment = new
-                {
-                    b.Equipment.Id,
-                    b.Equipment.Name,
-                    b.Equipment.Type,
-                    b.Equipment.SerialNumber,
-                    b.Equipment.Location
-                }
-            })
+        var borrowings = await (from b in query
+                                 join e in _context.Equipments on b.EquipmentId equals e.Id
+                                 orderby b.CreatedAt descending
+                                 select new
+                                 {
+                                     b.Id,
+                                     b.BorrowDate,
+                                     b.ExpectedReturnDate,
+                                     b.ActualReturnDate,
+                                     b.Status,
+                                     b.Purpose,
+                                     Equipment = new
+                                     {
+                                         e.Id,
+                                         e.Name,
+                                         e.Type,
+                                         e.SerialNumber,
+                                         e.Location
+                                     }
+                                 })
             .ToListAsync();
 
         return Ok(borrowings);

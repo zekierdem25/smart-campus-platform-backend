@@ -44,11 +44,8 @@ public class AnnouncementsController : ControllerBase
             return Unauthorized(new { message = "Kullanıcı bulunamadı" });
         }
 
-        // Base query
-        var query = _context.Announcements
-            .Include(a => a.Author)
-            .Include(a => a.Course)
-            .AsQueryable();
+        // Base query - Use Select projection instead of Include to avoid FK issues
+        var query = _context.Announcements.AsQueryable();
 
         // Filter by course if specified
         if (courseId.HasValue)
@@ -112,25 +109,36 @@ public class AnnouncementsController : ControllerBase
         }
         // Admin can see all announcements
 
-        var announcements = await query
-            .Where(a => a.Author != null)
+        var result = await query
             .OrderByDescending(a => a.IsImportant)
             .ThenByDescending(a => a.CreatedAt)
+            .Select(a => new AnnouncementDto
+            {
+                Id = a.Id,
+                Title = a.Title,
+                Content = a.Content,
+                CreatedAt = a.CreatedAt,
+                AuthorId = a.AuthorId,
+                AuthorName = _context.Users
+                    .Where(u => u.Id == a.AuthorId)
+                    .Select(u => $"{u.FirstName} {u.LastName}")
+                    .FirstOrDefault() ?? "Bilinmeyen",
+                CourseId = a.CourseId,
+                CourseName = a.CourseId.HasValue
+                    ? _context.Courses
+                        .Where(c => c.Id == a.CourseId.Value)
+                        .Select(c => c.Name)
+                        .FirstOrDefault()
+                    : null,
+                CourseCode = a.CourseId.HasValue
+                    ? _context.Courses
+                        .Where(c => c.Id == a.CourseId.Value)
+                        .Select(c => c.Code)
+                        .FirstOrDefault()
+                    : null,
+                IsImportant = a.IsImportant
+            })
             .ToListAsync();
-
-        var result = announcements.Select(a => new AnnouncementDto
-        {
-            Id = a.Id,
-            Title = a.Title,
-            Content = a.Content,
-            CreatedAt = a.CreatedAt,
-            AuthorId = a.AuthorId,
-            AuthorName = a.Author != null ? $"{a.Author.FirstName} {a.Author.LastName}" : "Bilinmeyen",
-            CourseId = a.CourseId,
-            CourseName = a.Course?.Name,
-            CourseCode = a.Course?.Code,
-            IsImportant = a.IsImportant
-        }).ToList();
 
         return Ok(result);
     }

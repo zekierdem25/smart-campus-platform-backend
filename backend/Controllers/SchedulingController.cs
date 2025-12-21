@@ -252,31 +252,27 @@ public class SchedulingController : ControllerBase
                 .Where(s => s.Semester == semester && s.Year == year);
         }
 
-        var schedules = await query
-            .Include(s => s.Section)
-                .ThenInclude(sec => sec.Course)
-            .Include(s => s.Section)
-                .ThenInclude(sec => sec.Instructor)
-                    .ThenInclude(i => i.User)
-            .Include(s => s.Classroom)
-            .Where(s => s.Section != null && s.Section.Course != null && 
-                       s.Section.Instructor != null && s.Section.Instructor.User != null && 
-                       s.Classroom != null)
-            .OrderBy(s => s.DayOfWeek)
-            .ThenBy(s => s.StartTime)
-            .Select(s => new
-            {
-                s.Id,
-                s.DayOfWeek,
-                s.StartTime,
-                s.EndTime,
-                CourseCode = s.Section.Course.Code,
-                CourseName = s.Section.Course.Name,
-                SectionNumber = s.Section.SectionNumber,
-                InstructorName = $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}",
-                Building = s.Classroom.Building,
-                Room = s.Classroom.RoomNumber
-            })
+        // Use join to safely get related data
+        var schedules = await (from s in query
+                              join cs in _context.CourseSections on s.SectionId equals cs.Id
+                              join c in _context.Courses on cs.CourseId equals c.Id
+                              join f in _context.Faculties on cs.InstructorId equals f.Id
+                              join u in _context.Users on f.UserId equals u.Id
+                              join cl in _context.Classrooms on s.ClassroomId equals cl.Id
+                              orderby s.DayOfWeek, s.StartTime
+                              select new
+                              {
+                                  s.Id,
+                                  s.DayOfWeek,
+                                  s.StartTime,
+                                  s.EndTime,
+                                  CourseCode = c.Code,
+                                  CourseName = c.Name,
+                                  SectionNumber = cs.SectionNumber,
+                                  InstructorName = $"{u.FirstName} {u.LastName}",
+                                  Building = cl.Building,
+                                  Room = cl.RoomNumber
+                              })
             .ToListAsync();
 
         // Group by day for weekly view
