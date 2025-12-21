@@ -18,13 +18,7 @@ namespace SmartCampus.API.Services
             // Lokal geliştirme için GOOGLE_APPLICATION_CREDENTIALS ortam değişkeni ayarlanmalıdır
             // veya gcloud auth application-default login komutu çalıştırılmalıdır.
             _storageClient = StorageClient.Create();
-            _bucketName = configuration["GoogleCloud:StorageBucketName"];
-            
-            if (string.IsNullOrEmpty(_bucketName))
-            {
-                // Fallback veya varsayılan değer (gerekirse)
-                _bucketName = "smart-campus-uploads-480717"; 
-            }
+            _bucketName = configuration["GoogleCloud:StorageBucketName"] ?? "smart-campus-uploads-480717";
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, string fileName)

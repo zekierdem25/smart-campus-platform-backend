@@ -37,6 +37,6 @@ public class ActivityLogsControllerTests
         IActivityLogService? service = null;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new ActivityLogsController(service));
+        Assert.Throws<ArgumentNullException>(() => new ActivityLogsController(service!));
     }
 }

@@ -132,7 +132,7 @@ public class QRCodeServiceTests
         Assert.NotNull(result);
         Assert.Equal(prefix, result.Prefix);
         Assert.False(result.IsLegacy);
-        Assert.NotNull(result.Timestamp);
+        Assert.NotEqual(DateTime.MinValue, result.Timestamp);
         
         // Check data JSON integration
         // Note: System.Text.Json deserializes numbers as JsonElement, strings as JsonElement or object.

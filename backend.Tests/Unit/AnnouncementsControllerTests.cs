@@ -34,6 +34,6 @@ public class AnnouncementsControllerTests
         ApplicationDbContext? context = null;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new AnnouncementsController(context));
+        Assert.Throws<ArgumentNullException>(() => new AnnouncementsController(context!));
     }
 }

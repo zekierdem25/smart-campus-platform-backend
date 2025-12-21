@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SmartCampus.API.Data;
+using SmartCampus.API.Services;
+using SmartCampus.API.Tests.Helpers;
 
 namespace SmartCampus.API.Tests.Integration;
 
@@ -26,6 +28,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             {
                 options.UseInMemoryDatabase(_databaseName);
             });
+
+            // Replace GoogleCloudStorageService with MockFileStorageService for testing
+            services.RemoveAll(typeof(IFileStorageService));
+            services.AddScoped<IFileStorageService, MockFileStorageService>();
 
             // Build service provider and ensure database is created
             // Note: The seed data comes from ApplicationDbContext.OnModelCreating's HasData

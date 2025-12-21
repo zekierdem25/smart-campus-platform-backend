@@ -13,6 +13,7 @@ public class UserServiceTests
     private readonly Mock<ILogger<UserService>> _mockLogger;
     private readonly Mock<IWebHostEnvironment> _mockEnvironment;
     private readonly Mock<IActivityLogService> _mockActivityLogService;
+    private readonly Mock<IFileStorageService> _mockFileStorageService;
     private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
 
     public UserServiceTests()
@@ -22,6 +23,7 @@ public class UserServiceTests
         _mockEnvironment.Setup(e => e.ContentRootPath).Returns(Path.GetTempPath());
         _configuration = MockServices.CreateMockConfiguration();
         _mockActivityLogService = new Mock<IActivityLogService>();
+        _mockFileStorageService = new Mock<IFileStorageService>();
     }
 
     private UserService CreateUserService(SmartCampus.API.Data.ApplicationDbContext context)
@@ -31,7 +33,8 @@ public class UserServiceTests
             _mockLogger.Object,
             _configuration,
             _mockEnvironment.Object,
-            _mockActivityLogService.Object
+            _mockActivityLogService.Object,
+            _mockFileStorageService.Object
         );
     }
 
@@ -361,9 +364,16 @@ public class UserServiceTests
         var mockFile = new Mock<IFormFile>();
         mockFile.Setup(f => f.FileName).Returns("test.jpg");
         mockFile.Setup(f => f.Length).Returns(content.Length);
+        mockFile.Setup(f => f.ContentType).Returns("image/jpeg");
         mockFile.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
             .Callback<Stream, CancellationToken>((s, ct) => stream.CopyTo(s))
             .Returns(Task.CompletedTask);
+
+        // Setup mock file storage service to return a URL
+        var expectedUrl = "/uploads/profiles/test-profile.jpg";
+        _mockFileStorageService
+            .Setup(s => s.UploadFileAsync(It.IsAny<IFormFile>(), It.IsAny<string>()))
+            .ReturnsAsync(expectedUrl);
 
         // Act
         var result = await userService.UpdateProfilePictureAsync(userId, mockFile.Object);
@@ -371,7 +381,7 @@ public class UserServiceTests
         // Assert
         Assert.True(result.Success);
         Assert.NotNull(result.Data);
-        Assert.Contains("/uploads/profiles/", result.Data);
+        Assert.Equal(expectedUrl, result.Data);
     }
 
     [Fact]

@@ -22,7 +22,11 @@ public partial class Program
     public static void Main(string[] args)
     {
         // Configure Font Resolver for Linux (Cloud Run) support
-        GlobalFontSettings.FontResolver = new CustomFontResolver();
+        // Only set if not already set (prevents error in integration tests)
+        if (GlobalFontSettings.FontResolver == null)
+        {
+            GlobalFontSettings.FontResolver = new CustomFontResolver();
+        }
 
         var builder = WebApplication.CreateBuilder(args);
 
