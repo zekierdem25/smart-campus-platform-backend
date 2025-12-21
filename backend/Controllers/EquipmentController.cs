@@ -259,7 +259,11 @@ public class EquipmentController : ControllerBase
     [HttpPost("{id}/borrow")]
     public async Task<ActionResult<object>> BorrowEquipment(Guid id, [FromBody] BorrowEquipmentDto dto)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var equipment = await _context.Equipments.FindAsync(id);
         if (equipment == null)
@@ -318,7 +322,11 @@ public class EquipmentController : ControllerBase
     [HttpPost("borrowings/{borrowingId}/return")]
     public async Task<IActionResult> ReturnEquipment(Guid borrowingId)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var borrowing = await _context.EquipmentBorrowings
             .Include(b => b.Equipment)
@@ -351,11 +359,15 @@ public class EquipmentController : ControllerBase
     public async Task<ActionResult<object>> GetMyBorrowings(
         [FromQuery] BorrowingStatus? status = null)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var query = _context.EquipmentBorrowings
             .Include(b => b.Equipment)
-            .Where(b => b.UserId == userId)
+            .Where(b => b.UserId == userId && b.Equipment != null)
             .AsQueryable();
 
         if (status.HasValue)
@@ -392,7 +404,11 @@ public class EquipmentController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ApproveBorrowing(Guid borrowingId)
     {
-        var adminUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var adminUserId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var borrowing = await _context.EquipmentBorrowings
             .Include(b => b.Equipment)
@@ -433,7 +449,11 @@ public class EquipmentController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> RejectBorrowing(Guid borrowingId, [FromBody] RejectBorrowingDto? dto)
     {
-        var adminUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var adminUserId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var borrowing = await _context.EquipmentBorrowings
             .FirstOrDefaultAsync(b => b.Id == borrowingId);

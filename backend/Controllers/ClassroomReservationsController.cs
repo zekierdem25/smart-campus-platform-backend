@@ -25,7 +25,11 @@ public class ClassroomReservationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<object>> CreateReservation([FromBody] CreateClassroomReservationDto dto)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var classroom = await _context.Classrooms.FindAsync(dto.ClassroomId);
         if (classroom == null)
@@ -154,12 +158,18 @@ public class ClassroomReservationsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20)
     {
-        var currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var currentUserId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
+
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
         var query = _context.ClassroomReservations
             .Include(r => r.Classroom)
             .Include(r => r.User)
+            .Where(r => r.Classroom != null && r.User != null)
             .AsQueryable();
 
         // Non-admin users can only see their own reservations or all approved ones
@@ -195,8 +205,8 @@ public class ClassroomReservationsController : ControllerBase
                 r.EndTime,
                 r.Purpose,
                 r.Status,
-                ClassroomName = $"{r.Classroom.Building} {r.Classroom.RoomNumber}",
-                UserName = $"{r.User.FirstName} {r.User.LastName}",
+                ClassroomName = r.Classroom != null ? $"{r.Classroom.Building} {r.Classroom.RoomNumber}" : "Bilinmeyen",
+                UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Bilinmeyen",
                 r.CreatedAt
             })
             .ToListAsync();
@@ -218,7 +228,11 @@ public class ClassroomReservationsController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ApproveReservation(Guid id)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var reservation = await _context.ClassroomReservations.FindAsync(id);
         if (reservation == null)
@@ -243,7 +257,11 @@ public class ClassroomReservationsController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> RejectReservation(Guid id)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
 
         var reservation = await _context.ClassroomReservations.FindAsync(id);
         if (reservation == null)
@@ -267,7 +285,12 @@ public class ClassroomReservationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> CancelReservation(Guid id)
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { message = "Kullanıcı kimliği bulunamadı" });
+        }
+
         var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
         var reservation = await _context.ClassroomReservations.FindAsync(id);
@@ -318,7 +341,10 @@ public class ClassroomReservationsController : ControllerBase
         var schedules = await _context.Schedules
             .Include(s => s.Section)
                 .ThenInclude(sec => sec.Course)
-            .Where(s => s.ClassroomId == classroomId && s.DayOfWeek == dayOfWeek)
+            .Where(s => s.ClassroomId == classroomId && 
+                       s.DayOfWeek == dayOfWeek &&
+                       s.Section != null && 
+                       s.Section.Course != null)
             .Select(s => new
             {
                 s.StartTime,
