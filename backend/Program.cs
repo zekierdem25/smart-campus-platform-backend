@@ -77,7 +77,10 @@ public partial class Program
 
         // Register Services - Part 1
         builder.Services.AddScoped<IJwtService, JwtService>();
-        builder.Services.AddScoped<IEmailService, EmailService>();
+     builder.Services.AddScoped<IFileStorageService, GoogleCloudStorageService>();
+
+// Add Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IActivityLogService, ActivityLogService>();

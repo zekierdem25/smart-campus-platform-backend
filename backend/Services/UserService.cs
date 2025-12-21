@@ -12,19 +12,22 @@ public class UserService : IUserService
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
     private readonly IActivityLogService _activityLogService;
+    private readonly IFileStorageService _fileStorageService;
 
     public UserService(
         ApplicationDbContext context,
         ILogger<UserService> logger,
         IConfiguration configuration,
         IWebHostEnvironment environment,
-        IActivityLogService activityLogService)
+        IActivityLogService activityLogService,
+        IFileStorageService fileStorageService)
     {
         _context = context;
         _logger = logger;
         _configuration = configuration;
         _environment = environment;
         _activityLogService = activityLogService;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<ApiResponseDto<UserResponseDto>> GetCurrentUserAsync(Guid userId)
@@ -133,32 +136,17 @@ public class UserService : IUserService
             };
         }
 
-        // Dosya kaydet
-        var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads", "profiles");
-        Directory.CreateDirectory(uploadsFolder);
-
         // Eski dosyayı sil
         if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
         {
-            var oldFileName = Path.GetFileName(user.ProfilePictureUrl);
-            var oldFilePath = Path.Combine(uploadsFolder, oldFileName);
-            if (File.Exists(oldFilePath))
-            {
-                File.Delete(oldFilePath);
-            }
+            await _fileStorageService.DeleteFileAsync(user.ProfilePictureUrl);
         }
 
-        // Yeni dosyayı kaydet
+        // Yeni dosyayı Cloud Storage'a yükle
         var fileName = $"{userId}_{DateTime.UtcNow.Ticks}.{extension}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
+        var fileUrl = await _fileStorageService.UploadFileAsync(file, fileName);
 
         // URL'i güncelle
-        var fileUrl = $"/uploads/profiles/{fileName}";
         user.ProfilePictureUrl = fileUrl;
         user.UpdatedAt = DateTime.UtcNow;
 
@@ -367,13 +355,7 @@ public class UserService : IUserService
         // Profil fotoğrafını sil
         if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
         {
-            var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads", "profiles");
-            var oldFileName = Path.GetFileName(user.ProfilePictureUrl);
-            var oldFilePath = Path.Combine(uploadsFolder, oldFileName);
-            if (File.Exists(oldFilePath))
-            {
-                File.Delete(oldFilePath);
-            }
+            await _fileStorageService.DeleteFileAsync(user.ProfilePictureUrl);
         }
 
         // Kullanıcıyı sil
