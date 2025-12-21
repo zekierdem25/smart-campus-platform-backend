@@ -53,7 +53,8 @@ public class ErrorHandlingMiddleware
                 break;
             default:
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response.Message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+                // TEMPORARY DEBUGGING: Show actual error
+                response.Message = $"Sistem hatası: {exception.Message} | Stack: {exception.StackTrace}";
                 break;
         }
 

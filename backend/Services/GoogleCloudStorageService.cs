@@ -9,7 +9,7 @@ namespace SmartCampus.API.Services
 {
     public class GoogleCloudStorageService : IFileStorageService
     {
-        private readonly StorageClient _storageClient;
+        private readonly StorageClient? _storageClient;
         private readonly string _bucketName;
 
         public GoogleCloudStorageService(IConfiguration configuration)
@@ -17,12 +17,29 @@ namespace SmartCampus.API.Services
             // Google Cloud'da çalışırken kimlik doğrulama otomatiktir.
             // Lokal geliştirme için GOOGLE_APPLICATION_CREDENTIALS ortam değişkeni ayarlanmalıdır
             // veya gcloud auth application-default login komutu çalıştırılmalıdır.
-            _storageClient = StorageClient.Create();
+            try
+            {
+                _storageClient = StorageClient.Create();
+            }
+            catch (Exception)
+            {
+                // Credentials bulunamazsa servisin çökmesini engelle (Constructor)
+                // Bu sayede UserService oluşturulabilir ve login işlemi çalışır.
+                // Sadece dosya yükleme denenirse hata veririz.
+                _storageClient = null;
+                Console.WriteLine("Warning: Google Cloud Storage could not be initialized (Missing Credentials). File uploads will fail.");
+            }
+            
             _bucketName = configuration["GoogleCloud:StorageBucketName"] ?? "smart-campus-uploads-480717";
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, string fileName)
         {
+            if (_storageClient == null)
+            {
+                throw new InvalidOperationException("Google Cloud Storage başlatılamadı. Lütfen sunucu loglarını kontrol edin (Credential eksik).");
+            }
+
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
@@ -43,7 +60,7 @@ namespace SmartCampus.API.Services
 
         public async Task DeleteFileAsync(string fileUrl)
         {
-            if (string.IsNullOrEmpty(fileUrl)) return;
+            if (string.IsNullOrEmpty(fileUrl) || _storageClient == null) return;
 
             try 
             {

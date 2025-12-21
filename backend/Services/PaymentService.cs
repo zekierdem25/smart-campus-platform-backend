@@ -248,7 +248,7 @@ public class PaymentService : IPaymentService
                 BalanceAfter = wallet.Balance,
                 ReferenceType = $"Topup:{paymentId}",
                 ReferenceId = null, // Session ID is stored in ReferenceType, ReferenceId is for entity GUIDs
-                Description = $"Cüzdan yükleme - {amount} TL (Ödeme ID: {paymentId})"
+                Description = "Kredi Kartı ile Yükleme"
             };
             _context.Transactions.Add(walletTransaction);
 
@@ -263,7 +263,18 @@ public class PaymentService : IPaymentService
                 paymentId, walletTransaction.Id);
 
             // Send confirmation email (fire and forget)
-            _ = SendPaymentConfirmationEmailAsync(userId, amount, walletTransaction.Id);
+            try 
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null && !string.IsNullOrEmpty(user.Email))
+                {
+                    _ = SendPaymentConfirmationEmailAsync(user.Email, user.FirstName, user.LastName, amount, walletTransaction.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve user for payment confirmation email: {UserId}", userId);
+            }
 
             return new PaymentProcessResult
             {
@@ -309,17 +320,14 @@ public class PaymentService : IPaymentService
     /// <summary>
     /// Sends payment confirmation email
     /// </summary>
-    private async Task SendPaymentConfirmationEmailAsync(Guid userId, decimal amount, Guid transactionId)
+    private async Task SendPaymentConfirmationEmailAsync(string email, string firstName, string lastName, decimal amount, Guid transactionId)
     {
         try
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null || string.IsNullOrEmpty(user.Email)) return;
-
             var subject = "Cüzdan Yükleme Onayı - Smart Campus";
             var body = $@"
                 <h2>Cüzdan Yükleme Başarılı</h2>
-                <p>Sayın {user.FirstName} {user.LastName},</p>
+                <p>Sayın {firstName} {lastName},</p>
                 <p>Cüzdanınıza <strong>{amount:N2} TL</strong> başarıyla yüklenmiştir.</p>
                 <p><strong>İşlem ID:</strong> {transactionId}</p>
                 <p><strong>Tarih:</strong> {DateTime.UtcNow:dd.MM.yyyy HH:mm}</p>
@@ -327,11 +335,11 @@ public class PaymentService : IPaymentService
                 <p>Smart Campus</p>
             ";
 
-            await _emailService.SendCustomEmailAsync(user.Email, subject, body);
+            await _emailService.SendCustomEmailAsync(email, subject, body);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send payment confirmation email to user {UserId}", userId);
+            _logger.LogError(ex, "Failed to send payment confirmation email to {Email}", email);
         }
     }
 }

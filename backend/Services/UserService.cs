@@ -32,27 +32,39 @@ public class UserService : IUserService
 
     public async Task<ApiResponseDto<UserResponseDto>> GetCurrentUserAsync(Guid userId)
     {
-        var user = await _context.Users
-            .Include(u => u.Student)
-                .ThenInclude(s => s!.Department)
-            .Include(u => u.Faculty)
-                .ThenInclude(f => f!.Department)
-            .FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (user == null)
+        try
         {
+            var user = await _context.Users
+                .Include(u => u.Student)
+                    .ThenInclude(s => s!.Department)
+                .Include(u => u.Faculty)
+                    .ThenInclude(f => f!.Department)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return new ApiResponseDto<UserResponseDto>
+                {
+                    Success = false,
+                    Message = "Kullanıcı bulunamadı"
+                };
+            }
+
+            return new ApiResponseDto<UserResponseDto>
+            {
+                Success = true,
+                Data = MapUserToDto(user)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetCurrentUserAsync hatası: {Message}", ex.Message);
             return new ApiResponseDto<UserResponseDto>
             {
                 Success = false,
-                Message = "Kullanıcı bulunamadı"
+                Message = $"Sistem hatası: {ex.Message}"
             };
         }
-
-        return new ApiResponseDto<UserResponseDto>
-        {
-            Success = true,
-            Data = MapUserToDto(user)
-        };
     }
 
     public async Task<ApiResponseDto<UserResponseDto>> UpdateProfileAsync(Guid userId, UpdateProfileRequestDto request)

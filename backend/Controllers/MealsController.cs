@@ -63,6 +63,8 @@ public class MealsController : ControllerBase
                 m.MealType,
                 m.ItemsJson,
                 m.NutritionJson,
+                m.Price,
+                m.CalorieCount,
                 m.IsPublished,
                 m.CreatedAt
             })
@@ -90,6 +92,8 @@ public class MealsController : ControllerBase
                 m.MealType,
                 m.ItemsJson,
                 m.NutritionJson,
+                m.Price,
+                m.CalorieCount,
                 m.IsPublished,
                 m.CreatedAt,
                 m.UpdatedAt
@@ -129,6 +133,8 @@ public class MealsController : ControllerBase
             MealType = dto.MealType,
             ItemsJson = dto.ItemsJson ?? "[]",
             NutritionJson = dto.NutritionJson,
+            Price = dto.Price,
+            CalorieCount = dto.CalorieCount,
             IsPublished = dto.IsPublished
         };
 
@@ -157,6 +163,12 @@ public class MealsController : ControllerBase
 
         if (dto.IsPublished.HasValue)
             menu.IsPublished = dto.IsPublished.Value;
+
+        if (dto.Price.HasValue)
+            menu.Price = dto.Price.Value;
+
+        if (dto.CalorieCount.HasValue)
+            menu.CalorieCount = dto.CalorieCount.Value;
 
         menu.UpdatedAt = DateTime.UtcNow;
 
@@ -232,12 +244,39 @@ public class MealsController : ControllerBase
         }
         else
         {
-            // For paid users, check wallet balance
-            var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == userId);
-            amount = 50; // Default meal price
+             // For paid users, calculate amount
+             amount = menu.Price > 0 ? menu.Price : 50;
+        }
+        
+        // Prepare reservation ID
+        var reservationId = Guid.NewGuid();
 
+        if (amount > 0)
+        {
+            // For paid users, check wallet balance and deduct immediately
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == userId);
+            
             if (wallet == null || wallet.Balance < amount)
                 return BadRequest(new { message = "Yetersiz bakiye. Lütfen cüzdanınıza para yükleyin." });
+
+            // Deduct
+            wallet.Balance -= amount;
+            wallet.UpdatedAt = DateTime.UtcNow;
+            
+            // Explicitly mark as modified to ensure persistence
+            _context.Update(wallet);
+
+            var transaction = new Transaction
+            {
+                WalletId = wallet.Id,
+                Type = TransactionType.Debit,
+                Amount = amount,
+                BalanceAfter = wallet.Balance,
+                ReferenceType = "MealReservation",
+                ReferenceId = reservationId,
+                Description = $"Yemek rezervasyonu - {menu.Date:dd.MM.yyyy} {(menu.MealType == MealType.Lunch ? "Öğle" : "Akşam")}"
+            };
+            _context.Transactions.Add(transaction);
         }
 
         // Generate unique QR code
@@ -245,6 +284,7 @@ public class MealsController : ControllerBase
 
         var reservation = new MealReservation
         {
+            Id = reservationId,
             UserId = userId,
             MenuId = menu.Id,
             CafeteriaId = menu.CafeteriaId,
@@ -444,28 +484,8 @@ public class MealsController : ControllerBase
         reservation.UsedAt = DateTime.UtcNow;
         reservation.UpdatedAt = DateTime.UtcNow;
 
-        // Deduct from wallet if paid
-        if (reservation.Amount > 0)
-        {
-            var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == reservation.UserId);
-            if (wallet != null)
-            {
-                wallet.Balance -= reservation.Amount;
-                wallet.UpdatedAt = DateTime.UtcNow;
-
-                var transaction = new Transaction
-                {
-                    WalletId = wallet.Id,
-                    Type = TransactionType.Debit,
-                    Amount = reservation.Amount,
-                    BalanceAfter = wallet.Balance,
-                    ReferenceType = "MealReservation",
-                    ReferenceId = reservation.Id,
-                    Description = "Yemek rezervasyonu kullanımı"
-                };
-                _context.Transactions.Add(transaction);
-            }
-        }
+        // Payment is already handled at reservation time
+        // Just mark as used
 
         await _context.SaveChangesAsync();
 
@@ -509,12 +529,16 @@ public record CreateMenuDto(
     MealType MealType,
     string? ItemsJson,
     string? NutritionJson,
+    decimal Price,
+    int CalorieCount,
     bool IsPublished = false
 );
 
 public record UpdateMenuDto(
     string? ItemsJson,
     string? NutritionJson,
+    decimal? Price,
+    int? CalorieCount,
     bool? IsPublished
 );
 
