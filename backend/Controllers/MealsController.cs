@@ -35,11 +35,15 @@ public class MealsController : ControllerBase
     {
         var query = _context.MealMenus
             .Include(m => m.Cafeteria)
-            .Where(m => m.IsPublished)
+            // .Where(m => m.IsPublished)
             .AsQueryable();
 
         if (date.HasValue)
-            query = query.Where(m => m.Date.Date == date.Value.Date);
+        {
+            var start = date.Value.Date;
+            var end = start.AddDays(1);
+            query = query.Where(m => m.Date >= start && m.Date < end);
+        }
 
         if (mealType.HasValue)
             query = query.Where(m => m.MealType == mealType.Value);
@@ -194,8 +198,8 @@ public class MealsController : ControllerBase
         if (menu == null)
             return BadRequest(new { message = "Menü bulunamadı" });
 
-        if (!menu.IsPublished)
-            return BadRequest(new { message = "Bu menü henüz yayınlanmamış" });
+        // if (!menu.IsPublished)
+        //    return BadRequest(new { message = "Bu menü henüz yayınlanmamış" });
 
         if (menu.Date.Date < DateTime.UtcNow.Date)
             return BadRequest(new { message = "Geçmiş tarihli menü için rezervasyon yapılamaz" });
