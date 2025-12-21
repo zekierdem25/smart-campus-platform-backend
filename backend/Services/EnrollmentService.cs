@@ -279,7 +279,7 @@ public class EnrollmentService : IEnrollmentService
             HomeworkGrade = e.HomeworkGrade,
             LetterGrade = e.LetterGrade,
             GradePoint = e.GradePoint,
-            Schedule = _scheduleConflictService.ParseScheduleJson(e.Section.ScheduleJson)
+            Schedule = e.Section != null ? _scheduleConflictService.ParseScheduleJson(e.Section.ScheduleJson) : new List<ScheduleSlotDto>()
         }).ToList();
     }
 }

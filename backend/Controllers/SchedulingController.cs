@@ -424,7 +424,6 @@ public class SchedulingController : ControllerBase
                 s.EndTime,
                 s.Semester,
                 s.Year,
-                s.Year,
                 CourseCode = s.Section != null && s.Section.Course != null ? s.Section.Course.Code : "UNKNOWN",
                 CourseName = s.Section != null && s.Section.Course != null ? s.Section.Course.Name : "Unknown Course",
                 SectionNumber = s.Section != null ? s.Section.SectionNumber : 0,
