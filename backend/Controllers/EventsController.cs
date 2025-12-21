@@ -78,7 +78,7 @@ public class EventsController : ControllerBase
                 e.IsPaid,
                 e.Price,
                 e.Status,
-                CreatorName = $"{e.Creator.FirstName} {e.Creator.LastName}",
+                CreatorName = e.Creator != null ? $"{e.Creator.FirstName} {e.Creator.LastName}" : "Unknown Creator",
                 e.CreatedAt
             })
             .ToListAsync();
@@ -122,7 +122,7 @@ public class EventsController : ControllerBase
                 e.IsPaid,
                 e.Price,
                 e.Status,
-                CreatorName = $"{e.Creator.FirstName} {e.Creator.LastName}",
+                CreatorName = e.Creator != null ? $"{e.Creator.FirstName} {e.Creator.LastName}" : "Unknown Creator",
                 e.CreatedAt,
                 e.UpdatedAt
             })
@@ -513,18 +513,18 @@ public class EventsController : ControllerBase
                 r.CheckedIn,
                 r.CheckedInAt,
                 r.RegistrationDate,
-                Event = new
-                {
-                    r.Event.Id,
-                    r.Event.Title,
-                    r.Event.Description,
-                    r.Event.Category,
-                    r.Event.Date,
-                    r.Event.StartTime,
-                    r.Event.EndTime,
-                    r.Event.Location,
-                    r.Event.Status
-                }
+                    Event = r.Event != null ? new
+                    {
+                        r.Event.Id,
+                        r.Event.Title,
+                        r.Event.Description,
+                        r.Event.Category,
+                        r.Event.Date,
+                        r.Event.StartTime,
+                        r.Event.EndTime,
+                        r.Event.Location,
+                        r.Event.Status
+                    } : null
             })
             .ToListAsync();
 
@@ -577,7 +577,7 @@ public class EventsController : ControllerBase
                 w.Position,
                 w.AddedAt,
                 w.Status,
-                Event = new
+                Event = w.Event != null ? new
                 {
                     w.Event.Id,
                     w.Event.Title,
@@ -589,7 +589,7 @@ public class EventsController : ControllerBase
                     w.Event.Location,
                     w.Event.Capacity,
                     w.Event.RegisteredCount
-                }
+                } : null
             })
             .ToListAsync();
 

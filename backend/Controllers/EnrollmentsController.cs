@@ -204,8 +204,10 @@ public class EnrollmentsController : ControllerBase
                 enrollmentId = e.Id,
                 studentId = e.StudentId,
                 studentNumber = e.Student.StudentNumber,
-                studentName = $"{e.Student.User.FirstName} {e.Student.User.LastName}",
-                email = e.Student.User.Email,
+                studentName = e.Student != null && e.Student.User != null 
+                    ? $"{e.Student.User.FirstName} {e.Student.User.LastName}" 
+                    : "Unknown Student",
+                email = e.Student != null && e.Student.User != null ? e.Student.User.Email : "",
                 enrollmentDate = e.EnrollmentDate,
                 midtermGrade = e.MidtermGrade,
                 finalGrade = e.FinalGrade,

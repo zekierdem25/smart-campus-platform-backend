@@ -58,7 +58,7 @@ public class MealsController : ControllerBase
             {
                 m.Id,
                 m.CafeteriaId,
-                CafeteriaName = m.Cafeteria.Name,
+                CafeteriaName = m.Cafeteria != null ? m.Cafeteria.Name : "Unknown Cafeteria",
                 m.Date,
                 m.MealType,
                 m.ItemsJson,
@@ -84,8 +84,8 @@ public class MealsController : ControllerBase
             {
                 m.Id,
                 m.CafeteriaId,
-                CafeteriaName = m.Cafeteria.Name,
-                CafeteriaLocation = m.Cafeteria.Location,
+                CafeteriaName = m.Cafeteria != null ? m.Cafeteria.Name : "Unknown Cafeteria",
+                CafeteriaLocation = m.Cafeteria != null ? m.Cafeteria.Location : "Unknown Location",
                 m.Date,
                 m.MealType,
                 m.ItemsJson,
@@ -367,8 +367,8 @@ public class MealsController : ControllerBase
                 r.Status,
                 r.Amount,
                 r.UsedAt,
-                CafeteriaName = r.Cafeteria.Name,
-                MenuItems = r.Menu.ItemsJson,
+                CafeteriaName = r.Cafeteria != null ? r.Cafeteria.Name : "Unknown Cafeteria",
+                MenuItems = r.Menu != null ? r.Menu.ItemsJson : "[]",
                 r.CreatedAt
             })
             .ToListAsync();

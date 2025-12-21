@@ -119,7 +119,7 @@ public class EquipmentController : ControllerBase
                     .Select(b => new
                     {
                         b.Id,
-                        BorrowerName = $"{b.User.FirstName} {b.User.LastName}",
+                        BorrowerName = b.User != null ? $"{b.User.FirstName} {b.User.LastName}" : "Unknown User",
                         b.BorrowDate,
                         b.ExpectedReturnDate,
                         b.Status
@@ -517,19 +517,19 @@ public class EquipmentController : ControllerBase
                 b.Status,
                 b.Purpose,
                 b.Notes,
-                User = new
+                User = b.User != null ? new
                 {
                     b.User.Id,
                     Name = $"{b.User.FirstName} {b.User.LastName}",
                     b.User.Email
-                },
-                Equipment = new
+                } : null,
+                Equipment = b.Equipment != null ? new
                 {
                     b.Equipment.Id,
                     b.Equipment.Name,
                     b.Equipment.Type,
                     b.Equipment.SerialNumber
-                }
+                } : null
             })
             .ToListAsync();
 
@@ -562,20 +562,20 @@ public class EquipmentController : ControllerBase
                 b.ExpectedReturnDate,
                 b.Purpose,
                 b.CreatedAt,
-                User = new
+                User = b.User != null ? new
                 {
                     b.User.Id,
                     Name = $"{b.User.FirstName} {b.User.LastName}",
                     b.User.Email
-                },
-                Equipment = new
+                } : null,
+                Equipment = b.Equipment != null ? new
                 {
                     b.Equipment.Id,
                     b.Equipment.Name,
                     b.Equipment.Type,
                     b.Equipment.SerialNumber,
                     b.Equipment.Location
-                }
+                } : null
             })
             .ToListAsync();
 

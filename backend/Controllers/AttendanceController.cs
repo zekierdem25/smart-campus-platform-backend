@@ -512,12 +512,14 @@ public class AttendanceController : ControllerBase
             return new StudentAttendanceDto
             {
                 CourseId = e.Section.CourseId,
-                CourseCode = e.Section.Course.Code,
-                CourseName = e.Section.Course.Name,
+                CourseCode = e.Section != null && e.Section.Course != null ? e.Section.Course.Code : "UNKNOWN",
+                CourseName = e.Section != null && e.Section.Course != null ? e.Section.Course.Name : "Unknown Course",
                 TotalSessions = totalSessions,
                 AttendedSessions = attendedSessions,
                 ExcusedAbsences = excusedAbsences,
-                AttendancePercentage = percentage,
+                AttendancePercentage = totalSessions > 0 
+                    ? Math.Round((decimal)(attendedSessions + excusedAbsences) / totalSessions * 100, 1) 
+                    : 100,
                 Status = status,
                 History = closedSessions.Select(s => new AttendanceHistoryDto
                 {

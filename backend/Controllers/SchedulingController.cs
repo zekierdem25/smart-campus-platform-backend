@@ -169,9 +169,11 @@ public class SchedulingController : ControllerBase
                 {
                     s.Section.Id,
                     s.Section.SectionNumber,
-                    CourseName = s.Section.Course.Name,
-                    CourseCode = s.Section.Course.Code,
-                    InstructorName = $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}"
+                    CourseName = s.Section.Course != null ? s.Section.Course.Name : "Unknown Course",
+                    CourseCode = s.Section.Course != null ? s.Section.Course.Code : "UNKNOWN",
+                    InstructorName = s.Section.Instructor != null && s.Section.Instructor.User != null 
+                        ? $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}" 
+                        : "Unknown Instructor"
                 },
                 Classroom = new
                 {
@@ -253,26 +255,31 @@ public class SchedulingController : ControllerBase
         }
 
         // Use join to safely get related data
-        var schedules = await (from s in query
-                              join cs in _context.CourseSections on s.SectionId equals cs.Id
-                              join c in _context.Courses on cs.CourseId equals c.Id
-                              join f in _context.Faculties on cs.InstructorId equals f.Id
-                              join u in _context.Users on f.UserId equals u.Id
-                              join cl in _context.Classrooms on s.ClassroomId equals cl.Id
-                              orderby s.DayOfWeek, s.StartTime
-                              select new
-                              {
-                                  s.Id,
-                                  s.DayOfWeek,
-                                  s.StartTime,
-                                  s.EndTime,
-                                  CourseCode = c.Code,
-                                  CourseName = c.Name,
-                                  SectionNumber = cs.SectionNumber,
-                                  InstructorName = $"{u.FirstName} {u.LastName}",
-                                  Building = cl.Building,
-                                  Room = cl.RoomNumber
-                              })
+        // Use Include + Select for safer access and to avoid inner join dropping records
+        var schedules = await query
+            .Include(s => s.Section)
+                .ThenInclude(sec => sec.Course)
+            .Include(s => s.Section)
+                .ThenInclude(sec => sec.Instructor)
+                    .ThenInclude(i => i.User)
+            .Include(s => s.Classroom)
+            .OrderBy(s => s.DayOfWeek)
+            .ThenBy(s => s.StartTime)
+            .Select(s => new
+            {
+                s.Id,
+                s.DayOfWeek,
+                s.StartTime,
+                s.EndTime,
+                CourseCode = s.Section != null && s.Section.Course != null ? s.Section.Course.Code : "UNKNOWN",
+                CourseName = s.Section != null && s.Section.Course != null ? s.Section.Course.Name : "Unknown Course",
+                SectionNumber = s.Section != null ? s.Section.SectionNumber : 0,
+                InstructorName = s.Section != null && s.Section.Instructor != null && s.Section.Instructor.User != null 
+                    ? $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}" 
+                    : "Unknown Instructor",
+                Building = s.Classroom != null ? s.Classroom.Building : "Unknown",
+                Room = s.Classroom != null ? s.Classroom.RoomNumber : "Unknown"
+            })
             .ToListAsync();
 
         // Group by day for weekly view
@@ -417,13 +424,16 @@ public class SchedulingController : ControllerBase
                 s.EndTime,
                 s.Semester,
                 s.Year,
-                CourseCode = s.Section.Course.Code,
-                CourseName = s.Section.Course.Name,
-                SectionNumber = s.Section.SectionNumber,
-                InstructorName = $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}",
+                s.Year,
+                CourseCode = s.Section != null && s.Section.Course != null ? s.Section.Course.Code : "UNKNOWN",
+                CourseName = s.Section != null && s.Section.Course != null ? s.Section.Course.Name : "Unknown Course",
+                SectionNumber = s.Section != null ? s.Section.SectionNumber : 0,
+                InstructorName = s.Section != null && s.Section.Instructor != null && s.Section.Instructor.User != null 
+                    ? $"{s.Section.Instructor.User.FirstName} {s.Section.Instructor.User.LastName}" 
+                    : "Unknown Instructor",
                 ClassroomId = s.ClassroomId,
-                Building = s.Classroom.Building,
-                Room = s.Classroom.RoomNumber
+                Building = s.Classroom != null ? s.Classroom.Building : "Unknown",
+                Room = s.Classroom != null ? s.Classroom.RoomNumber : "Unknown"
             })
             .ToListAsync();
 

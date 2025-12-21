@@ -127,12 +127,12 @@ public class ClassroomReservationsController : ControllerBase
                     r.Classroom.RoomNumber,
                     r.Classroom.Capacity
                 },
-                User = new
+                User = r.User != null ? new
                 {
                     r.User.Id,
                     Name = $"{r.User.FirstName} {r.User.LastName}",
                     r.User.Email
-                },
+                } : null,
                 ApproverName = r.Approver == null 
                     ? null
                     : r.Approver.FirstName + " " + r.Approver.LastName,
@@ -186,30 +186,28 @@ public class ClassroomReservationsController : ControllerBase
         if (status.HasValue)
             query = query.Where(r => r.Status == status.Value);
 
-        // Count with join to ensure we only count valid reservations
-        var totalCount = await (from r in query
-                                join c in _context.Classrooms on r.ClassroomId equals c.Id
-                                join u in _context.Users on r.UserId equals u.Id
-                                select r).CountAsync();
+        // Use Include + Select for safer access
+        var totalCount = await query.CountAsync();
 
-        var reservations = await (from r in query
-                                   join c in _context.Classrooms on r.ClassroomId equals c.Id
-                                   join u in _context.Users on r.UserId equals u.Id
-                                   orderby r.Date descending, r.StartTime
-                                   select new
-                                   {
-                                       r.Id,
-                                       r.Date,
-                                       r.StartTime,
-                                       r.EndTime,
-                                       r.Purpose,
-                                       r.Status,
-                                       ClassroomName = $"{c.Building} {c.RoomNumber}",
-                                       UserName = $"{u.FirstName} {u.LastName}",
-                                       r.CreatedAt
-                                   })
+        var reservations = await query
+            .Include(r => r.Classroom)
+            .Include(r => r.User)
+            .OrderByDescending(r => r.Date)
+            .ThenBy(r => r.StartTime)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(r => new
+            {
+                r.Id,
+                r.Date,
+                r.StartTime,
+                r.EndTime,
+                r.Purpose,
+                r.Status,
+                ClassroomName = r.Classroom != null ? $"{r.Classroom.Building} {r.Classroom.RoomNumber}" : "Unknown Classroom",
+                UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown User",
+                r.CreatedAt
+            })
             .ToListAsync();
 
         return Ok(new

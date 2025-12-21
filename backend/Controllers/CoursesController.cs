@@ -77,8 +77,8 @@ public class CoursesController : ControllerBase
         if (!string.IsNullOrEmpty(search))
         {
             search = search.ToLower();
-            query = query.Where(c => c.Code.ToLower().Contains(search) || 
-                                     c.Name.ToLower().Contains(search));
+            query = query.Where(c => (c.Code != null && c.Code.ToLower().Contains(search)) || 
+                                     (c.Name != null && c.Name.ToLower().Contains(search)));
         }
 
         if (isActive.HasValue)

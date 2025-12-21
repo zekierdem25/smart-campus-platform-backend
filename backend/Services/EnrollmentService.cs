@@ -266,10 +266,12 @@ public class EnrollmentService : IEnrollmentService
             Id = e.Id,
             StudentId = e.StudentId,
             SectionId = e.SectionId,
-            CourseCode = e.Section.Course.Code,
-            CourseName = e.Section.Course.Name,
-            SectionNumber = e.Section.SectionNumber,
-            InstructorName = $"{e.Section.Instructor.User.FirstName} {e.Section.Instructor.User.LastName}",
+            CourseCode = e.Section != null && e.Section.Course != null ? e.Section.Course.Code : "UNKNOWN",
+            CourseName = e.Section != null && e.Section.Course != null ? e.Section.Course.Name : "Unknown Course",
+            SectionNumber = e.Section != null ? e.Section.SectionNumber : 0,
+            InstructorName = e.Section != null && e.Section.Instructor != null && e.Section.Instructor.User != null 
+                ? $"{e.Section.Instructor.User.FirstName} {e.Section.Instructor.User.LastName}" 
+                : "Unknown Instructor",
             Status = e.Status.ToString(),
             EnrollmentDate = e.EnrollmentDate,
             MidtermGrade = e.MidtermGrade,

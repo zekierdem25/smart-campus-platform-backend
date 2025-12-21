@@ -33,7 +33,9 @@ public class WalletsController : ControllerBase
     [HttpGet("balance")]
     public async Task<ActionResult<object>> GetBalance()
     {
-        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaims) || !Guid.TryParse(userIdClaims, out var userId))
+            return Unauthorized();
 
         var wallet = await _context.Wallets
             .FirstOrDefaultAsync(w => w.UserId == userId);
@@ -42,8 +44,16 @@ public class WalletsController : ControllerBase
         {
             // Create wallet if doesn't exist
             wallet = new Wallet { UserId = userId };
-            _context.Wallets.Add(wallet);
-            await _context.SaveChangesAsync();
+            try 
+            {
+                _context.Wallets.Add(wallet);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create wallet for user {UserId}", userId);
+                return StatusCode(500, new { message = "Cüzdan oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz." });
+            }
         }
 
         return Ok(new
