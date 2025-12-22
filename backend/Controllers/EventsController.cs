@@ -525,6 +525,44 @@ public class EventsController : ControllerBase
     }
 
     /// <summary>
+    /// Check in a participant via QR code string (Convenience endpoint)
+    /// </summary>
+    [HttpPost("{id}/checkin")]
+    [Authorize(Roles = "Admin,Faculty")]
+    public async Task<ActionResult<object>> CheckInWithQr(Guid id, [FromBody] CheckInDto dto)
+    {
+        if (string.IsNullOrEmpty(dto.QrCode))
+            return BadRequest(new { message = "QR kod gereklidir" });
+
+        var registration = await _context.EventRegistrations
+            .Include(r => r.User)
+            .Include(r => r.Event)
+            .FirstOrDefaultAsync(r => r.QrCode == dto.QrCode && r.EventId == id);
+
+        if (registration == null)
+            return NotFound(new { message = "Geçersiz QR kod veya bu etkinliğe ait değil" });
+
+        if (registration.CheckedIn)
+            return BadRequest(new { 
+                message = "Bu katılımcı zaten giriş yapmış", 
+                studentName = $"{registration.User.FirstName} {registration.User.LastName}",
+                checkedInAt = registration.CheckedInAt 
+            });
+
+        registration.CheckedIn = true;
+        registration.CheckedInAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            message = "Giriş başarılı",
+            studentName = $"{registration.User.FirstName} {registration.User.LastName}",
+            checkedInAt = registration.CheckedInAt
+        });
+    }
+
+    /// <summary>
     /// Check in a participant via QR code
     /// </summary>
     [HttpPost("{eventId}/registrations/{regId}/checkin")]

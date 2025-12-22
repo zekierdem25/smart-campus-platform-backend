@@ -417,6 +417,93 @@ public class MealsController : ControllerBase
     }
 
     /// <summary>
+    /// Consume a meal reservation via QR code - Staff only
+    /// </summary>
+    [HttpPost("reservations/consume-qr")]
+    [Authorize(Roles = "Admin,Faculty")]
+    public async Task<ActionResult<object>> ConsumeQR([FromBody] VerifyMealQRDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.QrCode))
+            return BadRequest(new { message = "QR kod gerekli" });
+
+        var reservation = await _context.MealReservations
+            .Include(r => r.User)
+            .Include(r => r.Menu)
+                .ThenInclude(m => m.Cafeteria)
+            .FirstOrDefaultAsync(r => r.QrCode == dto.QrCode);
+
+        if (reservation == null)
+            return NotFound(new { message = "Rezervasyon bulunamadı" });
+
+        if (reservation.Status == MealReservationStatus.Used)
+            return BadRequest(new { message = "Bu rezervasyon zaten kullanıldı", usedAt = reservation.UsedAt });
+
+        if (reservation.Status == MealReservationStatus.Cancelled)
+            return BadRequest(new { message = "Bu rezervasyon iptal edilmiş" });
+
+        if (reservation.Date.Date != DateTime.UtcNow.Date)
+            return BadRequest(new { message = "Rezervasyon bugün için geçerli değil" });
+
+        // Mark as used
+        reservation.Status = MealReservationStatus.Used;
+        reservation.UsedAt = DateTime.UtcNow;
+        reservation.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            success = true,
+            message = "Yemek hakkı kullanıldı",
+            studentName = $"{reservation.User.FirstName} {reservation.User.LastName}",
+            mealType = reservation.MealType.ToString(),
+            date = reservation.Date,
+            cafeteriaName = reservation.Menu.Cafeteria.Name,
+            status = reservation.Status.ToString(),
+            timestamp = reservation.UsedAt
+        });
+    }
+
+    /// <summary>
+    /// Get all reservations (Admin only)
+    /// </summary>
+    [HttpGet("reservations")]
+    [Authorize(Roles = "Admin,Faculty")]
+    public async Task<ActionResult<IEnumerable<object>>> GetReservations(
+        [FromQuery] DateTime? date,
+        [FromQuery] MealReservationStatus? status)
+    {
+        var query = _context.MealReservations
+            .Include(r => r.User)
+            .Include(r => r.Menu)
+            .AsQueryable();
+
+        if (date.HasValue)
+            query = query.Where(r => r.Date.Date == date.Value.Date);
+
+        if (status.HasValue)
+            query = query.Where(r => r.Status == status.Value);
+
+        var reservations = await query
+            .OrderByDescending(r => r.Date)
+            .Select(r => new
+            {
+                r.Id,
+                r.UserId,
+                StudentName = $"{r.User.FirstName} {r.User.LastName}",
+                r.Date,
+                r.MealType,
+                r.Status,
+                IsUsed = r.Status == MealReservationStatus.Used,
+                r.UsedAt,
+                r.QrCode
+            })
+            .ToListAsync();
+
+        return Ok(reservations);
+    }
+
+    /// <summary>
     /// Verify meal reservation QR code - Staff only
     /// </summary>
     [HttpPost("reservations/verify-qr")]
@@ -435,15 +522,7 @@ public class MealsController : ControllerBase
         if (reservation == null)
             return NotFound(new { message = "Rezervasyon bulunamadı" });
 
-        if (reservation.Status == MealReservationStatus.Used)
-            return BadRequest(new { message = "Bu rezervasyon zaten kullanıldı" });
-
-        if (reservation.Status == MealReservationStatus.Cancelled)
-            return BadRequest(new { message = "Bu rezervasyon iptal edilmiş" });
-
-        if (reservation.Date.Date != DateTime.UtcNow.Date)
-            return BadRequest(new { message = "Rezervasyon bugün için geçerli değil" });
-
+        // Pure verification, no status change
         return Ok(new
         {
             id = reservation.Id,
