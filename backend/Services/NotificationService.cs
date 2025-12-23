@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SmartCampus.API.Data;
+using SmartCampus.API.Hubs;
 using SmartCampus.API.Models;
 
 namespace SmartCampus.API.Services;
@@ -8,15 +10,18 @@ public class NotificationService : INotificationService
 {
     private readonly ApplicationDbContext _context;
     private readonly IEmailService _emailService;
+    private readonly IHubContext<NotificationHub> _hubContext;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
         ApplicationDbContext context,
         IEmailService emailService,
+        IHubContext<NotificationHub> hubContext,
         ILogger<NotificationService> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -168,6 +173,21 @@ public class NotificationService : INotificationService
                 gradeInfo += $"<p style='margin: 5px 0; color: #5f6368; font-size: 14px;'><strong>Harf Notu:</strong> {enrollment.LetterGrade}</p>";
             if (enrollment.GradePoint.HasValue)
                 gradeInfo += $"<p style='margin: 5px 0; color: #5f6368; font-size: 14px;'><strong>Not Ortalaması:</strong> {enrollment.GradePoint.Value:F2}</p>";
+
+            // Create in-app notification
+            var notificationTitle = $"Notunuz Açıklandı - {courseCode}";
+            var notificationMessage = $"{courseCode} - {courseName} dersiniz için notlarınız sisteme girilmiştir.";
+            var notificationType = enrollment.GradePoint >= 2.0m ? NotificationType.Success : NotificationType.Info;
+
+            await CreateNotificationAsync(
+                enrollment.Student.UserId,
+                notificationTitle,
+                notificationMessage,
+                NotificationCategory.Academic,
+                notificationType,
+                enrollmentId,
+                "Enrollment"
+            );
 
             var subject = $"Notunuz Açıklandı - {courseCode}";
             var htmlBody = $@"
@@ -834,5 +854,207 @@ public class NotificationService : INotificationService
             }
         });
         return Task.CompletedTask;
+    }
+
+    // ========== Part 4: In-App Notifications ==========
+
+    public async Task CreateNotificationAsync(
+        Guid userId,
+        string title,
+        string message,
+        NotificationCategory category,
+        NotificationType type = NotificationType.Info,
+        Guid? relatedEntityId = null,
+        string? relatedEntityType = null)
+    {
+        try
+        {
+            // Check user preferences
+            var preferences = await GetUserPreferencesAsync(userId);
+            var categoryPref = preferences.GetValueOrDefault(category, (email: true, push: true, sms: false));
+
+            // Create in-app notification (always created, regardless of preferences)
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Message = message,
+                Category = category,
+                Type = type,
+                RelatedEntityId = relatedEntityId,
+                RelatedEntityType = relatedEntityType
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
+            // Send real-time notification via SignalR
+            try
+            {
+                await _hubContext.Clients.Group($"user_{userId}")
+                    .SendAsync("ReceiveNotification", new
+                    {
+                        notification.Id,
+                        notification.Title,
+                        notification.Message,
+                        notification.Category,
+                        notification.Type,
+                        notification.IsRead,
+                        notification.CreatedAt,
+                        notification.RelatedEntityId,
+                        notification.RelatedEntityType
+                    });
+            }
+            catch (Exception hubEx)
+            {
+                // Log but don't fail if SignalR fails
+                _logger.LogWarning(hubEx, "Failed to send real-time notification via SignalR for user {UserId}", userId);
+            }
+
+            _logger.LogInformation("In-app notification created for user {UserId}: {Title}", userId, title);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating notification for user {UserId}", userId);
+            throw;
+        }
+    }
+
+    public async Task<(List<Notification> notifications, int totalCount)> GetUserNotificationsAsync(
+        Guid userId,
+        int page = 1,
+        int pageSize = 20,
+        NotificationCategory? category = null,
+        bool? isRead = null)
+    {
+        try
+        {
+            var query = _context.Notifications
+                .Where(n => n.UserId == userId)
+                .AsQueryable();
+
+            if (category.HasValue)
+                query = query.Where(n => n.Category == category.Value);
+
+            if (isRead.HasValue)
+                query = query.Where(n => n.IsRead == isRead.Value);
+
+            var totalCount = await query.CountAsync();
+
+            var notifications = await query
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (notifications, totalCount);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting notifications for user {UserId}", userId);
+            throw;
+        }
+    }
+
+    public async Task MarkAsReadAsync(Guid notificationId, Guid userId)
+    {
+        try
+        {
+            var notification = await _context.Notifications
+                .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+
+            if (notification == null)
+                return;
+
+            if (!notification.IsRead)
+            {
+                notification.IsRead = true;
+                notification.ReadAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error marking notification {NotificationId} as read", notificationId);
+            throw;
+        }
+    }
+
+    public async Task<int> GetUnreadCountAsync(Guid userId)
+    {
+        try
+        {
+            return await _context.Notifications
+                .CountAsync(n => n.UserId == userId && !n.IsRead);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting unread count for user {UserId}", userId);
+            throw;
+        }
+    }
+
+    public async Task<Dictionary<NotificationCategory, (bool email, bool push, bool sms)>> GetUserPreferencesAsync(Guid userId)
+    {
+        try
+        {
+            var preferences = await _context.NotificationPreferences
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+
+            var result = new Dictionary<NotificationCategory, (bool email, bool push, bool sms)>();
+
+            // Get all categories
+            foreach (var category in Enum.GetValues<NotificationCategory>())
+            {
+                var pref = preferences.FirstOrDefault(p => p.Category == category);
+                result[category] = pref != null
+                    ? (pref.EmailEnabled, pref.PushEnabled, pref.SmsEnabled)
+                    : (email: true, push: true, sms: false); // Defaults
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting preferences for user {UserId}", userId);
+            throw;
+        }
+    }
+
+    public async Task UpdatePreferencesAsync(Guid userId, NotificationCategory category, bool emailEnabled, bool pushEnabled, bool smsEnabled)
+    {
+        try
+        {
+            var preference = await _context.NotificationPreferences
+                .FirstOrDefaultAsync(p => p.UserId == userId && p.Category == category);
+
+            if (preference == null)
+            {
+                preference = new NotificationPreferences
+                {
+                    UserId = userId,
+                    Category = category,
+                    EmailEnabled = emailEnabled,
+                    PushEnabled = pushEnabled,
+                    SmsEnabled = smsEnabled
+                };
+                _context.NotificationPreferences.Add(preference);
+            }
+            else
+            {
+                preference.EmailEnabled = emailEnabled;
+                preference.PushEnabled = pushEnabled;
+                preference.SmsEnabled = smsEnabled;
+                preference.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating preferences for user {UserId}", userId);
+            throw;
+        }
     }
 }

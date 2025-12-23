@@ -74,6 +74,23 @@ public partial class Program
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
+
+            // SignalR JWT Authentication - Get token from query string
+            options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    
+                    // If the request is for SignalR hub, get token from query string
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         // Authorization
@@ -108,6 +125,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         // Register Services - Scheduling System
         builder.Services.AddScoped<ISchedulingService, SchedulingService>();
 
+        // Register Services - Analytics System (Part 4)
+        builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+        builder.Services.AddScoped<IExportService, ExportService>();
+
         // Register Services - QR Code System
         builder.Services.AddSingleton<IQRCodeService, QRCodeService>();
 
@@ -139,6 +160,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
         // Register Background Services
         builder.Services.AddHostedService<AttendanceWarningJob>();
+
+        // SignalR Configuration (Part 4)
+        builder.Services.AddSignalR();
 
         // CORS Configuration
         builder.Services.AddCors(options =>
@@ -280,6 +304,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         app.UseAuthorization();
 
         app.MapControllers();
+
+        // SignalR Hub Mapping (Part 4)
+        app.MapHub<Hubs.NotificationHub>("/hubs/notifications");
 
         app.Run();
     }

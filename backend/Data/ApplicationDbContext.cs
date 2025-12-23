@@ -68,6 +68,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<EventSurvey> EventSurveys { get; set; }
     public DbSet<EventSurveyResponse> EventSurveyResponses { get; set; }
 
+    // DbSets - Part 4: Notification System
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<NotificationPreferences> NotificationPreferences { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -560,6 +564,37 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ========== Part 4: Notification System Configurations ==========
+
+        // Notification configuration
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasIndex(e => new { e.UserId, e.IsRead });
+            entity.HasIndex(e => e.CreatedAt);
+            entity.HasIndex(e => e.Category);
+
+            entity.Property(e => e.Category).HasConversion<string>();
+            entity.Property(e => e.Type).HasConversion<string>();
+
+            entity.HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // NotificationPreferences configuration
+        modelBuilder.Entity<NotificationPreferences>(entity =>
+        {
+            entity.HasIndex(e => new { e.UserId, e.Category }).IsUnique();
+
+            entity.Property(e => e.Category).HasConversion<string>();
+
+            entity.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
