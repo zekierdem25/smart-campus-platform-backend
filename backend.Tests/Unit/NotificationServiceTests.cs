@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SmartCampus.API.Data;
+using SmartCampus.API.Hubs;
 using SmartCampus.API.Models;
 using SmartCampus.API.Services;
 using Xunit;
@@ -12,6 +14,7 @@ public class NotificationServiceTests
 {
     private readonly ApplicationDbContext _context;
     private readonly Mock<IEmailService> _mockEmailService;
+    private readonly Mock<IHubContext<NotificationHub>> _mockHubContext;
     private readonly Mock<ILogger<NotificationService>> _mockLogger;
 
     public NotificationServiceTests()
@@ -22,32 +25,39 @@ public class NotificationServiceTests
         _context = new ApplicationDbContext(options);
         
         _mockEmailService = new Mock<IEmailService>();
+        _mockHubContext = new Mock<IHubContext<NotificationHub>>();
         _mockLogger = new Mock<ILogger<NotificationService>>();
     }
 
     [Fact]
     public void Constructor_WithValidDependencies_ShouldInitialize()
     {
-        var service = new NotificationService(_context, _mockEmailService.Object, _mockLogger.Object);
+        var service = new NotificationService(_context, _mockEmailService.Object, _mockHubContext.Object, _mockLogger.Object);
         Assert.NotNull(service);
     }
 
     [Fact]
     public void Constructor_WithNullContext_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new NotificationService(null!, _mockEmailService.Object, _mockLogger.Object));
+        Assert.Throws<ArgumentNullException>(() => new NotificationService(null!, _mockEmailService.Object, _mockHubContext.Object, _mockLogger.Object));
     }
 
     [Fact]
     public void Constructor_WithNullEmailService_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new NotificationService(_context, null!, _mockLogger.Object));
+        Assert.Throws<ArgumentNullException>(() => new NotificationService(_context, null!, _mockHubContext.Object, _mockLogger.Object));
+    }
+
+    [Fact]
+    public void Constructor_WithNullHubContext_ShouldThrowArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new NotificationService(_context, _mockEmailService.Object, null!, _mockLogger.Object));
     }
 
     [Fact]
     public void Constructor_WithNullLogger_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new NotificationService(_context, _mockEmailService.Object, null!));
+        Assert.Throws<ArgumentNullException>(() => new NotificationService(_context, _mockEmailService.Object, _mockHubContext.Object, null!));
     }
 
     // ========== NotifyFacultyOnCourseDropAsync Tests ==========
@@ -56,7 +66,7 @@ public class NotificationServiceTests
     public async Task NotifyFacultyOnCourseDropAsync_WithValidEnrollment_ShouldSendEmail()
     {
         // Arrange
-        var service = new NotificationService(_context, _mockEmailService.Object, _mockLogger.Object);
+        var service = new NotificationService(_context, _mockEmailService.Object, _mockHubContext.Object, _mockLogger.Object);
         
         var instructorUser = new User { Id = Guid.NewGuid(), FirstName = "Prof", LastName = "X", Email = "prof@smartcampus.edu" };
         var instructor = new Faculty { Id = Guid.NewGuid(), User = instructorUser };
@@ -90,7 +100,7 @@ public class NotificationServiceTests
     public async Task NotifyStudentOnGradeEntryAsync_WithGrades_ShouldSendEmail()
     {
         // Arrange
-        var service = new NotificationService(_context, _mockEmailService.Object, _mockLogger.Object);
+        var service = new NotificationService(_context, _mockEmailService.Object, _mockHubContext.Object, _mockLogger.Object);
         
         var studentUser = new User { Id = Guid.NewGuid(), FirstName = "Alice", LastName = "Student", Email = "alice@smartcampus.edu" };
         var student = new Student { Id = Guid.NewGuid(), User = studentUser };
@@ -125,7 +135,7 @@ public class NotificationServiceTests
     public async Task NotifyStudentOnGradeEntryAsync_NoGrades_ShouldNotSendEmail()
     {
          // Arrange
-        var service = new NotificationService(_context, _mockEmailService.Object, _mockLogger.Object);
+        var service = new NotificationService(_context, _mockEmailService.Object, _mockHubContext.Object, _mockLogger.Object);
         
         var studentUser = new User { Id = Guid.NewGuid(), FirstName = "Bob", LastName = "Builder", Email = "bob@smartcampus.edu" };
         var student = new Student { Id = Guid.NewGuid(), User = studentUser };

@@ -1010,7 +1010,7 @@ public class NotificationService : INotificationService
                 var pref = preferences.FirstOrDefault(p => p.Category == category);
                 result[category] = pref != null
                     ? (pref.EmailEnabled, pref.PushEnabled, pref.SmsEnabled)
-                    : (email: true, push: true, sms: false); // Defaults
+                    : (true, true, false); // Defaults: email=true, push=true, sms=false
             }
 
             return result;

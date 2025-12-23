@@ -43,6 +43,12 @@ public static class BackgroundJobsRegistration
                 TimeZone = TimeZoneInfo.Utc
             });
 
+        // Event reminders - every hour (from WaitlistProcessingService)
+        RecurringJob.AddOrUpdate<IEventReminderService>(
+            "event-reminders",
+            service => service.ProcessEventRemindersAsync(),
+            Cron.Hourly);
+
         // Meal reservation reminders - 1 hour before - Her saat başı
         RecurringJob.AddOrUpdate(
             "meal-reservation-reminders",
@@ -52,6 +58,24 @@ public static class BackgroundJobsRegistration
             {
                 TimeZone = TimeZoneInfo.Utc
             });
+
+        // Expired waitlist processing - every 2 hours
+        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
+            "waitlist-expiration",
+            service => service.ProcessExpiredWaitlistEntriesAsync(),
+            "0 */2 * * *"); // Every 2 hours
+
+        // Waitlist expiring warnings - every hour
+        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
+            "waitlist-expiring-warning",
+            service => service.NotifyWaitlistExpiringAsync(),
+            Cron.Hourly);
+
+        // Overdue equipment processing - twice daily (8am and 8pm)
+        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
+            "overdue-equipment",
+            service => service.ProcessOverdueEquipmentAsync(),
+            "0 8,20 * * *"); // At 08:00 and 20:00
 
         // Analytics data aggregation - Daily at 01:00
         RecurringJob.AddOrUpdate(

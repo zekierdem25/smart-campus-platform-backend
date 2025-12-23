@@ -166,38 +166,3 @@ public class WaitlistProcessingService : IWaitlistProcessingService
     }
 }
 
-/// <summary>
-/// Static class for registering recurring background jobs
-/// </summary>
-public static class BackgroundJobsRegistration
-{
-    /// <summary>
-    /// Register all recurring background jobs
-    /// </summary>
-    public static void RegisterRecurringJobs()
-    {
-        // Event reminders - every hour
-        RecurringJob.AddOrUpdate<IEventReminderService>(
-            "event-reminders",
-            service => service.ProcessEventRemindersAsync(),
-            Cron.Hourly);
-
-        // Expired waitlist processing - every 2 hours
-        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
-            "waitlist-expiration",
-            service => service.ProcessExpiredWaitlistEntriesAsync(),
-            "0 */2 * * *"); // Every 2 hours
-
-        // Waitlist expiring warnings - every hour
-        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
-            "waitlist-expiring-warning",
-            service => service.NotifyWaitlistExpiringAsync(),
-            Cron.Hourly);
-
-        // Overdue equipment processing - twice daily (8am and 8pm)
-        RecurringJob.AddOrUpdate<IWaitlistProcessingService>(
-            "overdue-equipment",
-            service => service.ProcessOverdueEquipmentAsync(),
-            "0 8,20 * * *"); // At 08:00 and 20:00
-    }
-}

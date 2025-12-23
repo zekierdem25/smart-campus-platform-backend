@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.InMemory;
 using SmartCampus.API.Services;
+using SmartCampus.API.Extensions.BackgroundServices;
 using Xunit;
 
 namespace SmartCampus.API.Tests.Unit;
