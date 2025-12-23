@@ -271,6 +271,7 @@ public class SchedulingController : ControllerBase
                 s.DayOfWeek,
                 s.StartTime,
                 s.EndTime,
+                CourseId = s.Section != null && s.Section.Course != null ? s.Section.Course.Id : (Guid?)null,
                 CourseCode = s.Section != null && s.Section.Course != null ? s.Section.Course.Code : "UNKNOWN",
                 CourseName = s.Section != null && s.Section.Course != null ? s.Section.Course.Name : "Unknown Course",
                 SectionNumber = s.Section != null ? s.Section.SectionNumber : 0,
