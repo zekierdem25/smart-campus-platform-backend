@@ -1299,11 +1299,12 @@ public class ApplicationDbContext : DbContext
         for (int year = 2025; year <= 2034; year++)
         {
             var uniqueNum = (year - 2025) * 10; // Her yıl için benzersiz numara (0-90)
+            var yearHex = (year - 2025).ToString("X2"); // 0-9 arası için 2 hex karakter (00-09)
 
             // Yeni Yıl - 1 Ocak
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 1:D6}-0001-0001-0001-000000000001"),
+                Id = new Guid($"ae{yearHex}0001-0001-0001-0001-000000000001"),
                 Title = "Yeni Yıl",
                 StartDate = new DateTime(year, 1, 1),
                 EndDate = new DateTime(year, 1, 1),
@@ -1316,7 +1317,7 @@ public class ApplicationDbContext : DbContext
             // Ulusal Egemenlik ve Çocuk Bayramı - 23 Nisan
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 2:D6}-0002-0002-0002-000000000002"),
+                Id = new Guid($"ae{yearHex}0002-0002-0002-0002-000000000002"),
                 Title = "Ulusal Egemenlik ve Çocuk Bayramı",
                 StartDate = new DateTime(year, 4, 23),
                 EndDate = new DateTime(year, 4, 23),
@@ -1329,7 +1330,7 @@ public class ApplicationDbContext : DbContext
             // Emek ve Dayanışma Günü - 1 Mayıs
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 3:D6}-0003-0003-0003-000000000003"),
+                Id = new Guid($"ae{yearHex}0003-0003-0003-0003-000000000003"),
                 Title = "Emek ve Dayanışma Günü",
                 StartDate = new DateTime(year, 5, 1),
                 EndDate = new DateTime(year, 5, 1),
@@ -1342,7 +1343,7 @@ public class ApplicationDbContext : DbContext
             // Atatürk'ü Anma, Gençlik ve Spor Bayramı - 19 Mayıs
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 4:D6}-0004-0004-0004-000000000004"),
+                Id = new Guid($"ae{yearHex}0004-0004-0004-0004-000000000004"),
                 Title = "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
                 StartDate = new DateTime(year, 5, 19),
                 EndDate = new DateTime(year, 5, 19),
@@ -1355,7 +1356,7 @@ public class ApplicationDbContext : DbContext
             // Zafer Bayramı - 30 Ağustos
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 5:D6}-0005-0005-0005-000000000005"),
+                Id = new Guid($"ae{yearHex}0005-0005-0005-0005-000000000005"),
                 Title = "Zafer Bayramı",
                 StartDate = new DateTime(year, 8, 30),
                 EndDate = new DateTime(year, 8, 30),
@@ -1368,7 +1369,7 @@ public class ApplicationDbContext : DbContext
             // Cumhuriyet Bayramı - 29 Ekim
             holidays.Add(new AcademicEvent
             {
-                Id = new Guid($"ae{uniqueNum + 6:D6}-0006-0006-0006-000000000006"),
+                Id = new Guid($"ae{yearHex}0006-0006-0006-0006-000000000006"),
                 Title = "Cumhuriyet Bayramı",
                 StartDate = new DateTime(year, 10, 29),
                 EndDate = new DateTime(year, 10, 29),
@@ -1387,6 +1388,159 @@ public class ApplicationDbContext : DbContext
         }
 
         modelBuilder.Entity<AcademicEvent>().HasData(holidays);
+
+        // 4. Seed Schedules (Fall 2025 - section'ların schedule'ları)
+        // Section 1: BM101 - Monday 09:00-10:50, Wednesday 09:00-10:50
+        modelBuilder.Entity<Schedule>().HasData(
+            new Schedule
+            {
+                Id = Guid.Parse("5c000001-0001-0001-0001-000000000001"),
+                SectionId = section1Id,
+                DayOfWeek = ScheduleDayOfWeek.Monday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 50, 0),
+                ClassroomId = classroom1Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Schedule
+            {
+                Id = Guid.Parse("5c000002-0002-0002-0002-000000000002"),
+                SectionId = section1Id,
+                DayOfWeek = ScheduleDayOfWeek.Wednesday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 50, 0),
+                ClassroomId = classroom1Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Section 2: BM201 - Tuesday 11:00-12:50, Thursday 11:00-12:50
+            new Schedule
+            {
+                Id = Guid.Parse("5c000003-0003-0003-0003-000000000003"),
+                SectionId = section2Id,
+                DayOfWeek = ScheduleDayOfWeek.Tuesday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 50, 0),
+                ClassroomId = classroom2Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Schedule
+            {
+                Id = Guid.Parse("5c000004-0004-0004-0004-000000000004"),
+                SectionId = section2Id,
+                DayOfWeek = ScheduleDayOfWeek.Thursday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 50, 0),
+                ClassroomId = classroom2Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Section 3: BM301 - Monday 13:00-14:50, Wednesday 13:00-14:50
+            new Schedule
+            {
+                Id = Guid.Parse("5c000005-0005-0005-0005-000000000005"),
+                SectionId = section3Id,
+                DayOfWeek = ScheduleDayOfWeek.Monday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 50, 0),
+                ClassroomId = classroom3Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Schedule
+            {
+                Id = Guid.Parse("5c000006-0006-0006-0006-000000000006"),
+                SectionId = section3Id,
+                DayOfWeek = ScheduleDayOfWeek.Wednesday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 50, 0),
+                ClassroomId = classroom3Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Section 4: BM302 - Tuesday 14:00-15:50, Thursday 14:00-15:50
+            new Schedule
+            {
+                Id = Guid.Parse("5c000007-0007-0007-0007-000000000007"),
+                SectionId = section4Id,
+                DayOfWeek = ScheduleDayOfWeek.Tuesday,
+                StartTime = new TimeSpan(14, 0, 0),
+                EndTime = new TimeSpan(15, 50, 0),
+                ClassroomId = classroom4Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Schedule
+            {
+                Id = Guid.Parse("5c000008-0008-0008-0008-000000000008"),
+                SectionId = section4Id,
+                DayOfWeek = ScheduleDayOfWeek.Thursday,
+                StartTime = new TimeSpan(14, 0, 0),
+                EndTime = new TimeSpan(15, 50, 0),
+                ClassroomId = classroom4Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Section 5: BM402 (Web) - Friday 10:00-12:50
+            new Schedule
+            {
+                Id = Guid.Parse("5c000009-0009-0009-0009-000000000009"),
+                SectionId = section5Id,
+                DayOfWeek = ScheduleDayOfWeek.Friday,
+                StartTime = new TimeSpan(10, 0, 0),
+                EndTime = new TimeSpan(12, 50, 0),
+                ClassroomId = classroom5Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Section 6: EEM101 - Monday 15:00-16:50, Wednesday 15:00-16:50
+            new Schedule
+            {
+                Id = Guid.Parse("5c000010-0010-0010-0010-000000000010"),
+                SectionId = section6Id,
+                DayOfWeek = ScheduleDayOfWeek.Monday,
+                StartTime = new TimeSpan(15, 0, 0),
+                EndTime = new TimeSpan(16, 50, 0),
+                ClassroomId = classroom1Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new Schedule
+            {
+                Id = Guid.Parse("5c000011-0011-0011-0011-000000000011"),
+                SectionId = section6Id,
+                DayOfWeek = ScheduleDayOfWeek.Wednesday,
+                StartTime = new TimeSpan(15, 0, 0),
+                EndTime = new TimeSpan(16, 50, 0),
+                ClassroomId = classroom1Id,
+                Semester = "Fall",
+                Year = 2025,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        );
     }
 
     private List<AcademicEvent> GetReligiousHolidays(int year)
@@ -1394,6 +1548,7 @@ public class ApplicationDbContext : DbContext
         var baseDate = DateTime.UtcNow;
         var yearIndex = year - 2025;
         var uniqueNum = yearIndex * 10;
+        var yearHex = yearIndex.ToString("X2"); // 0-9 arası için 2 hex karakter (00-09)
         var holidays = new List<AcademicEvent>();
 
         // Her yıl için Ramazan ve Kurban Bayramı tarihleri
@@ -1403,7 +1558,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 30 Mart - 1 Nisan
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2025, 3, 30),
                     EndDate = new DateTime(2025, 4, 1),
@@ -1415,7 +1570,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 6 Haziran - 9 Haziran
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2025, 6, 6),
                     EndDate = new DateTime(2025, 6, 9),
@@ -1430,7 +1585,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 20 Mart - 22 Mart
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2026, 3, 20),
                     EndDate = new DateTime(2026, 3, 22),
@@ -1442,7 +1597,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 27 Mayıs - 30 Mayıs
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2026, 5, 27),
                     EndDate = new DateTime(2026, 5, 30),
@@ -1457,7 +1612,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 9 Mart - 11 Mart
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2027, 3, 9),
                     EndDate = new DateTime(2027, 3, 11),
@@ -1469,7 +1624,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 16 Mayıs - 19 Mayıs
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2027, 5, 16),
                     EndDate = new DateTime(2027, 5, 19),
@@ -1484,7 +1639,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 26 Şubat - 28 Şubat
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2028, 2, 26),
                     EndDate = new DateTime(2028, 2, 28),
@@ -1496,7 +1651,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 4 Mayıs - 7 Mayıs
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2028, 5, 4),
                     EndDate = new DateTime(2028, 5, 7),
@@ -1511,7 +1666,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 14 Şubat - 16 Şubat
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2029, 2, 14),
                     EndDate = new DateTime(2029, 2, 16),
@@ -1523,7 +1678,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 23 Nisan - 26 Nisan
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2029, 4, 23),
                     EndDate = new DateTime(2029, 4, 26),
@@ -1538,7 +1693,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 3 Şubat - 5 Şubat
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2030, 2, 3),
                     EndDate = new DateTime(2030, 2, 5),
@@ -1550,7 +1705,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 12 Nisan - 15 Nisan
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2030, 4, 12),
                     EndDate = new DateTime(2030, 4, 15),
@@ -1565,7 +1720,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 23 Ocak - 25 Ocak
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2031, 1, 23),
                     EndDate = new DateTime(2031, 1, 25),
@@ -1577,7 +1732,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 1 Nisan - 4 Nisan
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2031, 4, 1),
                     EndDate = new DateTime(2031, 4, 4),
@@ -1592,7 +1747,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 12 Ocak - 14 Ocak
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2032, 1, 12),
                     EndDate = new DateTime(2032, 1, 14),
@@ -1604,7 +1759,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 21 Mart - 24 Mart
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2032, 3, 21),
                     EndDate = new DateTime(2032, 3, 24),
@@ -1619,7 +1774,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 31 Aralık 2032 - 2 Ocak 2033 (2033 yılı için)
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2032, 12, 31), // 2032 son günü ama 2033 yılı için
                     EndDate = new DateTime(2033, 1, 2),
@@ -1631,7 +1786,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 10 Mart - 13 Mart
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2033, 3, 10),
                     EndDate = new DateTime(2033, 3, 13),
@@ -1646,7 +1801,7 @@ public class ApplicationDbContext : DbContext
                 // Ramazan Bayramı - 20 Aralık - 22 Aralık
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 7:D6}-0007-0007-0007-000000000007"),
+                    Id = new Guid($"ae{yearHex}0007-0007-0007-0007-000000000007"),
                     Title = "Ramazan Bayramı",
                     StartDate = new DateTime(2034, 12, 20),
                     EndDate = new DateTime(2034, 12, 22),
@@ -1658,7 +1813,7 @@ public class ApplicationDbContext : DbContext
                 // Kurban Bayramı - 27 Şubat - 2 Mart
                 holidays.Add(new AcademicEvent
                 {
-                    Id = new Guid($"ae{uniqueNum + 8:D6}-0008-0008-0008-000000000008"),
+                    Id = new Guid($"ae{yearHex}0008-0008-0008-0008-000000000008"),
                     Title = "Kurban Bayramı",
                     StartDate = new DateTime(2034, 2, 27),
                     EndDate = new DateTime(2034, 3, 2),
@@ -1764,46 +1919,230 @@ public class ApplicationDbContext : DbContext
                 RegisteredCount = 0,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
+            },
+            // Kontenjanı dolu event (waitlist testi için)
+            new Event
+            {
+                Id = Guid.Parse("e0e44444-4444-4444-4444-444444444444"),
+                Title = "Popüler Konferans - Kontenjan Dolu",
+                Description = "Bu etkinlik kontenjanı dolu olduğu için waitlist kontrolü yapılabilir.",
+                Category = EventCategory.Conference,
+                Date = DateTime.UtcNow.AddDays(7).Date,
+                StartTime = new TimeSpan(14, 0, 0),
+                EndTime = new TimeSpan(17, 0, 0),
+                Location = "Ana Konferans Salonu",
+                Capacity = 50,
+                RegisteredCount = 50, // Kontenjan dolu
+                RegistrationDeadline = DateTime.UtcNow.AddDays(6),
+                IsPaid = false,
+                Status = EventStatus.Published,
+                CreatedBy = adminUserId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             }
         );
 
-        // 3. Seed Meal Menus
+        // 3. Seed Meal Menus (bugün ve sonraki 4 gün için)
         var today = DateTime.UtcNow.Date;
         
         modelBuilder.Entity<MealMenu>().HasData(
+            // Gün 0 (Bugün) - Ana Yemekhane
             new MealMenu
             {
-                Id = Guid.Parse("aaa11111-1111-1111-1111-111111111111"),
+                Id = Guid.Parse("aaa00001-1111-1111-1111-111111111111"),
                 CafeteriaId = mainCafeteriaId,
                 Date = today,
                 MealType = MealType.Lunch,
                 ItemsJson = "[\"Mercimek Çorbası\", \"Orman Kebabı\", \"Pirinç Pilavı\", \"Ayran\"]",
                 CalorieCount = 850,
                 Price = 20.00m,
+                IsPublished = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
             new MealMenu
             {
-                Id = Guid.Parse("aaa22222-2222-2222-2222-222222222222"),
+                Id = Guid.Parse("aaa00002-2222-2222-2222-222222222222"),
                 CafeteriaId = mainCafeteriaId,
                 Date = today,
                 MealType = MealType.Dinner,
                 ItemsJson = "[\"Domates Çorbası\", \"Tavuk Sote\", \"Bulgur Pilavı\", \"Meyve\"]",
                 CalorieCount = 750,
                 Price = 20.00m,
+                IsPublished = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
             new MealMenu
             {
-                Id = Guid.Parse("aaa33333-3333-3333-3333-333333333333"),
+                Id = Guid.Parse("aaa00003-3333-3333-3333-333333333333"),
                 CafeteriaId = engCafeteriaId,
                 Date = today,
                 MealType = MealType.Lunch,
                 ItemsJson = "[\"Ezogelin Çorbası\", \"İzmir Köfte\", \"Makarna\", \"Salata\"]",
                 CalorieCount = 900,
                 Price = 25.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Gün 1 - Ana Yemekhane
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00011-1111-1111-1111-111111111111"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(1),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Yayla Çorbası\", \"Tavuk Şiş\", \"Bulgur Pilavı\", \"Cacık\"]",
+                CalorieCount = 860,
+                Price = 22.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00012-2222-2222-2222-222222222222"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(1),
+                MealType = MealType.Dinner,
+                ItemsJson = "[\"Mercimek Çorbası\", \"Köfte\", \"Pirinç Pilavı\", \"Ayran\"]",
+                CalorieCount = 760,
+                Price = 22.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00013-3333-3333-3333-333333333333"),
+                CafeteriaId = engCafeteriaId,
+                Date = today.AddDays(1),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Mercimek Çorbası\", \"Tavuk Şiş\", \"Pirinç Pilavı\", \"Ayran\"]",
+                CalorieCount = 910,
+                Price = 27.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Gün 2 - Ana Yemekhane
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00021-1111-1111-1111-111111111111"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(2),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Domates Çorbası\", \"Izgara Köfte\", \"Pirinç Pilavı\", \"Ayran\"]",
+                CalorieCount = 870,
+                Price = 24.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00022-2222-2222-2222-222222222222"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(2),
+                MealType = MealType.Dinner,
+                ItemsJson = "[\"Yayla Çorbası\", \"Tavuk Döner\", \"Bulgur Pilavı\", \"Cacık\"]",
+                CalorieCount = 770,
+                Price = 24.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00023-3333-3333-3333-333333333333"),
+                CafeteriaId = engCafeteriaId,
+                Date = today.AddDays(2),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Yayla Çorbası\", \"Köfte\", \"Bulgur Pilavı\", \"Cacık\"]",
+                CalorieCount = 920,
+                Price = 29.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Gün 3 - Ana Yemekhane
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00031-1111-1111-1111-111111111111"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(3),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Ezogelin Çorbası\", \"Tavuk Güveç\", \"Makarna\", \"Salata\"]",
+                CalorieCount = 880,
+                Price = 26.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00032-2222-2222-2222-222222222222"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(3),
+                MealType = MealType.Dinner,
+                ItemsJson = "[\"Ezogelin Çorbası\", \"Izgara Tavuk\", \"Makarna\", \"Salata\"]",
+                CalorieCount = 780,
+                Price = 26.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00033-3333-3333-3333-333333333333"),
+                CafeteriaId = engCafeteriaId,
+                Date = today.AddDays(3),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Domates Çorbası\", \"Tavuk Güveç\", \"Makarna\", \"Salata\"]",
+                CalorieCount = 930,
+                Price = 31.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            // Gün 4 - Ana Yemekhane
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00041-1111-1111-1111-111111111111"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(4),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Mercimek Çorbası\", \"Balık Tava\", \"Pirinç Pilavı\", \"Meyve\"]",
+                CalorieCount = 890,
+                Price = 28.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00042-2222-2222-2222-222222222222"),
+                CafeteriaId = mainCafeteriaId,
+                Date = today.AddDays(4),
+                MealType = MealType.Dinner,
+                ItemsJson = "[\"Domates Çorbası\", \"Balık Izgara\", \"Pirinç Pilavı\", \"Meyve\"]",
+                CalorieCount = 790,
+                Price = 28.00m,
+                IsPublished = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            },
+            new MealMenu
+            {
+                Id = Guid.Parse("aaa00043-3333-3333-3333-333333333333"),
+                CafeteriaId = engCafeteriaId,
+                Date = today.AddDays(4),
+                MealType = MealType.Lunch,
+                ItemsJson = "[\"Ezogelin Çorbası\", \"Balık Tava\", \"Pirinç Pilavı\", \"Meyve\"]",
+                CalorieCount = 940,
+                Price = 33.00m,
+                IsPublished = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }
