@@ -24,6 +24,8 @@ public class CreateMenuDtoTests
             mealType,
             itemsJson,
             nutritionJson,
+            120m, // Price
+            500,  // CalorieCount
             isPublished
         );
 
@@ -50,7 +52,9 @@ public class CreateMenuDtoTests
             date,
             mealType,
             null, // ItemsJson
-            null  // NutritionJson
+            null, // NutritionJson
+            120m, // Price
+            500   // CalorieCount
         );
 
         // Assert
@@ -77,6 +81,8 @@ public class CreateMenuDtoTests
             mealType,
             null, // ItemsJson
             null, // NutritionJson
+            120m, // Price
+            500,  // CalorieCount
             false  // IsPublished
         );
 
@@ -100,7 +106,9 @@ public class CreateMenuDtoTests
                 DateTime.UtcNow.AddDays(15).Date,
                 mealType,
                 null,
-                null
+                null,
+                120m,
+                500
             );
 
             Assert.Equal(mealType, dto.MealType);
@@ -122,6 +130,8 @@ public class CreateMenuDtoTests
             MealType.Lunch,
             itemsJson,
             null,
+            120m,
+            500,
             true
         );
 
@@ -147,6 +157,8 @@ public class CreateMenuDtoTests
             MealType.Dinner,
             itemsJson,
             nutritionJson,
+            120m,
+            500,
             false
         );
 
@@ -172,7 +184,9 @@ public class CreateMenuDtoTests
             date,
             MealType.Lunch,
             itemsJson,
-            nutritionJson
+            nutritionJson,
+            120m,
+            500
         );
 
         // Assert
@@ -193,7 +207,9 @@ public class CreateMenuDtoTests
             date,
             MealType.Dinner,
             "[]",      // Empty array
-            "{}"       // Empty object
+            "{}",       // Empty object
+            120m,
+            500
         );
 
         // Assert
@@ -214,7 +230,9 @@ public class CreateMenuDtoTests
             futureDate,
             MealType.Lunch,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -235,7 +253,9 @@ public class CreateMenuDtoTests
             pastDate,
             MealType.Dinner,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -255,7 +275,9 @@ public class CreateMenuDtoTests
             today,
             MealType.Lunch,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -271,8 +293,8 @@ public class CreateMenuDtoTests
         var date = DateTime.UtcNow.AddDays(15).Date;
 
         // Act
-        var dto1 = new CreateMenuDto(guid1, date, MealType.Lunch, null, null);
-        var dto2 = new CreateMenuDto(guid2, date, MealType.Lunch, null, null);
+        var dto1 = new CreateMenuDto(guid1, date, MealType.Lunch, null, null, 120m, 500);
+        var dto2 = new CreateMenuDto(guid2, date, MealType.Lunch, null, null, 120m, 500);
 
         // Assert
         Assert.Equal(guid1, dto1.CafeteriaId);
@@ -294,6 +316,8 @@ public class CreateMenuDtoTests
             MealType.Lunch,
             "[\"Soup\"]",
             null,
+            120m,
+            500,
             true // IsPublished
         );
 
@@ -315,6 +339,8 @@ public class CreateMenuDtoTests
             MealType.Dinner,
             "[\"Main Dish\"]",
             null,
+            120m,
+            500,
             false // IsPublished
         );
 
@@ -337,7 +363,9 @@ public class CreateMenuDtoTests
             date,
             MealType.Lunch,
             longItemsJson,
-            longNutritionJson
+            longNutritionJson,
+            120m,
+            500
         );
 
         // Assert
@@ -364,6 +392,8 @@ public class CreateMenuDtoTests
             mealType,
             itemsJson,
             nutritionJson,
+            120m,
+            500,
             false
         );
 
@@ -373,6 +403,8 @@ public class CreateMenuDtoTests
             mealType,
             itemsJson,
             nutritionJson,
+            120m,
+            500,
             false
         );
 
@@ -395,7 +427,9 @@ public class CreateMenuDtoTests
             date,
             mealType,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         var dto2 = new CreateMenuDto(
@@ -403,7 +437,9 @@ public class CreateMenuDtoTests
             date,
             mealType,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -425,7 +461,9 @@ public class CreateMenuDtoTests
             DateTime.UtcNow.AddDays(10).Date,
             mealType,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         var dto2 = new CreateMenuDto(
@@ -433,7 +471,9 @@ public class CreateMenuDtoTests
             DateTime.UtcNow.AddDays(15).Date,
             mealType,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -453,7 +493,9 @@ public class CreateMenuDtoTests
             date,
             MealType.Lunch,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         var dto2 = new CreateMenuDto(
@@ -461,7 +503,9 @@ public class CreateMenuDtoTests
             date,
             MealType.Dinner,
             null,
-            null
+            null,
+            120m,
+            500
         );
 
         // Assert
@@ -483,6 +527,8 @@ public class CreateMenuDtoTests
             mealType,
             "[\"Item1\"]",
             null,
+            120m,
+            500,
             false
         );
 
@@ -492,6 +538,8 @@ public class CreateMenuDtoTests
             mealType,
             "[\"Item2\"]",
             null,
+            120m,
+            500,
             false
         );
 
@@ -514,6 +562,8 @@ public class CreateMenuDtoTests
             mealType,
             null,
             null,
+            120m,
+            500,
             false // IsPublished
         );
 
@@ -523,6 +573,8 @@ public class CreateMenuDtoTests
             mealType,
             null,
             null,
+            120m,
+            500,
             true // IsPublished - different
         );
 
@@ -545,6 +597,8 @@ public class CreateMenuDtoTests
             mealType,
             null, // ItemsJson
             null,
+            120m,
+            500,
             false
         );
 
@@ -554,6 +608,8 @@ public class CreateMenuDtoTests
             mealType,
             "[\"Soup\"]", // ItemsJson - not null
             null,
+            120m,
+            500,
             false
         );
 

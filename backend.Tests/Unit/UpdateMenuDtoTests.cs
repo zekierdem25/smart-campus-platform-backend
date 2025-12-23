@@ -9,7 +9,7 @@ public class UpdateMenuDtoTests
     public void Constructor_WithAllNullValues_ShouldSetAllPropertiesToNull()
     {
         // Act
-        var dto = new UpdateMenuDto(null, null, null);
+        var dto = new UpdateMenuDto(null, null, null, null, null);
 
         // Assert
         Assert.Null(dto.ItemsJson);
@@ -26,7 +26,7 @@ public class UpdateMenuDtoTests
         var isPublished = true;
 
         // Act
-        var dto = new UpdateMenuDto(itemsJson, nutritionJson, isPublished);
+        var dto = new UpdateMenuDto(itemsJson, nutritionJson, null, null, isPublished);
 
         // Assert
         Assert.Equal(itemsJson, dto.ItemsJson);
@@ -41,7 +41,7 @@ public class UpdateMenuDtoTests
         var itemsJson = "[\"Soup\", \"Main Dish\"]";
 
         // Act
-        var dto = new UpdateMenuDto(itemsJson, null, null);
+        var dto = new UpdateMenuDto(itemsJson, null, null, null, null);
 
         // Assert
         Assert.Equal(itemsJson, dto.ItemsJson);
@@ -56,7 +56,7 @@ public class UpdateMenuDtoTests
         var itemsJson = "[\"Item1\", \"Item2\"]";
 
         // Act
-        var dto = new UpdateMenuDto(itemsJson, null, null);
+        var dto = new UpdateMenuDto(itemsJson, null, null, null, null);
 
         // Assert
         Assert.Equal(itemsJson, dto.ItemsJson);
@@ -71,7 +71,7 @@ public class UpdateMenuDtoTests
         var nutritionJson = "{\"calories\": 600}";
 
         // Act
-        var dto = new UpdateMenuDto(null, nutritionJson, null);
+        var dto = new UpdateMenuDto(null, nutritionJson, null, null, null);
 
         // Assert
         Assert.Null(dto.ItemsJson);
@@ -86,7 +86,7 @@ public class UpdateMenuDtoTests
         var isPublished = true;
 
         // Act
-        var dto = new UpdateMenuDto(null, null, isPublished);
+        var dto = new UpdateMenuDto(null, null, null, null, isPublished);
 
         // Assert
         Assert.Null(dto.ItemsJson);
@@ -98,8 +98,8 @@ public class UpdateMenuDtoTests
     public void Constructor_WithBooleanIsPublished_ShouldSetCorrectly()
     {
         // Act
-        var dto1 = new UpdateMenuDto(null, null, true);
-        var dto2 = new UpdateMenuDto(null, null, false);
+        var dto1 = new UpdateMenuDto(null, null, null, null, true);
+        var dto2 = new UpdateMenuDto(null, null, null, null, false);
 
         // Assert
         Assert.True(dto1.IsPublished);
@@ -110,7 +110,7 @@ public class UpdateMenuDtoTests
     public void Constructor_WithEmptyStrings_ShouldSetEmptyStrings()
     {
         // Act
-        var dto = new UpdateMenuDto("", "", null);
+        var dto = new UpdateMenuDto("", "", null, null, null);
 
         // Assert
         Assert.Equal("", dto.ItemsJson);
@@ -126,7 +126,7 @@ public class UpdateMenuDtoTests
         var longNutritionJson = "{" + string.Join(", ", Enumerable.Range(1, 50).Select(i => $"\"key{i}\": \"value{i}\"")) + "}";
 
         // Act
-        var dto = new UpdateMenuDto(longItemsJson, longNutritionJson, null);
+        var dto = new UpdateMenuDto(longItemsJson, longNutritionJson, null, null, null);
 
         // Assert
         Assert.Equal(longItemsJson, dto.ItemsJson);
@@ -141,7 +141,7 @@ public class UpdateMenuDtoTests
         var nutritionJson = "{\"calories\": 500, \"protein\": 30, \"carbs\": 50, \"fat\": 20, \"fiber\": 10}";
 
         // Act
-        var dto = new UpdateMenuDto(itemsJson, nutritionJson, true);
+        var dto = new UpdateMenuDto(itemsJson, nutritionJson, null, null, true);
 
         // Assert
         Assert.Equal(itemsJson, dto.ItemsJson);
@@ -157,7 +157,7 @@ public class UpdateMenuDtoTests
         var invalidNutritionJson = "{invalid json}";
 
         // Act
-        var dto = new UpdateMenuDto(invalidItemsJson, invalidNutritionJson, null);
+        var dto = new UpdateMenuDto(invalidItemsJson, invalidNutritionJson, null, null, null);
 
         // Assert
         Assert.Equal(invalidItemsJson, dto.ItemsJson);
@@ -172,7 +172,7 @@ public class UpdateMenuDtoTests
         var isPublished = false;
 
         // Act
-        var dto = new UpdateMenuDto(itemsJson, null, isPublished);
+        var dto = new UpdateMenuDto(itemsJson, null, null, null, isPublished);
 
         // Assert
         Assert.Equal(itemsJson, dto.ItemsJson);
@@ -189,8 +189,8 @@ public class UpdateMenuDtoTests
         var isPublished = true;
 
         // Act
-        var dto1 = new UpdateMenuDto(itemsJson, nutritionJson, isPublished);
-        var dto2 = new UpdateMenuDto(itemsJson, nutritionJson, isPublished);
+        var dto1 = new UpdateMenuDto(itemsJson, nutritionJson, null, null, isPublished);
+        var dto2 = new UpdateMenuDto(itemsJson, nutritionJson, null, null, isPublished);
 
         // Assert
         Assert.Equal(dto1, dto2);
@@ -202,8 +202,8 @@ public class UpdateMenuDtoTests
     public void Equality_WithAllNullValues_ShouldBeEqual()
     {
         // Act
-        var dto1 = new UpdateMenuDto(null, null, null);
-        var dto2 = new UpdateMenuDto(null, null, null);
+        var dto1 = new UpdateMenuDto(null, null, null, null, null);
+        var dto2 = new UpdateMenuDto(null, null, null, null, null);
 
         // Assert
         Assert.Equal(dto1, dto2);
@@ -219,8 +219,8 @@ public class UpdateMenuDtoTests
         var isPublished = true;
 
         // Act
-        var dto1 = new UpdateMenuDto("[\"Item1\"]", nutritionJson, isPublished);
-        var dto2 = new UpdateMenuDto("[\"Item2\"]", nutritionJson, isPublished);
+        var dto1 = new UpdateMenuDto("[\"Item1\"]", nutritionJson, null, null, isPublished);
+        var dto2 = new UpdateMenuDto("[\"Item2\"]", nutritionJson, null, null, isPublished);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -236,8 +236,8 @@ public class UpdateMenuDtoTests
         var isPublished = true;
 
         // Act
-        var dto1 = new UpdateMenuDto(itemsJson, "{\"calories\": 500}", isPublished);
-        var dto2 = new UpdateMenuDto(itemsJson, "{\"calories\": 600}", isPublished);
+        var dto1 = new UpdateMenuDto(itemsJson, "{\"calories\": 500}", null, null, isPublished);
+        var dto2 = new UpdateMenuDto(itemsJson, "{\"calories\": 600}", null, null, isPublished);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -253,8 +253,8 @@ public class UpdateMenuDtoTests
         var nutritionJson = "{\"calories\": 500}";
 
         // Act
-        var dto1 = new UpdateMenuDto(itemsJson, nutritionJson, true);
-        var dto2 = new UpdateMenuDto(itemsJson, nutritionJson, false);
+        var dto1 = new UpdateMenuDto(itemsJson, nutritionJson, null, null, true);
+        var dto2 = new UpdateMenuDto(itemsJson, nutritionJson, null, null, false);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -266,8 +266,8 @@ public class UpdateMenuDtoTests
     public void Equality_WithNullVsNonNullItemsJson_ShouldNotBeEqual()
     {
         // Act
-        var dto1 = new UpdateMenuDto(null, null, null);
-        var dto2 = new UpdateMenuDto("[\"Item1\"]", null, null);
+        var dto1 = new UpdateMenuDto(null, null, null, null, null);
+        var dto2 = new UpdateMenuDto("[\"Item1\"]", null, null, null, null);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -279,8 +279,8 @@ public class UpdateMenuDtoTests
     public void Equality_WithNullVsNonNullNutritionJson_ShouldNotBeEqual()
     {
         // Act
-        var dto1 = new UpdateMenuDto(null, null, null);
-        var dto2 = new UpdateMenuDto(null, "{\"calories\": 500}", null);
+        var dto1 = new UpdateMenuDto(null, null, null, null, null);
+        var dto2 = new UpdateMenuDto(null, "{\"calories\": 500}", null, null, null);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -292,8 +292,8 @@ public class UpdateMenuDtoTests
     public void Equality_WithNullVsNonNullIsPublished_ShouldNotBeEqual()
     {
         // Act
-        var dto1 = new UpdateMenuDto(null, null, null);
-        var dto2 = new UpdateMenuDto(null, null, true);
+        var dto1 = new UpdateMenuDto(null, null, null, null, null);
+        var dto2 = new UpdateMenuDto(null, null, null, null, true);
 
         // Assert
         Assert.NotEqual(dto1, dto2);
@@ -309,7 +309,7 @@ public class UpdateMenuDtoTests
         var complexNutritionJson = "{\"breakfast\": {\"calories\": 300, \"protein\": 20}, \"lunch\": {\"calories\": 400, \"protein\": 25}, \"dinner\": {\"calories\": 600, \"protein\": 30}}";
 
         // Act
-        var dto = new UpdateMenuDto(complexItemsJson, complexNutritionJson, true);
+        var dto = new UpdateMenuDto(complexItemsJson, complexNutritionJson, null, null, true);
 
         // Assert
         Assert.Equal(complexItemsJson, dto.ItemsJson);
@@ -325,7 +325,7 @@ public class UpdateMenuDtoTests
         var whitespaceNutritionJson = "\t\n";
 
         // Act
-        var dto = new UpdateMenuDto(whitespaceItemsJson, whitespaceNutritionJson, null);
+        var dto = new UpdateMenuDto(whitespaceItemsJson, whitespaceNutritionJson, null, null, null);
 
         // Assert
         Assert.Equal(whitespaceItemsJson, dto.ItemsJson);
