@@ -66,20 +66,47 @@ public class SchedulingController : ControllerBase
         }
 
         // Don't save automatically - return the schedule for preview
+        // Get course and classroom info from database using SectionId and ClassroomId
+        var sectionIds = result.Schedules.Select(s => s.SectionId).Distinct().ToList();
+        var classroomIds = result.Schedules.Select(s => s.ClassroomId).Distinct().ToList();
+
+        var sections = await _context.CourseSections
+            .Include(s => s.Course)
+            .Where(s => sectionIds.Contains(s.Id))
+            .ToDictionaryAsync(s => s.Id, s => s);
+
+        var classrooms = await _context.Classrooms
+            .Where(c => classroomIds.Contains(c.Id))
+            .ToDictionaryAsync(c => c.Id, c => c);
+
+        var schedulesWithDetails = result.Schedules.Select(s => new
+        {
+            s.Id,
+            s.SectionId,
+            s.DayOfWeek,
+            s.StartTime,
+            s.EndTime,
+            s.ClassroomId,
+            s.Semester,
+            s.Year,
+            CourseCode = sections.ContainsKey(s.SectionId) && sections[s.SectionId].Course != null 
+                ? sections[s.SectionId].Course.Code 
+                : "UNKNOWN",
+            CourseName = sections.ContainsKey(s.SectionId) && sections[s.SectionId].Course != null 
+                ? sections[s.SectionId].Course.Name 
+                : "Unknown Course",
+            Building = classrooms.ContainsKey(s.ClassroomId) 
+                ? classrooms[s.ClassroomId].Building 
+                : "Unknown",
+            Room = classrooms.ContainsKey(s.ClassroomId) 
+                ? classrooms[s.ClassroomId].RoomNumber 
+                : "Unknown"
+        }).ToList();
+
         return Ok(new
         {
             message = "Program başarıyla oluşturuldu",
-            schedule = result.Schedules.Select(s => new
-            {
-                s.Id,
-                s.SectionId,
-                s.DayOfWeek,
-                s.StartTime,
-                s.EndTime,
-                s.ClassroomId,
-                s.Semester,
-                s.Year
-            }).ToList(),
+            schedule = schedulesWithDetails,
             scheduledSections = result.ScheduledSections,
             unscheduledSections = result.UnscheduledSections,
             totalSoftConstraintScore = result.TotalSoftConstraintScore,
