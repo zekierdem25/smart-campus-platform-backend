@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SmartCampus.API.Data;
 using SmartCampus.API.Models;
 
@@ -8,15 +9,19 @@ public class AnalyticsService : IAnalyticsService
 {
     private readonly ApplicationDbContext _context;
     private readonly IGradeCalculationService _gradeCalculationService;
+    private readonly IMemoryCache _cache;
     private readonly ILogger<AnalyticsService> _logger;
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
 
     public AnalyticsService(
         ApplicationDbContext context,
         IGradeCalculationService gradeCalculationService,
+        IMemoryCache cache,
         ILogger<AnalyticsService> logger)
     {
         _context = context;
         _gradeCalculationService = gradeCalculationService;
+        _cache = cache;
         _logger = logger;
     }
 
@@ -24,6 +29,13 @@ public class AnalyticsService : IAnalyticsService
     {
         try
         {
+            // Try to get from cache
+            var cacheKey = "dashboard_metrics";
+            if (_cache.TryGetValue(cacheKey, out object? cachedMetrics))
+            {
+                return cachedMetrics!;
+            }
+
             var today = DateTime.UtcNow.Date;
             var todayStart = today;
             var todayEnd = today.AddDays(1);
@@ -77,7 +89,7 @@ public class AnalyticsService : IAnalyticsService
             // System health (simple check - can be enhanced)
             var systemHealth = "healthy"; // TODO: Add actual health checks
 
-            return new
+            var metrics = new
             {
                 totalUsers,
                 activeUsersToday,
@@ -88,6 +100,11 @@ public class AnalyticsService : IAnalyticsService
                 upcomingEvents,
                 systemHealth
             };
+
+            // Cache the result
+            _cache.Set(cacheKey, metrics, CacheExpiration);
+
+            return metrics;
         }
         catch (Exception ex)
         {

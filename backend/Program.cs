@@ -96,6 +96,9 @@ public partial class Program
         // Authorization
         builder.Services.AddAuthorization();
 
+        // Memory Cache (Part 4: Security & Optimization)
+        builder.Services.AddMemoryCache();
+
         // Register Services - Part 1
         builder.Services.AddScoped<IJwtService, JwtService>();
      builder.Services.AddScoped<IFileStorageService, GoogleCloudStorageService>();
@@ -128,6 +131,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         // Register Services - Analytics System (Part 4)
         builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
         builder.Services.AddScoped<IExportService, ExportService>();
+        
+        // Memory Cache must be registered before AnalyticsService
+        // (Already added above)
 
         // Register Services - QR Code System
         builder.Services.AddSingleton<IQRCodeService, QRCodeService>();
@@ -274,6 +280,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
         // Configure the HTTP request pipeline
         app.UseErrorHandling();
+        
+        // Rate Limiting Middleware (Part 4)
+        app.UseMiddleware<Middleware.RateLimitingMiddleware>();
 
         // Swagger - Development ve Production'da aktif
         app.UseSwagger();
@@ -307,6 +316,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
         // SignalR Hub Mapping (Part 4)
         app.MapHub<Hubs.NotificationHub>("/hubs/notifications");
+        app.MapHub<Hubs.AttendanceHub>("/hubs/attendance");
 
         app.Run();
     }
