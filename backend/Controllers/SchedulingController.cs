@@ -357,17 +357,32 @@ public class SchedulingController : ControllerBase
         ical.AppendLine("BEGIN:VCALENDAR");
         ical.AppendLine("VERSION:2.0");
         ical.AppendLine("PRODID:-//Smart Campus//Schedule//TR");
+        ical.AppendLine("CALSCALE:GREGORIAN");
+        ical.AppendLine("METHOD:PUBLISH");
+
+        // Calculate semester start and end dates
+        var semesterStart = GetSemesterStartDate(semester, year ?? DateTime.Now.Year);
+        var semesterEnd = GetSemesterEndDate(semester, year ?? DateTime.Now.Year);
 
         foreach (var schedule in schedules)
         {
             if (schedule.Section?.Course == null || schedule.Classroom == null)
                 continue;
 
+            // Find first occurrence of this day in the semester
+            var firstDate = GetFirstDateForDay(semesterStart, schedule.DayOfWeek);
+            var startDateTime = firstDate.Date + schedule.StartTime;
+            var endDateTime = firstDate.Date + schedule.EndTime;
+
             ical.AppendLine("BEGIN:VEVENT");
             ical.AppendLine($"UID:{schedule.Id}@smartcampus.com");
-            ical.AppendLine($"SUMMARY:{schedule.Section.Course.Code} - {schedule.Section.Course.Name}");
-            ical.AppendLine($"LOCATION:{schedule.Classroom.Building} {schedule.Classroom.RoomNumber}");
-            ical.AppendLine($"RRULE:FREQ=WEEKLY;BYDAY={GetDayAbbreviation(schedule.DayOfWeek)}");
+            ical.AppendLine($"DTSTAMP:{DateTime.UtcNow:yyyyMMddTHHmmss}Z");
+            ical.AppendLine($"DTSTART;TZID=Europe/Istanbul:{startDateTime:yyyyMMddTHHmmss}");
+            ical.AppendLine($"DTEND;TZID=Europe/Istanbul:{endDateTime:yyyyMMddTHHmmss}");
+            ical.AppendLine($"SUMMARY:{EscapeICalText(schedule.Section.Course.Code)} - {EscapeICalText(schedule.Section.Course.Name)}");
+            ical.AppendLine($"LOCATION:{EscapeICalText($"{schedule.Classroom.Building} {schedule.Classroom.RoomNumber}")}");
+            ical.AppendLine($"RRULE:FREQ=WEEKLY;BYDAY={GetDayAbbreviation(schedule.DayOfWeek)};UNTIL={semesterEnd:yyyyMMdd}");
+            ical.AppendLine($"DESCRIPTION:Ders: {EscapeICalText(schedule.Section.Course.Name)}");
             ical.AppendLine("END:VEVENT");
         }
 
@@ -386,6 +401,54 @@ public class SchedulingController : ControllerBase
         ScheduleDayOfWeek.Friday => "FR",
         _ => "MO"
     };
+
+    private static DateTime GetSemesterStartDate(string semester, int year)
+    {
+        return semester switch
+        {
+            "Fall" => new DateTime(year, 9, 1),
+            "Spring" => new DateTime(year, 2, 1),
+            "Summer" => new DateTime(year, 6, 1),
+            _ => new DateTime(year, 9, 1)
+        };
+    }
+
+    private static DateTime GetSemesterEndDate(string semester, int year)
+    {
+        return semester switch
+        {
+            "Fall" => new DateTime(year, 12, 31),
+            "Spring" => new DateTime(year, 6, 30),
+            "Summer" => new DateTime(year, 8, 31),
+            _ => new DateTime(year, 12, 31)
+        };
+    }
+
+    private static DateTime GetFirstDateForDay(DateTime startDate, ScheduleDayOfWeek targetDay)
+    {
+        // ScheduleDayOfWeek: Monday=1, Tuesday=2, ..., Friday=5
+        // DayOfWeek: Sunday=0, Monday=1, ..., Saturday=6
+        var targetDayOfWeek = (DayOfWeek)(int)targetDay;
+        var currentDayOfWeek = startDate.DayOfWeek;
+        
+        var daysToAdd = ((int)targetDayOfWeek - (int)currentDayOfWeek + 7) % 7;
+        if (daysToAdd == 0 && currentDayOfWeek != targetDayOfWeek)
+            daysToAdd = 7;
+            
+        return startDate.AddDays(daysToAdd);
+    }
+
+    private static string EscapeICalText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+        
+        return text
+            .Replace("\\", "\\\\")
+            .Replace(",", "\\,")
+            .Replace(";", "\\;")
+            .Replace("\n", "\\n");
+    }
 
     /// <summary>
     /// Get all schedules for admin
