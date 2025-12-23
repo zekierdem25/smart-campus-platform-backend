@@ -275,7 +275,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         // Register recurring background jobs
         if (app.Environment.EnvironmentName != "Testing")
         {
-            BackgroundJobsRegistration.RegisterRecurringJobs();
+            Extensions.BackgroundServices.BackgroundJobsRegistration.RegisterRecurringJobs();
         }
 
         // Configure the HTTP request pipeline
