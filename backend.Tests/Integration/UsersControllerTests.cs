@@ -18,6 +18,13 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var loginRequest = new LoginRequestDto { Email = email, Password = password };
         var response = await _client.PostAsJsonAsync("/api/v1/auth/login", loginRequest);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+             var error = await response.Content.ReadAsStringAsync();
+             throw new Exception($"Login failed for {email}. Status: {response.StatusCode}, Error: {error}");
+        }
+
         var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
         return result?.AccessToken ?? string.Empty;
     }

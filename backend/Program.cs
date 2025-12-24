@@ -282,7 +282,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         app.UseErrorHandling();
         
         // Rate Limiting Middleware (Part 4)
-        app.UseMiddleware<Middleware.RateLimitingMiddleware>();
+        if (app.Environment.EnvironmentName != "Testing")
+        {
+            app.UseMiddleware<Middleware.RateLimitingMiddleware>();
+        }
 
         // Swagger - Development ve Production'da aktif
         app.UseSwagger();
