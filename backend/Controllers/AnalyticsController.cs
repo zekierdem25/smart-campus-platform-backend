@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCampus.API.Services;
+using SmartCampus.API.DTOs;
 
 namespace SmartCampus.API.Controllers;
 
