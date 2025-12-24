@@ -1,5 +1,4 @@
 :root {
-    color-scheme: light;
     --green: #0aad0a;
     --lightgreen: #dcf4dc;
 }
@@ -566,10 +565,6 @@ code { font-family: Consolas, monospace; font-size: 0.9em; }
 }
 
 
-
-:root {
-    color-scheme: light dark;
-}
 
 @media (prefers-color-scheme: dark) {
     @media screen {
