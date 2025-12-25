@@ -266,11 +266,55 @@ public class AnalyticsService : IAnalyticsService
                 .GroupBy(e => e.Category.ToString())
                 .ToDictionary(g => g.Key, g => g.Count());
 
+            // 1. Popular Events (by registration count)
+            var popularEvents = events
+                .OrderByDescending(e => e.RegisteredCount)
+                .Take(10)
+                .Select(e => new EventPerformanceDto
+                {
+                    Title = e.Title,
+                    RegistrationCount = e.RegisteredCount
+                })
+                .ToList();
+
+            // 2. Registration Rates (registrations / capacity)
+            var registrationRates = events
+                .Where(e => e.Capacity > 0)
+                .Select(e => new EventPerformanceDto
+                {
+                    Title = e.Title,
+                    RegistrationRate = Math.Round((double)e.RegisteredCount / e.Capacity * 100, 1)
+                })
+                .OrderByDescending(r => r.RegistrationRate)
+                .Take(10)
+                .ToList();
+
+            // 3. Check-in Rates (checked-in / registrations)
+            // Include events even with 0 registrations to show data on the chart
+            var checkInRates = events
+                .Select(e => {
+                    var checkedInCount = e.EventRegistrations.Count(r => r.CheckedIn);
+                    var totalRegistrations = e.RegisteredCount; // Use denormalized count
+                    return new EventPerformanceDto
+                    {
+                        Title = e.Title,
+                        CheckInRate = totalRegistrations > 0 
+                            ? Math.Round((double)checkedInCount / totalRegistrations * 100, 1) 
+                            : 0
+                    };
+                })
+                .OrderByDescending(r => r.CheckInRate)
+                .Take(10)
+                .ToList();
+
             return new EventsAnalyticsDto
             {
                 TotalEvents = events.Count,
                 TotalRegistrations = events.Sum(e => e.EventRegistrations.Count),
-                PopularCategories = popularCategories
+                PopularCategories = popularCategories,
+                PopularEvents = popularEvents,
+                RegistrationRates = registrationRates,
+                CheckInRates = checkInRates
             };
         }
         catch (Exception ex)

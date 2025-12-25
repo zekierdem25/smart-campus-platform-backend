@@ -186,21 +186,15 @@ builder.Services.AddScoped<IEmailService, EmailService>();
                     .Distinct()
                     .ToArray();
 
-                if (builder.Environment.IsDevelopment())
-                {
-                    // Dev'de CORS kaynaklı takılmamak için tüm origin'lere izin ver
-                    policy.AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                }
-                else
-                {
-                    var allowedOrigins = origins.Length > 0 ? origins : new[] { "http://localhost:3000" };
-                    policy.WithOrigins(allowedOrigins)
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                }
+                // SignalR ve Auth işlemleri için AllowCredentials() gereklidir.
+                // AllowCredentials() ile AllowAnyOrigin() (*) birlikte kullanılamaz.
+                // Bu yüzden Development'ta bile spesifik origin belirtmeliyiz.
+                var allowedOrigins = origins.Length > 0 ? origins : new[] { "http://localhost:3000" };
+                
+                policy.WithOrigins(allowedOrigins)
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
             });
         });
 

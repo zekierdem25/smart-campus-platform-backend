@@ -313,115 +313,122 @@ public class ReportsController : ControllerBase
         [FromQuery] string? semester = null,
         [FromQuery] int? year = null)
     {
-        var currentYear = year ?? DateTime.UtcNow.Year;
-        var currentSemester = semester ?? (DateTime.UtcNow.Month >= 9 ? "Fall" : "Spring");
-
-        // Basic counts
-        var totalClassrooms = await _context.Classrooms.CountAsync();
-        var activeClassrooms = await _context.Classrooms.Where(c => c.IsActive).CountAsync();
-        var totalSchedules = await _context.Schedules
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .CountAsync();
-
-        // Peak hours analysis
-        var peakHours = await _context.Schedules
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .GroupBy(s => s.StartTime.Hours)
-            .Select(g => new
-            {
-                Hour = g.Key,
-                SessionCount = g.Count()
-            })
-            .OrderByDescending(x => x.SessionCount)
-            .Take(5)
-            .ToListAsync();
-
-        // Day distribution
-        var dayDistribution = await _context.Schedules
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .GroupBy(s => s.DayOfWeek)
-            .Select(g => new
-            {
-                Day = g.Key.ToString(),
-                SessionCount = g.Count()
-            })
-            .OrderBy(x => x.Day)
-            .ToListAsync();
-
-        // Department load
-        var departmentLoad = await _context.Schedules
-            .Include(s => s.Section)
-                .ThenInclude(sec => sec.Course)
-                    .ThenInclude(c => c.Department)
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .GroupBy(s => s.Section.Course.Department.Name)
-            .Select(g => new
-            {
-                Department = g.Key,
-                TotalSessions = g.Count(),
-                TotalHours = g.Sum(s => (s.EndTime - s.StartTime).TotalHours)
-            })
-            .OrderByDescending(x => x.TotalSessions)
-            .ToListAsync();
-
-        // Most used classrooms
-        var mostUsedClassrooms = await _context.Schedules
-            .Include(s => s.Classroom)
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .GroupBy(s => s.ClassroomId)
-            .Select(g => new
-            {
-                ClassroomId = g.Key,
-                Building = g.First().Classroom.Building,
-                RoomNumber = g.First().Classroom.RoomNumber,
-                SessionCount = g.Count()
-            })
-            .OrderByDescending(x => x.SessionCount)
-            .Take(10)
-            .ToListAsync();
-
-        // Underutilized classrooms
-        var usedClassroomIds = await _context.Schedules
-            .Where(s => s.Semester == currentSemester && s.Year == currentYear)
-            .Select(s => s.ClassroomId)
-            .Distinct()
-            .ToListAsync();
-
-        var underutilizedClassrooms = await _context.Classrooms
-            .Where(c => c.IsActive && !usedClassroomIds.Contains(c.Id))
-            .Select(c => new
-            {
-                c.Id,
-                c.Building,
-                c.RoomNumber,
-                c.Capacity
-            })
-            .Take(10)
-            .ToListAsync();
-
-        // Calculate average utilization
-        var totalPossibleSlots = activeClassrooms * DailyAvailableSlots * 5; // 5 days
-        var averageUtilization = totalPossibleSlots > 0 
-            ? Math.Round((double)totalSchedules / totalPossibleSlots * 100, 1) 
-            : 0;
-
-        return Ok(new
+        try
         {
-            semester = currentSemester,
-            year = currentYear,
-            summary = new
+            var currentYear = year ?? DateTime.UtcNow.Year;
+            var currentSemester = semester ?? (DateTime.UtcNow.Month >= 9 ? "Fall" : "Spring");
+
+            // Fetch ALL data needed for analytics in one query to avoid multiple round-trips 
+            // and EF Core translation issues with TimeSpan calculations and deep grouping.
+            var schedules = await _context.Schedules
+                .Include(s => s.Classroom)
+                .Include(s => s.Section)
+                    .ThenInclude(sec => sec.Course)
+                        .ThenInclude(c => c.Department)
+                .Where(s => s.Semester == currentSemester && s.Year == currentYear)
+                .ToListAsync();
+
+            // 1. Basic counts
+            var totalClassrooms = await _context.Classrooms.CountAsync();
+            var activeClassrooms = await _context.Classrooms.Where(c => c.IsActive).CountAsync();
+            var totalSchedules = schedules.Count;
+
+            // 2. Peak hours analysis (In Memory)
+            var peakHours = schedules
+                .GroupBy(s => s.StartTime.Hours)
+                .Select(g => new
+                {
+                    Hour = g.Key,
+                    SessionCount = g.Count()
+                })
+                .OrderByDescending(x => x.SessionCount)
+                .Take(5)
+                .ToList();
+
+            // 3. Day distribution (In Memory)
+            var dayDistribution = schedules
+                .GroupBy(s => s.DayOfWeek)
+                .OrderBy(g => g.Key) // Sort by DayOfWeek enum value (Mon, Tue...) rather than string
+                .Select(g => new
+                {
+                    Day = g.Key.ToString(),
+                    SessionCount = g.Count()
+                })
+                .ToList();
+
+            // 4. Department load (In Memory)
+            var departmentLoad = schedules
+                .Where(s => s.Section?.Course?.Department != null)
+                .GroupBy(s => s.Section!.Course!.Department!.Name)
+                .Select(g => new
+                {
+                    Department = g.Key,
+                    TotalSessions = g.Count(),
+                    TotalHours = Math.Round(g.Sum(s => (s.EndTime - s.StartTime).TotalHours), 1)
+                })
+                .OrderByDescending(x => x.TotalSessions)
+                .ToList();
+
+            // 5. Most used classrooms (In Memory)
+            var mostUsedClassrooms = schedules
+                .Where(s => s.Classroom != null)
+                .GroupBy(s => s.ClassroomId)
+                .Select(g => new
+                {
+                    ClassroomId = g.Key,
+                    Building = g.First().Classroom!.Building,
+                    RoomNumber = g.First().Classroom!.RoomNumber,
+                    SessionCount = g.Count()
+                })
+                .OrderByDescending(x => x.SessionCount)
+                .Take(10)
+                .ToList();
+
+            // 6. Underutilized classrooms (DB for unused ids)
+            var usedClassroomIds = schedules.Select(s => s.ClassroomId).Distinct().ToList();
+
+            var underutilizedClassrooms = await _context.Classrooms
+                .Where(c => c.IsActive && !usedClassroomIds.Contains(c.Id))
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Building,
+                    c.RoomNumber,
+                    c.Capacity
+                })
+                .Take(10)
+                .ToListAsync();
+
+            // Calculate average utilization
+            var totalPossibleSlots = activeClassrooms * DailyAvailableSlots * 5; // 5 days
+            var averageUtilization = totalPossibleSlots > 0 
+                ? Math.Round((double)totalSchedules / totalPossibleSlots * 100, 1) 
+                : 0;
+
+            return Ok(new
             {
-                totalClassrooms,
-                activeClassrooms,
-                totalSchedules,
-                averageUtilization
-            },
-            peakHours,
-            dayDistribution,
-            departmentLoad,
-            mostUsedClassrooms,
-            underutilizedClassrooms
-        });
+                semester = currentSemester,
+                year = currentYear,
+                summary = new
+                {
+                    totalClassrooms,
+                    activeClassrooms,
+                    totalSchedules,
+                    averageUtilization
+                },
+                peakHours,
+                dayDistribution,
+                departmentLoad,
+                mostUsedClassrooms,
+                underutilizedClassrooms
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating scheduling analytics");
+            var errorMessage = ex.InnerException != null ? $"{ex.Message} -> {ex.InnerException.Message}" : ex.Message;
+            return StatusCode(500, new { message = "Analiz raporu oluşturulurken bir hata oluştu.", error = errorMessage });
+        }
     }
 
     // ========== INSTRUCTOR WORKLOAD REPORT ==========

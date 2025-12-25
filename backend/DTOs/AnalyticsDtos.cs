@@ -52,4 +52,17 @@ public class EventsAnalyticsDto
     public int TotalEvents { get; set; }
     public int TotalRegistrations { get; set; }
     public Dictionary<string, int> PopularCategories { get; set; } = new();
+    
+    // Graphic data
+    public List<EventPerformanceDto> PopularEvents { get; set; } = new();
+    public List<EventPerformanceDto> RegistrationRates { get; set; } = new();
+    public List<EventPerformanceDto> CheckInRates { get; set; } = new();
+}
+
+public class EventPerformanceDto
+{
+    public string Title { get; set; }
+    public int RegistrationCount { get; set; }
+    public double RegistrationRate { get; set; }
+    public double CheckInRate { get; set; }
 }
