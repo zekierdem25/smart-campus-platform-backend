@@ -72,6 +72,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<NotificationPreferences> NotificationPreferences { get; set; }
 
+    // DbSets - Part 4: IoT Sensor System
+    public DbSet<Sensor> Sensors { get; set; }
+    public DbSet<SensorData> SensorData { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -595,6 +599,32 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ========== Part 4: IoT Sensor System Configurations ==========
+
+        // Sensor configuration
+        modelBuilder.Entity<Sensor>(entity =>
+        {
+            entity.HasIndex(e => e.SensorId).IsUnique();
+            entity.HasIndex(e => new { e.Type, e.Status });
+            entity.HasIndex(e => e.Location);
+
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
+        });
+
+        // SensorData configuration
+        modelBuilder.Entity<SensorData>(entity =>
+        {
+            entity.HasIndex(e => new { e.SensorId, e.Timestamp });
+            entity.HasIndex(e => e.Timestamp);
+            entity.HasIndex(e => e.IsAnomaly);
+
+            entity.HasOne(sd => sd.Sensor)
+                .WithMany(s => s.SensorData)
+                .HasForeignKey(sd => sd.SensorId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 

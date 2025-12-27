@@ -131,6 +131,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         // Register Services - Analytics System (Part 4)
         builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
         builder.Services.AddScoped<IExportService, ExportService>();
+
+        // Register Services - IoT Sensor System (Part 4)
+        builder.Services.AddScoped<ISensorService, SensorService>();
         
         // Memory Cache must be registered before AnalyticsService
         // (Already added above)
@@ -166,6 +169,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
         // Register Background Services
         builder.Services.AddHostedService<AttendanceWarningJob>();
+        builder.Services.AddHostedService<SensorDataStreamingService>();
 
         // SignalR Configuration (Part 4)
         builder.Services.AddSignalR();
@@ -245,15 +249,26 @@ builder.Services.AddScoped<IEmailService, EmailService>();
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
                 try
                 {
                     dbContext.Database.Migrate();
+                    
+                    // Check if sensors exist, if not, generate mock sensors and data
+                    var sensorCount = dbContext.Sensors.Count();
+                    if (sensorCount == 0)
+                    {
+                        logger.LogInformation("Hiç sensör bulunamadı. Mock sensörler ve veriler oluşturuluyor...");
+                        var sensorService = scope.ServiceProvider.GetRequiredService<ISensorService>();
+                        // Run async operation synchronously for startup
+                        sensorService.GenerateAllMockSensorsAndDataAsync().GetAwaiter().GetResult();
+                        logger.LogInformation("Mock sensörler ve veriler başarıyla oluşturuldu.");
+                    }
                 }
                 catch (Exception ex)
                 {
                     // Migration hatası loglanır ama uygulama çalışmaya devam eder
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Database migration hatası");
+                    logger.LogError(ex, "Database migration veya seed data hatası");
                 }
             }
         }
@@ -314,6 +329,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
         // SignalR Hub Mapping (Part 4)
         app.MapHub<Hubs.NotificationHub>("/hubs/notifications");
         app.MapHub<Hubs.AttendanceHub>("/hubs/attendance");
+        app.MapHub<Hubs.SensorHub>("/hubs/sensors");
 
         app.Run();
     }

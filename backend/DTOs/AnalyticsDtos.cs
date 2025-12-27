@@ -12,7 +12,7 @@ public class DashboardMetricsDto
 
 public class AcademicPerformanceMetricsDto
 {
-    public string Term { get; set; }
+    public string? Term { get; set; }
     public double AverageGpa { get; set; }
     public Dictionary<string, double> GpaByDepartment { get; set; } = new();
     public Dictionary<string, int> GradeDistribution { get; set; } = new();
@@ -28,15 +28,15 @@ public class AttendanceAnalyticsDto
 public class CourseAttendanceDto
 {
     public Guid CourseId { get; set; }
-    public string CourseName { get; set; }
+    public string? CourseName { get; set; }
     public double AttendanceRate { get; set; }
 }
 
 public class StudentAttendanceRiskDto
 {
     public Guid StudentId { get; set; }
-    public string StudentName { get; set; }
-    public string CourseName { get; set; }
+    public string? StudentName { get; set; }
+    public string? CourseName { get; set; }
     public double AttendanceRate { get; set; }
 }
 
@@ -61,7 +61,7 @@ public class EventsAnalyticsDto
 
 public class EventPerformanceDto
 {
-    public string Title { get; set; }
+    public string? Title { get; set; }
     public int RegistrationCount { get; set; }
     public double RegistrationRate { get; set; }
     public double CheckInRate { get; set; }
