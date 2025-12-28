@@ -89,4 +89,9 @@ public class SchedulingOptions
     /// Weight for morning slots for required courses (0-10)
     /// </summary>
     public int MorningSlotWeight { get; set; } = 8;
+
+    /// <summary>
+    /// Random seed for generating different alternatives (null = use current time)
+    /// </summary>
+    public int? RandomSeed { get; set; }
 }

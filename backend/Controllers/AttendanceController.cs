@@ -916,4 +916,136 @@ public class AttendanceController : ControllerBase
             ExpiresAt = session.QrCodeExpiresAt.Value
         });
     }
+
+    /// <summary>
+    /// Manually add a student to an attendance session (Faculty only)
+    /// </summary>
+    [HttpPost("sessions/{id}/manual-add")]
+    [Authorize(Roles = "Faculty")]
+    public async Task<ActionResult> ManuallyAddStudent(Guid id, [FromBody] ManualAddStudentRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var faculty = await _context.Faculties
+            .FirstOrDefaultAsync(f => f.UserId == Guid.Parse(userId));
+        if (faculty == null)
+            return BadRequest(new { message = "Faculty profile not found" });
+
+        var session = await _context.AttendanceSessions
+            .Include(s => s.Section)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (session == null)
+            return NotFound(new { message = "Session not found" });
+
+        if (session.Status != AttendanceSessionStatus.Active)
+            return BadRequest(new { message = "Session is not active" });
+
+        if (session.InstructorId != faculty.Id)
+            return Forbid();
+
+        // Check if student is enrolled in the section
+        var enrollment = await _context.Enrollments
+            .Include(e => e.Student)
+                .ThenInclude(s => s.User)
+            .FirstOrDefaultAsync(e => e.StudentId == request.StudentId && 
+                                     e.SectionId == session.SectionId && 
+                                     e.Status == EnrollmentStatus.Active);
+
+        if (enrollment == null)
+            return BadRequest(new { message = "Student is not enrolled in this course section" });
+
+        // Check if already checked in
+        var alreadyCheckedIn = await _context.AttendanceRecords
+            .AnyAsync(r => r.SessionId == id && r.StudentId == request.StudentId);
+
+        if (alreadyCheckedIn)
+            return BadRequest(new { message = "Student has already been added to this session" });
+
+        // Create attendance record manually
+        var record = new AttendanceRecord
+        {
+            SessionId = id,
+            StudentId = request.StudentId,
+            CheckInTime = DateTime.UtcNow,
+            Latitude = session.Latitude, // Use session location
+            Longitude = session.Longitude,
+            DistanceFromCenter = 0, // Manual add, no distance check
+            Accuracy = 0,
+            IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+            UserAgent = Request.Headers.UserAgent.ToString(),
+            IsFlagged = false, // Manual adds are not flagged
+            FlagReason = null,
+            SensorAccelerationX = null,
+            SensorAccelerationY = null,
+            SensorAccelerationZ = null,
+            SensorDataUnavailable = true
+        };
+
+        _context.AttendanceRecords.Add(record);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { 
+            message = "Student manually added to attendance session",
+            studentName = $"{enrollment.Student.User.FirstName} {enrollment.Student.User.LastName}",
+            studentNumber = enrollment.Student.StudentNumber
+        });
+    }
+
+    /// <summary>
+    /// Extend the duration of an active attendance session (Faculty only)
+    /// </summary>
+    [HttpPut("sessions/{id}/extend")]
+    [Authorize(Roles = "Faculty")]
+    public async Task<ActionResult> ExtendSessionDuration(Guid id, [FromBody] ExtendSessionRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var faculty = await _context.Faculties
+            .FirstOrDefaultAsync(f => f.UserId == Guid.Parse(userId));
+        if (faculty == null)
+            return BadRequest(new { message = "Faculty profile not found" });
+
+        var session = await _context.AttendanceSessions
+            .Include(s => s.Section)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (session == null)
+            return NotFound(new { message = "Session not found" });
+
+        if (session.Status != AttendanceSessionStatus.Active)
+            return BadRequest(new { message = "Session is not active" });
+
+        if (session.InstructorId != faculty.Id)
+            return Forbid();
+
+        // Validate additional minutes (must be positive and reasonable)
+        if (request.AdditionalMinutes <= 0)
+            return BadRequest(new { message = "Additional minutes must be greater than 0" });
+
+        if (request.AdditionalMinutes > 180)
+            return BadRequest(new { message = "Cannot extend session by more than 180 minutes" });
+
+        // Calculate new end time
+        var sessionDate = session.Date;
+        var currentEndTime = session.EndTime;
+        var currentEndDateTime = sessionDate.Add(currentEndTime);
+        var newEndDateTime = currentEndDateTime.AddMinutes(request.AdditionalMinutes);
+        var newEndTime = newEndDateTime.TimeOfDay;
+
+        // Update session
+        session.EndTime = newEndTime;
+        session.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { 
+            message = "Session duration extended successfully",
+            newEndTime = newEndTime.ToString(@"hh\:mm"),
+            additionalMinutes = request.AdditionalMinutes
+        });
+    }
 }

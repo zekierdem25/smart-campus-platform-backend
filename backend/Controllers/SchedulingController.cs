@@ -49,7 +49,8 @@ public class SchedulingController : ControllerBase
             InstructorPreferenceWeight = dto.InstructorPreferenceWeight ?? 10,
             GapMinimizationWeight = dto.GapMinimizationWeight ?? 5,
             EvenDistributionWeight = dto.EvenDistributionWeight ?? 5,
-            MorningSlotWeight = dto.MorningSlotWeight ?? 8
+            MorningSlotWeight = dto.MorningSlotWeight ?? 8,
+            RandomSeed = dto.RandomSeed
         };
 
         var result = await _schedulingService.GenerateScheduleAsync(dto.Semester, dto.Year, dto.SectionIds, options);
@@ -542,7 +543,8 @@ public record GenerateScheduleDto(
     int? InstructorPreferenceWeight = null,
     int? GapMinimizationWeight = null,
     int? EvenDistributionWeight = null,
-    int? MorningSlotWeight = null
+    int? MorningSlotWeight = null,
+    int? RandomSeed = null
 );
 
 public record SaveScheduleDto(

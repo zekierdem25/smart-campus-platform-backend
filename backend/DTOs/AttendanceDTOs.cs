@@ -103,6 +103,16 @@ public class QrCheckInRequest
     public SensorDataDto? SensorData { get; set; } // Accelerometer data for spoofing detection
 }
 
+public class ManualAddStudentRequest
+{
+    public Guid StudentId { get; set; }
+}
+
+public class ExtendSessionRequest
+{
+    public int AdditionalMinutes { get; set; }
+}
+
 // ========== Attendance Statistics DTOs ==========
 
 public class StudentAttendanceDto

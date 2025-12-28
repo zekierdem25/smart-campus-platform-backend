@@ -62,129 +62,190 @@ public class DocumentsController : ControllerBase
     {
         var document = new PdfDocument();
         var page = document.AddPage();
+        page.Width = XUnit.FromMillimeter(210); // A4 width
+        page.Height = XUnit.FromMillimeter(297); // A4 height
         var gfx = XGraphics.FromPdfPage(page);
-        var fontTitle = new XFont("Arial", 20, XFontStyle.Bold);
+
+        // Fonts
+        var fontTitle = new XFont("Arial", 18, XFontStyle.Bold);
         var fontHeader = new XFont("Arial", 12, XFontStyle.Bold);
-        var fontNormal = new XFont("Arial", 11, XFontStyle.Regular);
+        var fontNormal = new XFont("Arial", 10, XFontStyle.Regular);
         var fontSmall = new XFont("Arial", 9, XFontStyle.Regular);
 
-        // Renkler
-        var colorBlue = XBrushes.DarkBlue;
+        // Colors - Koyu Lacivert tonları (#1e3a8a)
+        var colorDarkNavy = new XSolidBrush(XColor.FromArgb(30, 58, 138)); // #1e3a8a
+        var colorBlue = colorDarkNavy;
         var colorBlack = XBrushes.Black;
         var colorGray = XBrushes.Gray;
+        var colorLightGray = XBrushes.LightGray;
+        var colorWhite = XBrushes.White;
 
-        double yPos = 50;
-        double leftMargin = 50;
-        double rightMargin = 550;
-        double lineHeight = 25;
+        double yPos = 30; // Padding: 30px
+        double leftMargin = 30; // Padding: 30px
+        double rightMargin = page.Width.Point - 30;
+        double pageWidth = page.Width.Point;
+        double pageHeight = page.Height.Point;
 
-        // Başlık
-        var titleText = "ÖĞRENCİ BELGESİ";
-        var titleSize = gfx.MeasureString(titleText, fontTitle);
-        gfx.DrawString(titleText, fontTitle, colorBlue, 
-            new XRect(leftMargin, yPos, page.Width - 100, 30), 
-            XStringFormats.TopCenter);
-        yPos += 40;
-
-        // Alt başlık
-        gfx.DrawString("Akıllı Kampüs Ekosistem Yönetim Platformu", fontSmall, colorGray,
-            new XRect(leftMargin, yPos, page.Width - 100, 20),
-            XStringFormats.TopCenter);
-        yPos += 30;
-
-        // Çizgi
-        gfx.DrawLine(new XPen(colorBlue, 2), leftMargin, yPos, rightMargin, yPos);
-        yPos += 20;
-
-        // Öğrenci bilgileri
-        var currentDate = DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"));
-        var enrollmentDate = student.CreatedAt.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"));
-        var activeStatus = student.User.IsActive ? "Aktif" : "Pasif";
+        // Logo (sol üst köşe) - RTEÜ logosu
+        var logoSize = 60;
+        var logoRect = new XRect(leftMargin, yPos, logoSize, logoSize);
         
+        // Logo dosyasını yükle (wwwroot/Assets/logos/images.jpg)
+        try
+        {
+            var logoPath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot", "Assets", "logos", "images.jpg");
+            if (System.IO.File.Exists(logoPath))
+            {
+                var logoImage = XImage.FromFile(logoPath);
+                gfx.DrawImage(logoImage, logoRect);
+            }
+            else
+            {
+                // Logo dosyası yoksa, basit bir placeholder (RTEÜ yazısı)
+                gfx.DrawRectangle(new XPen(XColor.FromArgb(30, 58, 138), 1), 
+                    new XSolidBrush(XColor.FromArgb(240, 240, 240)), logoRect);
+                var logoFont = new XFont("Arial", 8, XFontStyle.Bold);
+                gfx.DrawString("RTEÜ", logoFont, colorDarkNavy, logoRect, XStringFormats.Center);
+            }
+        }
+        catch
+        {
+            // Logo yüklenemezse placeholder göster
+            gfx.DrawRectangle(new XPen(XColor.FromArgb(30, 58, 138), 1), 
+                new XSolidBrush(XColor.FromArgb(240, 240, 240)), logoRect);
+            var logoFont = new XFont("Arial", 8, XFontStyle.Bold);
+            gfx.DrawString("RTEÜ", logoFont, colorDarkNavy, logoRect, XStringFormats.Center);
+        }
+
+        // Kurumsal Header (ortalanmış)
+        var headerY = yPos;
+        var universityText = "RECEP TAYYİP ERDOĞAN ÜNİVERSİTESİ";
+        var universityFont = new XFont("Arial", 16, XFontStyle.Bold);
+        gfx.DrawString(universityText, universityFont, colorBlue,
+            new XRect(leftMargin, headerY, pageWidth - 60, 20),
+            XStringFormats.TopCenter);
+        headerY += 22;
+
+        var departmentText = "Öğrenci İşleri Daire Başkanlığı";
+        var departmentFont = new XFont("Arial", 11, XFontStyle.Regular);
+        gfx.DrawString(departmentText, departmentFont, colorGray,
+            new XRect(leftMargin, headerY, pageWidth - 60, 15),
+            XStringFormats.TopCenter);
+        headerY += 20;
+
+        // ÖĞRENCİ BELGESİ (küçültülmüş)
+        var titleText = "ÖĞRENCİ BELGESİ";
+        var titleFont = new XFont("Arial", 14, XFontStyle.Bold);
+        gfx.DrawString(titleText, titleFont, colorBlue,
+            new XRect(leftMargin, headerY, pageWidth - 60, 18),
+            XStringFormats.TopCenter);
+        headerY += 30; // Yazılım adı kaldırıldı, boşluk artırıldı
+
+        // Divider line (koyu lacivert)
+        gfx.DrawLine(new XPen(XColor.FromArgb(30, 58, 138), 0.5), leftMargin, headerY, rightMargin, headerY);
+        yPos = headerY + 25;
+
+        // Öğrenci Bilgileri Section
+        var infoYStart = yPos;
+        gfx.DrawString("ÖĞRENCİ BİLGİLERİ", fontHeader, colorBlue, leftMargin, yPos);
+        yPos += 25;
+
+        // 2 sütunlu grid yapısı - çizgiler olmadan
+        var labelWidth = 140;
+        var valueX = leftMargin + labelWidth + 20;
+        var rowSpacing = 20;
+
+        // Ad Soyad
+        var labelFont = new XFont("Arial", 10, XFontStyle.Bold);
+        gfx.DrawString("Adı Soyadı:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString($"{student.User.FirstName} {student.User.LastName}", fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
+
+        // Öğrenci Numarası
+        gfx.DrawString("Öğrenci Numarası:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString(student.StudentNumber, fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
+
+        // Bölüm
+        gfx.DrawString("Bölüm:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString(student.Department?.Name ?? "Belirtilmemiş", fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
+
         // Sınıf hesaplama
         var currentYear = DateTime.Now.Year;
         var yearsSinceEnrollment = currentYear - student.EnrollmentYear;
         var classLevel = Math.Min(4, Math.Max(1, yearsSinceEnrollment + 1));
+        
+        gfx.DrawString("Sınıf:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString($"{classLevel}. Sınıf", fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
 
-        // Bilgi satırları
-        DrawInfoRow(gfx, "Ad Soyad:", $"{student.User.FirstName} {student.User.LastName}", 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
+        // Kayıt Yılı
+        gfx.DrawString("Kayıt Yılı:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString(student.EnrollmentYear.ToString(), fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
 
-        DrawInfoRow(gfx, "Öğrenci Numarası:", student.StudentNumber, 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
+        // Aktiflik Durumu
+        var activeStatus = student.User.IsActive ? "Aktif" : "Pasif";
+        gfx.DrawString("Aktiflik Durumu:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString(activeStatus, fontNormal, colorBlack, valueX, yPos);
+        yPos += rowSpacing;
 
-        DrawInfoRow(gfx, "Bölüm:", student.Department?.Name ?? "Belirtilmemiş", 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
-
-        DrawInfoRow(gfx, "Sınıf:", $"{classLevel}. Sınıf", 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
-
-        DrawInfoRow(gfx, "Kayıt Tarihi:", enrollmentDate, 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
-
-        DrawInfoRow(gfx, "Aktiflik Durumu:", activeStatus, 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
-
-        DrawInfoRow(gfx, "Kayıt Yılı:", student.EnrollmentYear.ToString(), 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
-        yPos += lineHeight;
-
-        DrawInfoRow(gfx, "Dönem:", $"{student.CurrentSemester}. Dönem", 
-            leftMargin, yPos, rightMargin, fontHeader, fontNormal, colorBlack);
+        // Dönem
+        gfx.DrawString("Dönem:", labelFont, colorBlack, leftMargin, yPos);
+        gfx.DrawString($"{student.CurrentSemester}. Dönem", fontNormal, colorBlack, valueX, yPos);
         yPos += 30;
 
-        // Barkod bölümü
+        // Doğrulama Kutusu (Ortalanmış ve Dar - Kibarlaştırılmış)
         var barcodeText = $"STU-{student.StudentNumber}-{DateTime.Now:yyyyMMddHHmmss}";
-        var barcodeRect = new XRect(leftMargin, yPos, rightMargin - leftMargin, 60);
-        gfx.DrawRectangle(new XPen(colorGray, 1), XBrushes.LightGray, barcodeRect);
+        var boxWidth = 400; // Sabit genişlik (sayfanın yaklaşık %60'ı)
+        var boxX = (pageWidth - boxWidth) / 2; // Ortalama
+        var boxHeight = 50;
+        var boxY = yPos;
+        var barcodeRect = new XRect(boxX, boxY, boxWidth, boxHeight);
         
-        gfx.DrawString("BELGE KODU", fontHeader, colorBlue,
-            new XRect(leftMargin, yPos + 5, rightMargin - leftMargin, 15),
+        // Basit dikdörtgen (yuvarlatılmış köşeler için PdfSharpCore'da doğrudan destek yok, ince kenarlık ile daha zarif görünüm)
+        gfx.DrawRectangle(new XPen(XColor.FromArgb(209, 213, 219), 0.8), // Daha ince kenarlık
+            new XSolidBrush(XColor.FromArgb(249, 250, 251)), barcodeRect);
+        
+        gfx.DrawString("BELGE KODU", fontHeader, colorDarkNavy,
+            new XRect(boxX, boxY + 5, boxWidth, 15),
             XStringFormats.TopCenter);
         
-        var barcodeFont = new XFont("Courier New", 14, XFontStyle.Bold);
+        var barcodeFont = new XFont("Courier New", 12, XFontStyle.Bold);
         gfx.DrawString(barcodeText, barcodeFont, colorBlack,
-            new XRect(leftMargin, yPos + 25, rightMargin - leftMargin, 20),
+            new XRect(boxX, boxY + 22, boxWidth, 18),
             XStringFormats.TopCenter);
         
         gfx.DrawString("Bu kod ile belgenin doğruluğu kontrol edilebilir", fontSmall, colorGray,
-            new XRect(leftMargin, yPos + 45, rightMargin - leftMargin, 15),
+            new XRect(boxX, boxY + 38, boxWidth, 12),
             XStringFormats.TopCenter);
         
-        yPos += 80;
+        yPos += 70;
 
-        // Alt bilgi
-        gfx.DrawString($"Belge Tarihi: {currentDate}", fontSmall, colorGray,
-            new XRect(leftMargin, yPos, rightMargin - leftMargin, 15),
-            XStringFormats.TopRight);
-        yPos += 30;
-
-        // İmza bölümü
-        var signatureY = page.Height - 80;
-        var signatureWidth = 150;
-        var signatureSpacing = (rightMargin - leftMargin - (signatureWidth * 2)) / 3;
-
-        // Sol imza
-        gfx.DrawLine(new XPen(colorBlack, 1), 
-            leftMargin + signatureSpacing, signatureY,
-            leftMargin + signatureSpacing + signatureWidth, signatureY);
-        gfx.DrawString("Öğrenci İmzası", fontSmall, colorBlack,
-            new XRect(leftMargin + signatureSpacing, signatureY + 5, signatureWidth, 15),
+        // Yasal Uyarı
+        var legalNote = "Bu belge 5070 sayılı Elektronik İmza Kanunu uyarınca güvenli elektronik imza ile oluşturulmuştur.";
+        var noteFont = new XFont("Arial", 8, XFontStyle.Italic);
+        gfx.DrawString(legalNote, noteFont, colorGray,
+            new XRect(leftMargin, yPos, rightMargin - leftMargin, 12),
             XStringFormats.TopCenter);
+        
+        yPos += 20;
 
-        // Sağ imza
-        gfx.DrawLine(new XPen(colorBlack, 1),
-            rightMargin - signatureSpacing - signatureWidth, signatureY,
-            rightMargin - signatureSpacing, signatureY);
-        gfx.DrawString("Sistem Onayı", fontSmall, colorBlack,
-            new XRect(rightMargin - signatureSpacing - signatureWidth, signatureY + 5, signatureWidth, 15),
-            XStringFormats.TopCenter);
+        // Footer - boydan boya ince çizgi (koyu lacivert)
+        var footerLineY = pageHeight - 60;
+        gfx.DrawLine(new XPen(XColor.FromArgb(30, 58, 138), 0.5), leftMargin, footerLineY, rightMargin, footerLineY);
+        
+        var footerY = footerLineY + 10;
+        var currentDate = DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"));
+        
+        // Sol alt: Belge Tarihi
+        gfx.DrawString($"Belge Tarihi: {currentDate}", fontSmall, colorGray, leftMargin, footerY);
+        
+        // Sağ alt: Doğrulama Kodu
+        var verificationCode = $"TR-{DateTime.Now:yyyy}-{student.StudentNumber.Substring(Math.Max(0, student.StudentNumber.Length - 3))}";
+        var codeWidth = gfx.MeasureString($"Doğrulama Kodu: {verificationCode}", fontSmall).Width;
+        gfx.DrawString($"Doğrulama Kodu: {verificationCode}", fontSmall, colorGray, rightMargin - codeWidth, footerY);
 
         // PDF'i byte array'e dönüştür
         using var stream = new MemoryStream();
@@ -192,14 +253,8 @@ public class DocumentsController : ControllerBase
         return stream.ToArray();
     }
 
-    private void DrawInfoRow(XGraphics gfx, string label, string value, 
-        double left, double y, double right, XFont labelFont, XFont valueFont, XBrush brush)
-    {
-        var labelWidth = 150;
-        gfx.DrawString(label, labelFont, brush, left, y);
-        gfx.DrawString(value, valueFont, brush, left + labelWidth, y);
-        gfx.DrawLine(new XPen(XBrushes.LightGray, 0.5), left, y + 15, right, y + 15);
-    }
+    // DrawInfoRow metodu artık kullanılmıyor - çizgiler kaldırıldı
+    // Öğrenci bilgileri artık 2 sütunlu grid yapısında, çizgisiz olarak gösteriliyor
 
     private Guid? GetCurrentUserId()
     {

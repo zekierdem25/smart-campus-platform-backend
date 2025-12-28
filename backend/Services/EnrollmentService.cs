@@ -266,6 +266,7 @@ public class EnrollmentService : IEnrollmentService
             Id = e.Id,
             StudentId = e.StudentId,
             SectionId = e.SectionId,
+            CourseId = e.Section != null && e.Section.Course != null ? e.Section.Course.Id : Guid.Empty,
             CourseCode = e.Section != null && e.Section.Course != null ? e.Section.Course.Code : "UNKNOWN",
             CourseName = e.Section != null && e.Section.Course != null ? e.Section.Course.Name : "Unknown Course",
             SectionNumber = e.Section != null ? e.Section.SectionNumber : 0,

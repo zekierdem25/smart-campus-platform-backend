@@ -81,10 +81,15 @@ public class SchedulingService : ISchedulingService
             // Don't clear existing schedules - just generate without saving
             // This allows multiple alternatives to be generated
 
+            // Initialize random with seed if provided
+            var random = options.RandomSeed.HasValue 
+                ? new Random(options.RandomSeed.Value) 
+                : new Random();
+
             // Order sections using heuristics if enabled
             var orderedSections = options.UseHeuristics
-                ? OrderSectionsByHeuristics(sections, classrooms)
-                : sections;
+                ? OrderSectionsByHeuristics(sections, classrooms, random)
+                : sections.OrderBy(x => random.Next()).ToList(); // Randomize if heuristics disabled
 
             // Run CSP with backtracking
             var result = await BacktrackingCSP(
@@ -93,7 +98,8 @@ public class SchedulingService : ISchedulingService
                 timeSlots,
                 options,
                 semester,
-                year);
+                year,
+                random);
 
             stopwatch.Stop();
             result.ExecutionTime = stopwatch.Elapsed;
@@ -141,7 +147,8 @@ public class SchedulingService : ISchedulingService
         List<TimeSlot> timeSlots,
         SchedulingOptions options,
         string semester,
-        int year)
+        int year,
+        Random random)
     {
         var assignments = new List<Schedule>();
         var usedSlots = new Dictionary<string, bool>();
@@ -149,7 +156,7 @@ public class SchedulingService : ISchedulingService
 
         var success = await Backtrack(
             assignments, sections, classrooms, timeSlots, 
-            options, semester, year, usedSlots, conflictMessages, 0);
+            options, semester, year, usedSlots, conflictMessages, 0, random);
 
         var result = new SchedulingResult
         {
@@ -183,7 +190,8 @@ public class SchedulingService : ISchedulingService
         int year,
         Dictionary<string, bool> usedSlots,
         List<string> conflictMessages,
-        int depth)
+        int depth,
+        Random random)
     {
         _timeoutCts?.Token.ThrowIfCancellationRequested();
 
@@ -200,10 +208,15 @@ public class SchedulingService : ISchedulingService
             return false;
         }
 
-        // Order candidates by soft constraint score (highest first)
+        // Order candidates by soft constraint score (highest first), then add randomness
         var sortedCandidates = candidates
-            .Select(c => new { Schedule = c, Score = CalculateSoftConstraintScore(c, currentSection, assignments, options) })
+            .Select(c => new { 
+                Schedule = c, 
+                Score = CalculateSoftConstraintScore(c, currentSection, assignments, options),
+                RandomValue = random.NextDouble() // Add randomness
+            })
             .OrderByDescending(x => x.Score)
+            .ThenByDescending(x => x.RandomValue) // Randomize among equal scores
             .Select(x => x.Schedule)
             .ToList();
 
@@ -215,7 +228,7 @@ public class SchedulingService : ISchedulingService
 
             // Recurse
             if (await Backtrack(assignments, sections, classrooms, timeSlots, 
-                    options, semester, year, usedSlots, conflictMessages, depth + 1))
+                    options, semester, year, usedSlots, conflictMessages, depth + 1, random))
             {
                 return true; // Solution found
             }
@@ -243,6 +256,7 @@ public class SchedulingService : ISchedulingService
         var candidates = new List<Schedule>();
 
         // Get suitable classrooms (capacity and features)
+        // Note: Randomization is handled at the service level, not here
         var suitableClassrooms = classrooms
             .Where(c => c.Capacity >= section.EnrolledCount)
             .Where(c => ClassroomFeaturesMatch(section.Course, c))
@@ -511,12 +525,14 @@ public class SchedulingService : ISchedulingService
     /// </summary>
     private IEnumerable<CourseSection> OrderSectionsByHeuristics(
         List<CourseSection> sections, 
-        List<Classroom> classrooms)
+        List<Classroom> classrooms,
+        Random random)
     {
         return sections
             .OrderByDescending(s => s.EnrolledCount) // Larger classes first (harder to schedule)
             .ThenByDescending(s => !string.IsNullOrEmpty(s.Course.RequirementsJson)) // Sections with requirements first
-            .ThenBy(s => classrooms.Count(c => c.Capacity >= s.EnrolledCount)); // Fewer suitable classrooms first
+            .ThenBy(s => classrooms.Count(c => c.Capacity >= s.EnrolledCount)) // Fewer suitable classrooms first
+            .ThenBy(s => random.NextDouble()); // Add randomness for sections with same priority
     }
 
     /// <summary>
