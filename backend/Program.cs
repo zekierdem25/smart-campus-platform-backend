@@ -253,6 +253,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
                 try
                 {
                     dbContext.Database.Migrate();
+
+                    // Seed Menus
+                    DbInitializer.SeedAsync(dbContext).GetAwaiter().GetResult();
                     
                     // Check if sensors exist, if not, generate mock sensors and data
                     var sensorCount = dbContext.Sensors.Count();
